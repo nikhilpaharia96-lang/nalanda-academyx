@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Google Fonts (Plus Jakarta Sans / Inter / IBM Plex Mono) aren't reachable
+     from this sandbox's network, so local dev falls back to close-matching
+     system stacks. In a normal environment, swap back to `next/font/google`
+     in layout.tsx to self-host the exact faces the design calls for. */
+  --font-display: "Segoe UI", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-neutral-100 text-navy antialiased;
+}
+
+/* Signature: a faint horizontal-rule "ledger" texture recalling a school
+   attendance register / fee ledger — the record-keeping thread that runs
+   through the whole platform. Used sparingly behind hero/stat panels only. */
+.ledger-bg {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    rgba(11, 31, 58, 0.06) 28px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #C9A227;
+  outline-offset: 2px;
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@nalanda/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "generate": "drizzle-kit generate --config drizzle.config.ts",
+    "generate:postgres": "drizzle-kit generate --config drizzle.config.postgres.ts",
+    "migrate": "tsx migrate.ts",
+    "migrate:postgres": "tsx migrate.postgres.ts",
+    "seed": "tsx seed.ts",
+    "studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.33.0",
+    "better-sqlite3": "^11.3.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.24.2",
+    "tsx": "^4.16.5",
+    "bcryptjs": "^2.4.3",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.5.4"
+  }
+}
