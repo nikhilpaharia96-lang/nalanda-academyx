@@ -21,6 +21,14 @@ export class AppController {
     try {
       await db.select().from(schema.settings).limit(1);
     } catch (err) {
+      // Log the real underlying error server-side only. The client-facing
+      // response below is unchanged (still a generic 503 via
+      // ServiceUnavailableException, reformatted by GlobalExceptionFilter
+      // into {statusCode, message: "Error", timestamp}) — this log line
+      // exists purely so the actual PostgreSQL/driver error is visible in
+      // Render's server logs instead of being silently discarded.
+      // eslint-disable-next-line no-console
+      console.error("[health] database connectivity check failed:", err);
       throw new ServiceUnavailableException({
         status: "error",
         database: "unreachable",
