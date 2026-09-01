@@ -308,23 +308,38 @@ function StatCardsSection() {
     return <InlineError message={error || "Failed to load dashboard statistics."} onRetry={retry} />;
   }
 
+  // Defensive fallbacks: if an older/partial API response ever reaches the
+  // client (e.g. a stale server process before a rebuild finishes), render
+  // 0 / ₹0 instead of throwing — the numbers will simply look wrong for a
+  // moment rather than crashing the whole dashboard.
+  const totalStudents = data.totalStudents ?? 0;
+  const activeStudents = data.activeStudents ?? 0;
+  const totalTeachers = data.totalTeachers ?? 0;
+  const totalParents = data.totalParents ?? 0;
+  const totalClasses = data.totalClasses ?? 0;
+  const totalFeesCollected = data.totalFeesCollected ?? 0;
+  const pendingFeesTotal = data.pendingFees?.total ?? 0;
+  const pendingFeesCount = data.pendingFees?.count ?? 0;
+  const todayCollection = data.todayCollection ?? 0;
+  const monthCollection = data.monthCollection ?? 0;
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      <StatCard icon={GraduationCap} label="Total Students" value={data.totalStudents.toLocaleString("en-IN")} />
-      <StatCard icon={GraduationCap} label="Active Students" value={data.activeStudents.toLocaleString("en-IN")} />
-      <StatCard icon={Users} label="Total Teachers" value={data.totalTeachers.toLocaleString("en-IN")} />
-      <StatCard icon={UsersRound} label="Total Parents" value={data.totalParents.toLocaleString("en-IN")} />
-      <StatCard icon={Layers} label="Total Classes" value={data.totalClasses.toLocaleString("en-IN")} />
-      <StatCard icon={Landmark} label="Total Fees Collected" value={formatINR(data.totalFeesCollected)} tone="good" />
+      <StatCard icon={GraduationCap} label="Total Students" value={totalStudents.toLocaleString("en-IN")} />
+      <StatCard icon={GraduationCap} label="Active Students" value={activeStudents.toLocaleString("en-IN")} />
+      <StatCard icon={Users} label="Total Teachers" value={totalTeachers.toLocaleString("en-IN")} />
+      <StatCard icon={UsersRound} label="Total Parents" value={totalParents.toLocaleString("en-IN")} />
+      <StatCard icon={Layers} label="Total Classes" value={totalClasses.toLocaleString("en-IN")} />
+      <StatCard icon={Landmark} label="Total Fees Collected" value={formatINR(totalFeesCollected)} tone="good" />
       <StatCard
         icon={Wallet}
         label="Pending Fees"
-        value={formatINR(data.pendingFees.total)}
-        sub={`${data.pendingFees.count} fee record${data.pendingFees.count === 1 ? "" : "s"}`}
+        value={formatINR(pendingFeesTotal)}
+        sub={`${pendingFeesCount} fee record${pendingFeesCount === 1 ? "" : "s"}`}
         tone="warn"
       />
-      <StatCard icon={TrendingUp} label="Today's Collection" value={formatINR(data.todayCollection)} tone="good" />
-      <StatCard icon={CalendarDays} label="This Month's Collection" value={formatINR(data.monthCollection)} tone="good" />
+      <StatCard icon={TrendingUp} label="Today's Collection" value={formatINR(todayCollection)} tone="good" />
+      <StatCard icon={CalendarDays} label="This Month's Collection" value={formatINR(monthCollection)} tone="good" />
     </div>
   );
 }
