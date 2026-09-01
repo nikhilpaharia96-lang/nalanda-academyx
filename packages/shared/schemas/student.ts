@@ -2,9 +2,14 @@ import { z } from "zod";
 import { STUDENT_STATUSES } from "../enums";
 
 export const createStudentSchema = z.object({
-  email: z.string().email(),
+  // Optional: if the student has no personal email, the server generates a
+  // unique institutional login address instead — see StudentsService.
+  email: z.string().email().optional(),
   password: z.string().min(8).optional(), // if omitted, a temp password is generated
   name: z.string().min(2),
+  fatherName: z.string().min(1).optional(),
+  motherName: z.string().min(1).optional(),
+  phone: z.string().min(7).max(20).optional(),
   dateOfBirth: z.string().date(),
   gender: z.enum(["MALE", "FEMALE", "OTHER"]),
   classId: z.string().min(1),

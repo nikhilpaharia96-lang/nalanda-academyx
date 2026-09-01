@@ -41,6 +41,12 @@ export const users = sqliteTable("users", {
   role: text("role").notNull(), // SUPER_ADMIN | ADMIN | TEACHER | STUDENT | PARENT
   status: text("status").notNull().default("ACTIVE"),
   lastLoginAt: text("last_login_at"),
+  // Set true whenever the Admin creates an account with a system-generated
+  // temporary password, or explicitly resets one. Not currently enforced as
+  // a hard server-side block on other routes (see AuthService/StudentsService
+  // reset-password flow) — it's surfaced to the client via the login
+  // response so a portal can choose to prompt for a password change.
+  mustChangePassword: integer("must_change_password", { mode: "boolean" }).notNull().default(false),
   ...timestamps,
 });
 
@@ -102,6 +108,9 @@ export const students = sqliteTable("students", {
   admissionDate: text("admission_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
   address: text("address"),
+  fatherName: text("father_name"),
+  motherName: text("mother_name"),
+  phone: text("phone"),
   ...timestamps,
 }, (t) => ({
   classSectionIdx: index("students_class_section_idx").on(t.classId, t.sectionId),
@@ -139,6 +148,10 @@ export const teachers = sqliteTable("teachers", {
   email: text("email"),
   joiningDate: text("joining_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
+  dateOfBirth: text("date_of_birth"),
+  gender: text("gender"),
+  address: text("address"),
+  designation: text("designation"),
   ...timestamps,
 });
 

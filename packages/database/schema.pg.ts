@@ -77,6 +77,8 @@ export const users = pgTable("users", {
   role: text("role").notNull(), // SUPER_ADMIN | ADMIN | TEACHER | STUDENT | PARENT
   status: text("status").notNull().default("ACTIVE"),
   lastLoginAt: text("last_login_at"),
+  // Mirrors schema.ts — see that file for the full comment.
+  mustChangePassword: boolean("must_change_password").notNull().default(false),
   ...timestamps,
 });
 
@@ -138,6 +140,9 @@ export const students = pgTable("students", {
   admissionDate: text("admission_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
   address: text("address"),
+  fatherName: text("father_name"),
+  motherName: text("mother_name"),
+  phone: text("phone"),
   ...timestamps,
 }, (t) => ({
   classSectionIdx: index("students_class_section_idx").on(t.classId, t.sectionId),
@@ -175,6 +180,10 @@ export const teachers = pgTable("teachers", {
   email: text("email"),
   joiningDate: text("joining_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
+  dateOfBirth: text("date_of_birth"),
+  gender: text("gender"),
+  address: text("address"),
+  designation: text("designation"),
   ...timestamps,
 });
 
