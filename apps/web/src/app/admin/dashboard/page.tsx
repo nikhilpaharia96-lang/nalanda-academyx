@@ -22,6 +22,7 @@ import {
   Activity,
   Megaphone,
   ChevronRight,
+  ImageOff,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------

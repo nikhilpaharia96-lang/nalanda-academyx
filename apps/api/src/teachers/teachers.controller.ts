@@ -6,26 +6,9 @@ import { RolesGuard } from "../common/guards/roles.guard";
 import { Roles } from "../common/decorators/roles.decorator";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
+import { createTeacherSchema, updateTeacherSchema } from "@nalanda/shared";
 import type { AuthenticatedUser } from "../common/types/authenticated-user";
 
-const createTeacherSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).optional(),
-  name: z.string().min(2),
-  subject: z.string().optional(),
-  department: z.string().optional(),
-  qualification: z.string().optional(),
-  phone: z.string().optional(),
-  joiningDate: z.string().date(),
-});
-const updateTeacherSchema = z.object({
-  name: z.string().optional(),
-  subject: z.string().optional(),
-  department: z.string().optional(),
-  qualification: z.string().optional(),
-  phone: z.string().optional(),
-  status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
-});
 const assignSchema = z.object({
   classId: z.string().min(1),
   sectionId: z.string().min(1),
@@ -59,6 +42,24 @@ export class TeachersController {
   @Roles("SUPER_ADMIN", "ADMIN")
   update(@Param("id") id: string, @Body(new ZodValidationPipe(updateTeacherSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.teachersService.update(id, dto, user.sub);
+  }
+
+  @Patch(":id/deactivate")
+  @Roles("SUPER_ADMIN", "ADMIN")
+  deactivate(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.teachersService.setActive(id, false, user.sub);
+  }
+
+  @Patch(":id/activate")
+  @Roles("SUPER_ADMIN", "ADMIN")
+  activate(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.teachersService.setActive(id, true, user.sub);
+  }
+
+  @Post(":id/reset-password")
+  @Roles("SUPER_ADMIN", "ADMIN")
+  resetPassword(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.teachersService.resetPassword(id, user.sub);
   }
 
   @Get(":id/assignments")

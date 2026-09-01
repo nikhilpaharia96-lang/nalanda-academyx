@@ -71,7 +71,10 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      user: { id: user.id, email: user.email, role: user.role, profileId },
+      // mustChangePassword is informational only today — no route currently
+      // enforces it server-side (see the migration's column comment in
+      // schema.ts). A portal frontend can use it to prompt for a change.
+      user: { id: user.id, email: user.email, role: user.role, profileId, mustChangePassword: user.mustChangePassword },
     };
   }
 

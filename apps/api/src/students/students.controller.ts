@@ -49,4 +49,16 @@ export class StudentsController {
   deactivate(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
     return this.studentsService.deactivate(id, user.sub);
   }
+
+  @Patch(":id/activate")
+  @Roles("SUPER_ADMIN", "ADMIN")
+  activate(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.studentsService.setActive(id, true, user.sub);
+  }
+
+  @Post(":id/reset-password")
+  @Roles("SUPER_ADMIN", "ADMIN")
+  resetPassword(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.studentsService.resetPassword(id, user.sub);
+  }
 }
