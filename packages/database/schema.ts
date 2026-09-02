@@ -41,12 +41,6 @@ export const users = sqliteTable("users", {
   role: text("role").notNull(), // SUPER_ADMIN | ADMIN | TEACHER | STUDENT | PARENT
   status: text("status").notNull().default("ACTIVE"),
   lastLoginAt: text("last_login_at"),
-  // Set true whenever the Admin creates an account with a system-generated
-  // temporary password, or explicitly resets one. Not currently enforced as
-  // a hard server-side block on other routes (see AuthService/StudentsService
-  // reset-password flow) — it's surfaced to the client via the login
-  // response so a portal can choose to prompt for a password change.
-  mustChangePassword: integer("must_change_password", { mode: "boolean" }).notNull().default(false),
   ...timestamps,
 });
 
@@ -108,9 +102,6 @@ export const students = sqliteTable("students", {
   admissionDate: text("admission_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
   address: text("address"),
-  fatherName: text("father_name"),
-  motherName: text("mother_name"),
-  phone: text("phone"),
   ...timestamps,
 }, (t) => ({
   classSectionIdx: index("students_class_section_idx").on(t.classId, t.sectionId),
@@ -148,10 +139,6 @@ export const teachers = sqliteTable("teachers", {
   email: text("email"),
   joiningDate: text("joining_date").notNull(),
   status: text("status").notNull().default("ACTIVE"),
-  dateOfBirth: text("date_of_birth"),
-  gender: text("gender"),
-  address: text("address"),
-  designation: text("designation"),
   ...timestamps,
 });
 
@@ -330,6 +317,90 @@ export const studentResults = sqliteTable("student_results", {
 }, (t) => ({ idx: index("student_results_idx").on(t.resultYearId) }));
 
 // ---------------------------------------------------------------------------
+// EXAMS & RESULTS
+// ---------------------------------------------------------------------------
+
+// A managed, extensible catalog of examination types (Unit Test, Half-Yearly
+// Examination, Annual Examination, ...). Admin can add new rows at any time —
+// this is intentionally NOT a hard-coded enum, so the set of exam types is
+// never limited to whatever ships in the seed data.
+export const examTypes = sqliteTable("exam_types", {
+  id: id(),
+  name: text("name").notNull().unique(),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// A global subject catalog, analogous to `classes` — reused (not duplicated)
+// across teacher assignments' free-text `subject` field is a separate,
+// pre-existing concern; this table is the canonical subject list that the
+// Exams & Results module links marks to.
+export const subjects = sqliteTable("subjects", {
+  id: id(),
+  name: text("name").notNull().unique(),
+  code: text("code").unique(),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+});
+
+// Which subjects are taught in which class — lets the Admin UI offer only
+// the subjects relevant to the class currently selected (e.g. Botany for
+// B.Sc, not for a primary-school class).
+export const classSubjects = sqliteTable("class_subjects", {
+  id: id(),
+  classId: text("class_id").notNull().references(() => classes.id, { onDelete: "cascade" }),
+  subjectId: text("subject_id").notNull().references(() => subjects.id, { onDelete: "cascade" }),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+}, (t) => ({ unique: uniqueIndex("class_subjects_unique").on(t.classId, t.subjectId) }));
+
+export const exams = sqliteTable("exams", {
+  id: id(),
+  name: text("name").notNull(),
+  examTypeId: text("exam_type_id").notNull().references(() => examTypes.id),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  classId: text("class_id").notNull().references(() => classes.id),
+  // Nullable: an exam may span an entire class (all sections) rather than one section.
+  sectionId: text("section_id").references(() => sections.id),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date").notNull(),
+  description: text("description"),
+  // DRAFT: invisible to students. PUBLISHED: visible in the Student Portal.
+  status: text("status").notNull().default("DRAFT"),
+  ...timestamps,
+}, (t) => ({
+  filterIdx: index("exams_filter_idx").on(t.academicYearId, t.classId, t.sectionId, t.status),
+}));
+
+export const examResults = sqliteTable("exam_results", {
+  id: id(),
+  examId: text("exam_id").notNull().references(() => exams.id, { onDelete: "cascade" }),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  subjectId: text("subject_id").notNull().references(() => subjects.id),
+  // Denormalized from the student at entry time (mirrors the `attendance`
+  // table's approach) so class/section-wide queries and indexes don't need
+  // to join through `students` on every read.
+  classId: text("class_id").notNull().references(() => classes.id),
+  sectionId: text("section_id").notNull().references(() => sections.id),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  maxMarks: real("max_marks").notNull(),
+  passMarks: real("pass_marks").notNull(),
+  obtainedMarks: real("obtained_marks").notNull(),
+  // Server-computed and stored (never trust a client-supplied grade) so
+  // reads don't need to recompute, but the frontend can never set these.
+  grade: text("grade"),
+  passed: integer("passed", { mode: "boolean" }).notNull().default(true),
+  remarks: text("remarks"),
+  enteredBy: text("entered_by").references(() => users.id),
+  ...timestamps,
+}, (t) => ({
+  // Enforces "one result per student+exam+subject" at the DB level.
+  unique: uniqueIndex("exam_results_unique").on(t.examId, t.studentId, t.subjectId),
+  examClassIdx: index("exam_results_exam_class_idx").on(t.examId, t.classId, t.sectionId),
+  studentIdx: index("exam_results_student_idx").on(t.studentId),
+}));
+
+// ---------------------------------------------------------------------------
 // CONTENT
 // ---------------------------------------------------------------------------
 
@@ -495,4 +566,31 @@ export const classesRelations = relations(classes, ({ many }) => ({
 export const sectionsRelations = relations(sections, ({ one, many }) => ({
   class: one(classes, { fields: [sections.classId], references: [classes.id] }),
   students: many(students),
+}));
+
+export const subjectsRelations = relations(subjects, ({ many }) => ({
+  classSubjects: many(classSubjects),
+}));
+
+export const classSubjectsRelations = relations(classSubjects, ({ one }) => ({
+  class: one(classes, { fields: [classSubjects.classId], references: [classes.id] }),
+  subject: one(subjects, { fields: [classSubjects.subjectId], references: [subjects.id] }),
+}));
+
+export const examTypesRelations = relations(examTypes, ({ many }) => ({
+  exams: many(exams),
+}));
+
+export const examsRelations = relations(exams, ({ one, many }) => ({
+  examType: one(examTypes, { fields: [exams.examTypeId], references: [examTypes.id] }),
+  academicYear: one(academicYears, { fields: [exams.academicYearId], references: [academicYears.id] }),
+  class: one(classes, { fields: [exams.classId], references: [classes.id] }),
+  section: one(sections, { fields: [exams.sectionId], references: [sections.id] }),
+  results: many(examResults),
+}));
+
+export const examResultsRelations = relations(examResults, ({ one }) => ({
+  exam: one(exams, { fields: [examResults.examId], references: [exams.id] }),
+  student: one(students, { fields: [examResults.studentId], references: [students.id] }),
+  subject: one(subjects, { fields: [examResults.subjectId], references: [subjects.id] }),
 }));

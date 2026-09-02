@@ -73,7 +73,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Attendance", icon: CalendarCheck, href: "/admin/attendance", comingSoon: true },
   { label: "Classes & Departments", icon: Building2, href: "/admin/classes", comingSoon: true },
   { label: "Parents", icon: UsersRound, href: "/admin/parents", comingSoon: true },
-  { label: "Exams & Results", icon: Award, href: "/admin/exams", comingSoon: true },
+  { label: "Exams & Results", icon: Award, href: "/admin/exams" },
   { label: "Notices", icon: Megaphone, href: "/admin/notices", comingSoon: true },
   { label: "Documents", icon: FolderKanban, href: "/admin/documents", comingSoon: true },
   { label: "Reports", icon: FileBarChart, href: "/admin/reports", comingSoon: true },

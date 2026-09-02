@@ -52,3 +52,10 @@ export const NOTIFICATION_TYPES = [
 ] as const;
 
 export const DOCUMENT_VISIBILITY = ["PRIVATE", "SHARED"] as const;
+
+export const EXAM_STATUSES = ["DRAFT", "PUBLISHED"] as const;
+
+// Seeded starting set only — Admin can add further exam types at any time via
+// POST /exam-types. This is NOT an exhaustive enum and must never be used to
+// validate/restrict the `name` of a new exam type.
+export const DEFAULT_EXAM_TYPES = ["Unit Test", "Half-Yearly Examination", "Annual Examination"] as const;

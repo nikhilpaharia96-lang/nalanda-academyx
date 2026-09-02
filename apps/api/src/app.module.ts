@@ -16,6 +16,7 @@ import { FeesModule } from "./fees/fees.module";
 import { NotificationsModule } from "./notifications/notifications.module";
 import { PaymentsModule } from "./payments/payments.module";
 import { ResultsModule } from "./results/results.module";
+import { ExamsModule } from "./exams/exams.module";
 import { NoticesModule } from "./notices/notices.module";
 import { EventsModule } from "./events/events.module";
 import { FacultyModule } from "./faculty/faculty.module";
@@ -43,6 +44,7 @@ import { ReportsModule } from "./reports/reports.module";
     NotificationsModule,
     PaymentsModule,
     ResultsModule,
+    ExamsModule,
     NoticesModule,
     EventsModule,
     FacultyModule,

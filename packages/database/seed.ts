@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { db, schema } from "./index";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 // NOTE: This seed data is clearly demo/development data — marked "(DEMO)" —
 // and must never be presented as real Nalanda Academy information.
@@ -176,6 +176,97 @@ async function main() {
       grade: "A+",
       achievement: "Distinction",
     });
+  }
+
+  // Exams & Results demo data ------------------------------------------------
+  // A second student in the same class/section, so bulk marks entry and
+  // class-topper/failure scenarios both have something to show.
+  const student2User = await upsertUser("student2@nalanda.demo", "STUDENT", passwordHash);
+  let [student2] = await db.select().from(schema.students).where(eq(schema.students.userId, student2User.id));
+  if (!student2) {
+    [student2] = await db
+      .insert(schema.students)
+      .values({
+        userId: student2User.id,
+        studentId: "STU-DEMO-002",
+        admissionNumber: "ADM-DEMO-2026-002",
+        name: "(DEMO) Rahul Sharma",
+        dateOfBirth: "2011-08-22",
+        gender: "MALE",
+        classId: class10.id,
+        sectionId: class10SectionA.id,
+        academicYearId: year.id,
+        rollNumber: "02",
+        admissionDate: "2026-04-02",
+      })
+      .returning();
+  }
+
+  for (const name of ["Unit Test", "Half-Yearly Examination", "Annual Examination"]) {
+    const [existing] = await db.select().from(schema.examTypes).where(eq(schema.examTypes.name, name));
+    if (!existing) await db.insert(schema.examTypes).values({ name });
+  }
+  const [unitTestType] = await db.select().from(schema.examTypes).where(eq(schema.examTypes.name, "Unit Test"));
+
+  const subjectNames = ["Mathematics", "English", "Science"];
+  const subjectByName = new Map<string, typeof schema.subjects.$inferSelect>();
+  for (const name of subjectNames) {
+    let [subject] = await db.select().from(schema.subjects).where(eq(schema.subjects.name, name));
+    if (!subject) [subject] = await db.insert(schema.subjects).values({ name }).returning();
+    subjectByName.set(name, subject);
+    const [link] = await db
+      .select()
+      .from(schema.classSubjects)
+      .where(and(eq(schema.classSubjects.classId, class10.id), eq(schema.classSubjects.subjectId, subject.id)));
+    if (!link) await db.insert(schema.classSubjects).values({ classId: class10.id, subjectId: subject.id });
+  }
+
+  let [demoExam] = await db.select().from(schema.exams).where(eq(schema.exams.name, "(DEMO) Unit Test 1"));
+  if (!demoExam) {
+    [demoExam] = await db
+      .insert(schema.exams)
+      .values({
+        name: "(DEMO) Unit Test 1",
+        examTypeId: unitTestType.id,
+        academicYearId: year.id,
+        classId: class10.id,
+        sectionId: class10SectionA.id,
+        startDate: "2026-07-01",
+        endDate: "2026-07-05",
+        description: "(DEMO) Demonstrates the Exams & Results module end-to-end.",
+        status: "PUBLISHED",
+      })
+      .returning();
+
+    const marks: [typeof student, string, number, number][] = [
+      [student, "Mathematics", 78, 100],
+      [student, "English", 85, 100],
+      [student, "Science", 74, 100],
+      [student2, "Mathematics", 35, 100],
+      [student2, "English", 61, 100],
+      [student2, "Science", 55, 100],
+    ];
+    for (const [s, subjectName, obtained, max] of marks) {
+      const subject = subjectByName.get(subjectName)!;
+      const passMarks = 40;
+      const passed = obtained >= passMarks;
+      const percentage = (obtained / max) * 100;
+      const grade = !passed ? "F" : percentage >= 90 ? "A+" : percentage >= 80 ? "A" : percentage >= 70 ? "B+" : percentage >= 60 ? "B" : percentage >= 50 ? "C" : "D";
+      await db.insert(schema.examResults).values({
+        examId: demoExam.id,
+        studentId: s.id,
+        subjectId: subject.id,
+        classId: s.classId,
+        sectionId: s.sectionId,
+        academicYearId: year.id,
+        maxMarks: max,
+        passMarks,
+        obtainedMarks: obtained,
+        grade,
+        passed,
+        remarks: passed ? "Good performance." : "Needs improvement — please meet the subject teacher.",
+      });
+    }
   }
 
   // Notices / Events / Faculty / Facilities
