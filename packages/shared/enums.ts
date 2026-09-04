@@ -15,9 +15,23 @@ export const ADMISSION_STATUSES = [
   "ENROLLED",
 ] as const;
 
-export const FEE_FREQUENCIES = ["MONTHLY", "QUARTERLY", "YEARLY", "ONE_TIME"] as const;
+export const FEE_FREQUENCIES = ["ONE_TIME", "MONTHLY", "QUARTERLY", "HALF_YEARLY", "YEARLY"] as const;
 
-export const STUDENT_FEE_STATUSES = ["PENDING", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED"] as const;
+export const FEE_TYPES = [
+  "ADMISSION_FEE",
+  "MONTHLY_FEE",
+  "ANNUAL_FEE",
+  "EXAMINATION_FEE",
+  "REGISTRATION_FEE",
+  "DEVELOPMENT_FEE",
+  "LIBRARY_FEE",
+  "TRANSPORT_FEE",
+  "OTHER",
+] as const;
+
+export const STUDENT_FEE_STATUSES = ["PENDING", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED", "WAIVED"] as const;
+
+export const OFFLINE_PAYMENT_METHODS = ["CASH", "UPI", "BANK_TRANSFER", "CHEQUE", "OTHER"] as const;
 
 export const PAYMENT_TYPES = ["ADMISSION", "MONTHLY_FEE", "EXTRA_FEE", "OTHER"] as const;
 export const PAYMENT_GATEWAYS = [
@@ -25,6 +39,7 @@ export const PAYMENT_GATEWAYS = [
   "OFFLINE_CASH",
   "OFFLINE_UPI",
   "OFFLINE_BANK_TRANSFER",
+  "OFFLINE_CHEQUE",
   "OFFLINE_OTHER",
 ] as const;
 export const PAYMENT_STATUSES = ["PENDING", "PROCESSING", "PAID", "FAILED", "CANCELLED", "REFUNDED"] as const;

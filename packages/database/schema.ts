@@ -192,6 +192,8 @@ export const feeStructures = sqliteTable("fee_structures", {
   id: id(),
   academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
   classId: text("class_id").notNull().references(() => classes.id),
+  // Nullable: no sectionId = applies to every section of the class.
+  sectionId: text("section_id").references(() => sections.id),
   feeType: text("fee_type").notNull(),
   amount: real("amount").notNull(),
   frequency: text("frequency").notNull(),
@@ -199,7 +201,7 @@ export const feeStructures = sqliteTable("fee_structures", {
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   description: text("description"),
   ...timestamps,
-}, (t) => ({ idx: index("fee_structures_idx").on(t.academicYearId, t.classId) }));
+}, (t) => ({ idx: index("fee_structures_idx").on(t.academicYearId, t.classId, t.sectionId) }));
 
 export const studentFees = sqliteTable("student_fees", {
   id: id(),
@@ -209,8 +211,14 @@ export const studentFees = sqliteTable("student_fees", {
   month: integer("month"),
   year: integer("year").notNull(),
   amount: real("amount").notNull(),
+  // Running total of PAID payments allocated to this fee — see the matching
+  // comment in schema.pg.ts for why this is denormalized.
+  paidAmount: real("paid_amount").notNull().default(0),
   dueDate: text("due_date").notNull(),
   status: text("status").notNull().default("PENDING"),
+  waivedAt: text("waived_at"),
+  waivedBy: text("waived_by").references(() => users.id),
+  waivedReason: text("waived_reason"),
   ...timestamps,
 }, (t) => ({
   unique: uniqueIndex("student_fees_unique").on(t.studentId, t.feeStructureId, t.month, t.year),
@@ -225,6 +233,7 @@ export const extraFees = sqliteTable("extra_fees", {
   title: text("title").notNull(),
   description: text("description"),
   amount: real("amount").notNull(),
+  paidAmount: real("paid_amount").notNull().default(0),
   dueDate: text("due_date").notNull(),
   status: text("status").notNull().default("PENDING"),
   ...timestamps,
@@ -250,7 +259,10 @@ export const payments = sqliteTable("payments", {
   method: text("method"),
   status: text("status").notNull().default("PENDING"),
   collectedBy: text("collected_by"),
+  receivedByName: text("received_by_name"),
   referenceNote: text("reference_note"),
+  chequeNumber: text("cheque_number"),
+  bankName: text("bank_name"),
   paidAt: text("paid_at"),
   ...timestamps,
 }, (t) => ({

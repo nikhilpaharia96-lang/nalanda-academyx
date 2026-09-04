@@ -228,6 +228,10 @@ export const feeStructures = pgTable("fee_structures", {
   id: id(),
   academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
   classId: text("class_id").notNull().references(() => classes.id),
+  // Nullable: a structure with no sectionId applies to every section of the
+  // class. Setting it scopes the structure (and everything generated from
+  // it) to that one section only.
+  sectionId: text("section_id").references(() => sections.id),
   feeType: text("fee_type").notNull(),
   // Currency field — intentionally kept as `real()` (floating point), NOT
   // converted to NUMERIC/DECIMAL. See the file-header note above.
@@ -237,7 +241,7 @@ export const feeStructures = pgTable("fee_structures", {
   active: boolean("active").notNull().default(true),
   description: text("description"),
   ...timestamps,
-}, (t) => ({ idx: index("fee_structures_idx").on(t.academicYearId, t.classId) }));
+}, (t) => ({ idx: index("fee_structures_idx").on(t.academicYearId, t.classId, t.sectionId) }));
 
 export const studentFees = pgTable("student_fees", {
   id: id(),
@@ -248,8 +252,17 @@ export const studentFees = pgTable("student_fees", {
   year: integer("year").notNull(),
   // Currency field — intentionally kept as `real()`. See file-header note.
   amount: real("amount").notNull(),
+  // Running total of every PAID payment allocated against this fee. Kept as
+  // a denormalized column (rather than always summing `payments` on read) so
+  // admin list/report queries stay single-table-scan cheap; it is always
+  // recomputed from the payments table inside a transaction in
+  // PaymentsService, never incremented blindly, so it can never drift.
+  paidAmount: real("paid_amount").notNull().default(0),
   dueDate: text("due_date").notNull(),
   status: text("status").notNull().default("PENDING"),
+  waivedAt: text("waived_at"),
+  waivedBy: text("waived_by").references(() => users.id),
+  waivedReason: text("waived_reason"),
   ...timestamps,
 }, (t) => ({
   unique: uniqueIndex("student_fees_unique").on(t.studentId, t.feeStructureId, t.month, t.year),
@@ -265,6 +278,7 @@ export const extraFees = pgTable("extra_fees", {
   description: text("description"),
   // Currency field — intentionally kept as `real()`. See file-header note.
   amount: real("amount").notNull(),
+  paidAmount: real("paid_amount").notNull().default(0),
   dueDate: text("due_date").notNull(),
   status: text("status").notNull().default("PENDING"),
   ...timestamps,
@@ -295,7 +309,13 @@ export const payments = pgTable("payments", {
   method: text("method"),
   status: text("status").notNull().default("PENDING"),
   collectedBy: text("collected_by"),
+  // Free-text name of whoever physically received the money for an offline
+  // payment (may differ from the logged-in admin who is data-entering it).
+  receivedByName: text("received_by_name"),
   referenceNote: text("reference_note"),
+  // Offline cheque-specific detail, only populated for gateway = OFFLINE_CHEQUE.
+  chequeNumber: text("cheque_number"),
+  bankName: text("bank_name"),
   paidAt: text("paid_at"),
   ...timestamps,
 }, (t) => ({
