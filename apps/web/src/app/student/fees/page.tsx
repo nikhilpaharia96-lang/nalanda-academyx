@@ -3,38 +3,71 @@
 import { useCallback, useEffect, useState } from "react";
 import { PortalShell } from "@/components/portal-shell";
 import { useAuth } from "@/lib/auth-context";
-import { api } from "@/lib/api-client";
+import { api, downloadFile } from "@/lib/api-client";
 import { payFee } from "@/lib/razorpay";
 import { STUDENT_NAV } from "@/lib/student-nav";
-import { Loader2, Receipt as ReceiptIcon, X } from "lucide-react";
+import { formatCurrency, formatDate, humanize, statusBadgeClass } from "@/lib/fees";
+import { Loader2, Receipt as ReceiptIcon, Download, X } from "lucide-react";
 
-interface StudentFee { id: string; month: number | null; year: number; amount: number; dueDate: string; status: string }
-interface ExtraFee { id: string; title: string; amount: number; dueDate: string; status: string }
-interface FeesResponse { monthlyFees: StudentFee[]; extraFees: ExtraFee[] }
-interface Payment { id: string; amount: number; status: string; paidAt: string | null; method: string | null; createdAt: string }
+interface StudentFee {
+  id: string;
+  month: number | null;
+  year: number;
+  amount: number;
+  paidAmount: number;
+  remainingAmount: number;
+  dueDate: string;
+  status: string;
+  feeType: string | null;
+}
+interface ExtraFee {
+  id: string;
+  title: string;
+  amount: number;
+  paidAmount: number;
+  remainingAmount: number;
+  dueDate: string;
+  status: string;
+}
+interface FeesResponse {
+  monthlyFees: StudentFee[];
+  extraFees: ExtraFee[];
+}
+interface Payment {
+  id: string;
+  amount: number;
+  status: string;
+  paidAt: string | null;
+  method: string | null;
+  gateway: string;
+  createdAt: string;
+}
 interface ReceiptData {
-  school: string; receiptNumber: string | null; student: { name: string; admissionNumber: string } | null;
-  class: string | null; section: string | null; feeType: string | null; feeMonth: number | null;
-  amount: number; currency: string; method: string | null; transactionId: string | null; paymentDate: string | null; status: string;
+  school: { name: string; address: string | null; phone: string | null; email: string | null };
+  receiptNumber: string | null;
+  student: { name: string; admissionNumber: string } | null;
+  class: string | null;
+  section: string | null;
+  feeType: string | null;
+  feeMonth: number | null;
+  amount: number;
+  totalFeeAmount: number | null;
+  paidToDate: number | null;
+  remainingAfterThisPayment: number | null;
+  paymentCategory: string;
+  method: string | null;
+  transactionId: string | null;
+  paymentDate: string | null;
+  status: string;
+  paymentId: string;
 }
-
-function formatINR(amount: number) {
-  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount);
-}
-
-const STATUS_STYLE: Record<string, string> = {
-  PENDING: "bg-amber-50 text-amber-700",
-  PARTIALLY_PAID: "bg-amber-50 text-amber-700",
-  OVERDUE: "bg-red-50 text-red-700",
-  PAID: "bg-emerald-50 text-emerald-700",
-  CANCELLED: "bg-neutral-100 text-neutral-500",
-};
 
 export default function StudentFeesPage() {
   const { user } = useAuth();
   const [fees, setFees] = useState<FeesResponse | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
   const [payingId, setPayingId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
 
@@ -47,12 +80,13 @@ export default function StudentFeesPage() {
   useEffect(load, [load]);
 
   async function handlePay(kind: "monthly" | "extra", fee: StudentFee | ExtraFee) {
+    const remaining = fee.remainingAmount;
     setPayingId(fee.id);
     setMessage(null);
     await payFee({
       studentFeeId: kind === "monthly" ? fee.id : undefined,
       extraFeeId: kind === "extra" ? fee.id : undefined,
-      amount: fee.amount,
+      amount: remaining,
       studentName: user?.email ?? "Student",
       studentEmail: user?.email,
       onSuccess: () => {
@@ -72,8 +106,19 @@ export default function StudentFeesPage() {
     setReceipt(data);
   }
 
-  const pendingMonthly = fees?.monthlyFees.filter((f) => f.status !== "PAID") ?? [];
-  const pendingExtra = fees?.extraFees.filter((f) => f.status !== "PAID") ?? [];
+  async function downloadReceipt(p: Payment) {
+    setDownloadingId(p.id);
+    try {
+      await downloadFile(`/payments/${p.id}/receipt/pdf`, `receipt-${p.id}.pdf`);
+    } catch {
+      setMessage({ type: "error", text: "Could not download the receipt. Please try again." });
+    } finally {
+      setDownloadingId(null);
+    }
+  }
+
+  const pendingMonthly = fees?.monthlyFees.filter((f) => f.status !== "PAID" && f.status !== "WAIVED") ?? [];
+  const pendingExtra = fees?.extraFees.filter((f) => f.status !== "PAID" && f.status !== "WAIVED") ?? [];
 
   return (
     <PortalShell navItems={STUDENT_NAV} loginPath="/student/login" allowedRoles={["STUDENT"]} portalLabel="Student Portal">
@@ -101,10 +146,30 @@ export default function StudentFeesPage() {
             ) : (
               <div className="space-y-2">
                 {pendingMonthly.map((f) => (
-                  <FeeRow key={f.id} title={f.month ? `Monthly fee — ${f.year}/${String(f.month).padStart(2, "0")}` : `Fee — ${f.year}`} amount={f.amount} dueDate={f.dueDate} status={f.status} onPay={() => handlePay("monthly", f)} paying={payingId === f.id} />
+                  <FeeRow
+                    key={f.id}
+                    title={`${humanize(f.feeType)}${f.month ? ` — ${new Date(2000, f.month - 1, 1).toLocaleString("en-IN", { month: "long" })} ${f.year}` : ""}`}
+                    amount={f.amount}
+                    paidAmount={f.paidAmount}
+                    remainingAmount={f.remainingAmount}
+                    dueDate={f.dueDate}
+                    status={f.status}
+                    onPay={() => handlePay("monthly", f)}
+                    paying={payingId === f.id}
+                  />
                 ))}
                 {pendingExtra.map((f) => (
-                  <FeeRow key={f.id} title={f.title} amount={f.amount} dueDate={f.dueDate} status={f.status} onPay={() => handlePay("extra", f)} paying={payingId === f.id} />
+                  <FeeRow
+                    key={f.id}
+                    title={f.title}
+                    amount={f.amount}
+                    paidAmount={f.paidAmount}
+                    remainingAmount={f.remainingAmount}
+                    dueDate={f.dueDate}
+                    status={f.status}
+                    onPay={() => handlePay("extra", f)}
+                    paying={payingId === f.id}
+                  />
                 ))}
               </div>
             )}
@@ -119,7 +184,7 @@ export default function StudentFeesPage() {
             </div>
           )}
           {payments && payments.length === 0 && <p className="text-sm text-neutral-500">No payment history yet.</p>}
-          <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-white shadow-sm">
             {payments && payments.length > 0 && (
               <table className="w-full text-left text-sm">
                 <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
@@ -134,17 +199,27 @@ export default function StudentFeesPage() {
                 <tbody className="divide-y divide-neutral-100">
                   {payments.map((p) => (
                     <tr key={p.id}>
-                      <td className="px-5 py-3 font-medium text-navy">{formatINR(p.amount)}</td>
-                      <td className="px-5 py-3 text-neutral-600">{p.method ?? "—"}</td>
+                      <td className="px-5 py-3 font-medium text-navy">{formatCurrency(p.amount)}</td>
+                      <td className="px-5 py-3 text-neutral-600">{p.gateway === "RAZORPAY" ? "Razorpay" : humanize(p.method)}</td>
                       <td className="px-5 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLE[p.status] ?? ""}`}>{p.status}</span>
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClass(p.status)}`}>{humanize(p.status)}</span>
                       </td>
-                      <td className="px-5 py-3 font-mono text-xs text-neutral-500">{p.paidAt?.slice(0, 10) ?? p.createdAt.slice(0, 10)}</td>
+                      <td className="px-5 py-3 font-mono text-xs text-neutral-500">{(p.paidAt ?? p.createdAt).slice(0, 10)}</td>
                       <td className="px-5 py-3">
                         {p.status === "PAID" && (
-                          <button onClick={() => viewReceipt(p.id)} className="flex items-center gap-1 text-xs font-medium text-academic hover:underline">
-                            <ReceiptIcon className="h-3.5 w-3.5" /> Receipt
-                          </button>
+                          <div className="flex items-center gap-3">
+                            <button onClick={() => viewReceipt(p.id)} className="flex items-center gap-1 text-xs font-medium text-academic hover:underline">
+                              <ReceiptIcon className="h-3.5 w-3.5" /> View
+                            </button>
+                            <button
+                              onClick={() => downloadReceipt(p)}
+                              disabled={downloadingId === p.id}
+                              className="flex items-center gap-1 text-xs font-medium text-academic hover:underline disabled:opacity-50"
+                            >
+                              {downloadingId === p.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                              Download
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -156,21 +231,42 @@ export default function StudentFeesPage() {
         </section>
       </div>
 
-      {receipt && <ReceiptModal receipt={receipt} onClose={() => setReceipt(null)} />}
+      {receipt && <ReceiptModal receipt={receipt} onClose={() => setReceipt(null)} onDownload={() => downloadFile(`/payments/${receipt.paymentId}/receipt/pdf`, `receipt-${receipt.paymentId}.pdf`)} />}
     </PortalShell>
   );
 }
 
-function FeeRow({ title, amount, dueDate, status, onPay, paying }: { title: string; amount: number; dueDate: string; status: string; onPay: () => void; paying: boolean }) {
+function FeeRow({
+  title,
+  amount,
+  paidAmount,
+  remainingAmount,
+  dueDate,
+  status,
+  onPay,
+  paying,
+}: {
+  title: string;
+  amount: number;
+  paidAmount: number;
+  remainingAmount: number;
+  dueDate: string;
+  status: string;
+  onPay: () => void;
+  paying: boolean;
+}) {
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="font-medium text-navy">{title}</p>
-        <p className="text-xs text-neutral-500">Due {dueDate}</p>
+        <p className="text-xs text-neutral-500">
+          Due {formatDate(dueDate)}
+          {paidAmount > 0 && <span className="ml-2 text-blue-600">· {formatCurrency(paidAmount)} already paid</span>}
+        </p>
       </div>
       <div className="flex items-center gap-3">
-        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLE[status] ?? ""}`}>{status}</span>
-        <span className="font-display font-bold text-navy">{formatINR(amount)}</span>
+        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClass(status)}`}>{humanize(status)}</span>
+        <span className="font-display font-bold text-navy">{formatCurrency(remainingAmount)}</span>
         <button onClick={onPay} disabled={paying} className="flex items-center gap-1.5 rounded-md bg-gold px-4 py-2 text-sm font-semibold text-navy transition hover:bg-gold-light disabled:opacity-60">
           {paying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           Pay Now
@@ -180,13 +276,13 @@ function FeeRow({ title, amount, dueDate, status, onPay, paying }: { title: stri
   );
 }
 
-function ReceiptModal({ receipt, onClose }: { receipt: ReceiptData; onClose: () => void }) {
+function ReceiptModal({ receipt, onClose, onDownload }: { receipt: ReceiptData; onClose: () => void; onDownload: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/60 p-4" onClick={onClose}>
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <p className="font-display text-lg font-bold text-navy">{receipt.school}</p>
+            <p className="font-display text-lg font-bold text-navy">{receipt.school.name}</p>
             <p className="font-mono text-xs text-neutral-500">{receipt.receiptNumber}</p>
           </div>
           <button onClick={onClose} className="text-neutral-400 hover:text-navy">
@@ -197,13 +293,19 @@ function ReceiptModal({ receipt, onClose }: { receipt: ReceiptData; onClose: () 
           {receipt.student && <Row label="Student" value={receipt.student.name} />}
           {receipt.student && <Row label="Admission No." value={receipt.student.admissionNumber} />}
           {receipt.class && <Row label="Class" value={`${receipt.class}${receipt.section ? " — " + receipt.section : ""}`} />}
-          {receipt.feeType && <Row label="Fee Type" value={receipt.feeType} />}
+          {receipt.feeType && <Row label="Fee Type" value={humanize(receipt.feeType)} />}
           {receipt.feeMonth && <Row label="Month" value={String(receipt.feeMonth)} />}
-          <Row label="Amount" value={formatINR(receipt.amount)} />
-          <Row label="Method" value={receipt.method ?? "—"} />
+          <Row label="Amount Paid" value={formatCurrency(receipt.amount)} />
+          {receipt.remainingAfterThisPayment !== null && receipt.remainingAfterThisPayment > 0.01 && (
+            <Row label="Remaining Balance" value={formatCurrency(receipt.remainingAfterThisPayment)} />
+          )}
+          <Row label="Payment Method" value={receipt.paymentCategory === "Offline" ? `Offline — ${humanize(receipt.method)}` : "Online — Razorpay"} />
           <Row label="Transaction ID" value={receipt.transactionId ?? "—"} mono />
           <Row label="Date" value={receipt.paymentDate?.slice(0, 10) ?? "—"} />
-          <div className="mt-4 rounded-md bg-emerald-50 py-2 text-center font-semibold text-emerald-700">{receipt.status}</div>
+          <div className="mt-4 rounded-md bg-emerald-50 py-2 text-center font-semibold text-emerald-700">{humanize(receipt.status)}</div>
+          <button onClick={onDownload} className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-neutral-300 py-2 text-sm font-medium text-navy hover:bg-neutral-50">
+            <Download className="h-4 w-4" /> Download PDF
+          </button>
         </div>
       </div>
     </div>
