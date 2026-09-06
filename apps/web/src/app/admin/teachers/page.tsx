@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import { api, ApiError } from "@/lib/api-client";
-import { GraduationCap, UserCog, Loader2, AlertTriangle, RefreshCw, KeyRound, Ban, CheckCircle, X, Copy, Check } from "lucide-react";
+import { GraduationCap, UserCog, Loader2, AlertTriangle, RefreshCw, KeyRound, Ban, CheckCircle, X, Copy, Check, BookOpen } from "lucide-react";
 
 interface Teacher {
   id: string;
@@ -173,6 +173,14 @@ export default function AllTeachersPage() {
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
+                        <Link
+                          href={`/admin/teachers/${t.id}`}
+                          title="Assign classes"
+                          className="inline-flex items-center gap-1 rounded-md border border-neutral-200 px-2 py-1 text-xs text-neutral-600 transition hover:bg-neutral-50"
+                        >
+                          <BookOpen className="h-3.5 w-3.5" />
+                          Classes
+                        </Link>
                         <button
                           onClick={() => handleReset(t)}
                           disabled={busyId === t.id}
