@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 border-t border-white/10 pt-4 text-center text-xs text-neutral-400">
-          Demo credentials: admin@nalanda.demo — seeded via <code className="text-gold">npm run db:seed</code>
+          Powered by: Nikhil <code className="text-gold">Paharia</code>
         </p>
       </div>
     </main>
