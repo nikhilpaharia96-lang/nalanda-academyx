@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline: "Building Knowledge. Inspiring Excellence. Shaping Futures.",
   description:
     "Nalanda Academy is a modern learning environment focused on academic excellence, character development and preparing students for a changing world.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.nalandaacademy.example",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.nalandaacademy.example",
 };
 
 // Homepage hero background carousel. These are real, unretouched Nalanda
