@@ -51,7 +51,7 @@ export const quickLinks = [
   { icon: "calendar" as const, title: "Academic Calendar", href: "/events" },
   { icon: "file-text" as const, title: "Download Forms", href: "/notices" },
   { icon: "phone" as const, title: "Contact School", href: "/contact" },
-  { icon: "indian-rupee" as const, title: "Fee Structure", href: "/admission" },
+  { icon: "indian-rupee" as const, title: "Fee Structure", href: "/images/notices/Fee%20Structure.png" },
 ];
 
 // Demo notices for layout/preview purposes. Replace with real data via the
