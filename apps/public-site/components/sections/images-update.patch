@@ -1,0 +1,362 @@
+diff --git a/components/sections/ContactPreview.tsx b/components/sections/ContactPreview.tsx
+index 1c96a1c..383dcca 100644
+--- a/components/sections/ContactPreview.tsx
++++ b/components/sections/ContactPreview.tsx
+@@ -1,6 +1,8 @@
+ "use client";
+ 
++import { useState } from "react";
+ import { motion } from "framer-motion";
++import Image from "next/image";
+ import {
+   type LucideIcon,
+   Headset,
+@@ -58,6 +60,7 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
+ }
+ 
+ export function ContactPreview() {
++  const [heroImageFailed, setHeroImageFailed] = useState(false);
+   const socials = (
+     [
+       { key: "instagram", href: socialLinks.instagram, label: "Instagram" },
+@@ -125,22 +128,44 @@ export function ContactPreview() {
+               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+             />
+             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
+-              <div className="h-full w-full lg:hidden">
+-                <PlaceholderImage
+-                  label={getInTouchHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
+-                />
++              <div className="relative h-full w-full lg:hidden">
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={getInTouchHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
++                  />
++                ) : (
++                  <Image
++                    src={getInTouchHero.image.src}
++                    alt={getInTouchHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="rounded-[var(--radius-xl)] object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+               <div
+-                className="hidden h-full w-full lg:block"
++                className="relative hidden h-full w-full lg:block"
+                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
+               >
+-                <PlaceholderImage
+-                  label={getInTouchHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-none border-0"
+-                />
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={getInTouchHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-none border-0"
++                  />
++                ) : (
++                  <Image
++                    src={getInTouchHero.image.src}
++                    alt={getInTouchHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+             </div>
+ 
+diff --git a/components/sections/EventsSectionView.tsx b/components/sections/EventsSectionView.tsx
+index 2e1bc30..a89469e 100644
+--- a/components/sections/EventsSectionView.tsx
++++ b/components/sections/EventsSectionView.tsx
+@@ -1,7 +1,9 @@
+ "use client";
+ 
++import { useState } from "react";
+ import { motion } from "framer-motion";
+ import Link from "next/link";
++import Image from "next/image";
+ import {
+   type LucideIcon,
+   GraduationCap,
+@@ -123,6 +125,8 @@ function EventRow({ event }: { event: SchoolEvent }) {
+ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
+   const featured = events[0];
+   const featuredDate = featured ? getDateParts(featured.date) : null;
++  const [heroImageFailed, setHeroImageFailed] = useState(false);
++  const [featureImageFailed, setFeatureImageFailed] = useState(false);
+ 
+   return (
+     <section className="bg-paper">
+@@ -189,22 +193,44 @@ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
+               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+             />
+             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
+-              <div className="h-full w-full lg:hidden">
+-                <PlaceholderImage
+-                  label={eventsHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
+-                />
++              <div className="relative h-full w-full lg:hidden">
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={eventsHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
++                  />
++                ) : (
++                  <Image
++                    src={eventsHero.image.src}
++                    alt={eventsHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="rounded-[var(--radius-xl)] object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+               <div
+-                className="hidden h-full w-full lg:block"
++                className="relative hidden h-full w-full lg:block"
+                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
+               >
+-                <PlaceholderImage
+-                  label={eventsHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-none border-0"
+-                />
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={eventsHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-none border-0"
++                  />
++                ) : (
++                  <Image
++                    src={eventsHero.image.src}
++                    alt={eventsHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+             </div>
+ 
+@@ -334,11 +360,24 @@ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
+             transition={{ duration: 0.8, ease: easing }}
+             className="overflow-hidden rounded-[var(--radius-lg)] border border-line shadow-[var(--shadow-sm)]"
+           >
+-            <PlaceholderImage
+-              label={eventsImageFeature.imageLabel}
+-              tone="navy"
+-              className="aspect-[4/5] w-full border-0 lg:aspect-auto lg:h-full"
+-            />
++            <div className="relative aspect-[4/5] w-full lg:aspect-auto lg:h-full">
++              {featureImageFailed ? (
++                <PlaceholderImage
++                  label={eventsImageFeature.image.alt}
++                  tone="navy"
++                  className="h-full w-full border-0"
++                />
++              ) : (
++                <Image
++                  src={eventsImageFeature.image.src}
++                  alt={eventsImageFeature.image.alt}
++                  fill
++                  sizes="(min-width: 1024px) 40vw, 100vw"
++                  className="object-cover"
++                  onError={() => setFeatureImageFailed(true)}
++                />
++              )}
++            </div>
+             <div className="border-t border-line bg-navy-950 px-5 py-4">
+               <p className="font-display text-sm italic leading-relaxed text-white/80">
+                 &ldquo;{eventsImageFeature.caption}&rdquo;
+diff --git a/components/sections/NoticesSectionView.tsx b/components/sections/NoticesSectionView.tsx
+index 92f0bef..4d0cb77 100644
+--- a/components/sections/NoticesSectionView.tsx
++++ b/components/sections/NoticesSectionView.tsx
+@@ -3,6 +3,7 @@
+ import { useState } from "react";
+ import { motion } from "framer-motion";
+ import Link from "next/link";
++import Image from "next/image";
+ import {
+   type LucideIcon,
+   Bell,
+@@ -121,6 +122,7 @@ function NoticeRow({ notice }: { notice: Notice }) {
+ 
+ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
+   const [visibleCount, setVisibleCount] = useState(5);
++  const [heroImageFailed, setHeroImageFailed] = useState(false);
+   const visibleNotices = notices.slice(0, visibleCount);
+   const hasMore = visibleCount < notices.length;
+   const importantNotice = notices.find((n) => n.important) ?? null;
+@@ -184,22 +186,44 @@ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
+               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+             />
+             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
+-              <div className="h-full w-full lg:hidden">
+-                <PlaceholderImage
+-                  label={noticesHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
+-                />
++              <div className="relative h-full w-full lg:hidden">
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={noticesHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
++                  />
++                ) : (
++                  <Image
++                    src={noticesHero.image.src}
++                    alt={noticesHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="rounded-[var(--radius-xl)] object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+               <div
+-                className="hidden h-full w-full lg:block"
++                className="relative hidden h-full w-full lg:block"
+                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
+               >
+-                <PlaceholderImage
+-                  label={noticesHero.imageLabel}
+-                  tone="navy"
+-                  className="h-full w-full rounded-none border-0"
+-                />
++                {heroImageFailed ? (
++                  <PlaceholderImage
++                    label={noticesHero.image.alt}
++                    tone="navy"
++                    className="h-full w-full rounded-none border-0"
++                  />
++                ) : (
++                  <Image
++                    src={noticesHero.image.src}
++                    alt={noticesHero.image.alt}
++                    fill
++                    sizes="100vw"
++                    className="object-cover"
++                    onError={() => setHeroImageFailed(true)}
++                  />
++                )}
+               </div>
+             </div>
+ 
+diff --git a/lib/content/events.ts b/lib/content/events.ts
+index 061f736..7764fc2 100644
+--- a/lib/content/events.ts
++++ b/lib/content/events.ts
+@@ -15,7 +15,16 @@ export const eventsHero = {
+   headingAccent: "Nalanda",
+   description:
+     "Discover the events, activities and experiences that bring our academy community together.",
+-  imageLabel: "Campus event photography placeholder — replace with official imagery",
++  // `isDemo: true` marks this as a temporary presentation visual — this
++  // photograph is from a different school's campus, used only to preview
++  // the layout, and is NOT a verified photograph of a Nalanda Academy
++  // event. Replace `image.src` (same filename/path) with official,
++  // approved event photography when supplied — no component changes needed.
++  image: {
++    src: "/images/events/events-hero.webp",
++    alt: "Students and teachers gathered for a morning school assembly — demo visual from another school, not an official Nalanda Academy photograph",
++    isDemo: true,
++  },
+   cta: { label: "View All Events", href: "/events" },
+ };
+ 
+@@ -62,7 +71,15 @@ export const eventsPlanAhead = {
+ };
+ 
+ export const eventsImageFeature = {
+-  imageLabel: "Event photography placeholder — replace with official imagery",
++  // `isDemo: true` marks this as a temporary presentation visual — an
++  // AI-generated concept image, NOT a verified photograph of a Nalanda
++  // Academy event. Replace `image.src` with official event photography
++  // when supplied — no component changes needed.
++  image: {
++    src: "/images/events/event-feature.webp",
++    alt: "Students in traditional dress performing a cultural dance on stage — AI-generated concept visual, not an official Nalanda Academy photograph",
++    isDemo: true,
++  },
+   caption: "Celebrating learning, creativity and community.",
+ };
+ 
+diff --git a/lib/content/notices.ts b/lib/content/notices.ts
+index 6919e0d..4106d49 100644
+--- a/lib/content/notices.ts
++++ b/lib/content/notices.ts
+@@ -16,7 +16,15 @@ export const noticesHero = {
+   headingAccent: "Notices",
+   description:
+     "Stay informed with the latest updates, announcements and important information from Nalanda Academy.",
+-  imageLabel: "Campus photography placeholder — replace with official imagery",
++  // `isDemo: true` marks this as a temporary presentation visual — an
++  // AI-generated concept image, NOT a verified photograph of a Nalanda
++  // Academy event or announcement. Replace `image.src` with official
++  // photography when supplied — no component changes needed.
++  image: {
++    src: "/images/notices/notices-hero.webp",
++    alt: "Student addressing an audience from a podium at an academic event — AI-generated concept visual, not an official Nalanda Academy photograph",
++    isDemo: true,
++  },
+   stayUpdated: {
+     title: "Stay Updated",
+     body: "Never miss an important announcement.",
+diff --git a/lib/content/site.ts b/lib/content/site.ts
+index f93ffa5..86fc9d5 100644
+--- a/lib/content/site.ts
++++ b/lib/content/site.ts
+@@ -145,7 +145,15 @@ export const getInTouchHero = {
+   headingAccent: "You.",
+   description:
+     "Have a question, need information, or want to learn more about Nalanda Academy? We would love to hear from you.",
+-  imageLabel: "Campus photography placeholder — replace with official imagery",
++  // `isDemo: true` marks this as a temporary presentation visual — an
++  // AI-generated concept image, NOT a verified photograph of the real
++  // Nalanda Academy campus. Replace `image.src` with official, approved
++  // campus photography when supplied — no component changes needed.
++  image: {
++    src: "/images/contact/get-in-touch.webp",
++    alt: "Students walking along a landscaped campus pathway toward the main building — AI-generated concept visual, not an official Nalanda Academy photograph",
++    isDemo: true,
++  },
+   card: {
+     title: ["We'd Love to Hear", "From You"],
+     body: "Whether you are a parent, student, visitor or well-wisher, our team is ready to assist you.",
+diff --git a/public/images/contact/get-in-touch.webp b/public/images/contact/get-in-touch.webp
+new file mode 100644
+index 0000000..d9d921a
+Binary files /dev/null and b/public/images/contact/get-in-touch.webp differ
+diff --git a/public/images/events/event-feature.webp b/public/images/events/event-feature.webp
+new file mode 100644
+index 0000000..5151980
+Binary files /dev/null and b/public/images/events/event-feature.webp differ
+diff --git a/public/images/events/events-hero.webp b/public/images/events/events-hero.webp
+new file mode 100644
+index 0000000..8f66e5f
+Binary files /dev/null and b/public/images/events/events-hero.webp differ
+diff --git a/public/images/notices/notices-hero.webp b/public/images/notices/notices-hero.webp
+new file mode 100644
+index 0000000..d021437
+Binary files /dev/null and b/public/images/notices/notices-hero.webp differ

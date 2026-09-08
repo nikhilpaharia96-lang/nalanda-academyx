@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   type LucideIcon,
@@ -31,6 +33,11 @@ import {
 } from "@/lib/content/academics";
 
 const easing = [0.16, 1, 0.3, 1] as const;
+
+// Drop a replacement at this path (see the README in the same folder for
+// specs) and it swaps in automatically — no code changes required.
+const CLASSROOM_IMAGE_SRC = "/images/academics/classroom-learning.webp";
+const TEACHER_DISCUSSION_IMAGE_SRC = "/images/academics/teacher-student-discussion.webp";
 
 const iconMap: Record<string, LucideIcon> = {
   "graduation-cap": GraduationCap,
@@ -76,6 +83,9 @@ function RuleHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function AcademicSection() {
+  const [classroomImageFailed, setClassroomImageFailed] = useState(false);
+  const [teacherDiscussionImageFailed, setTeacherDiscussionImageFailed] = useState(false);
+
   return (
     <section className="bg-paper">
       {/* ================= 1. TOP SPLIT HERO ================= */}
@@ -125,21 +135,43 @@ export function AcademicSection() {
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
               <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={academicsHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
-                />
+                {classroomImageFailed ? (
+                  <PlaceholderImage
+                    label={academicsHero.imageLabel}
+                    tone="navy"
+                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  />
+                ) : (
+                  <Image
+                    src={CLASSROOM_IMAGE_SRC}
+                    alt="Students learning in a Nalanda Academy classroom"
+                    fill
+                    sizes="100vw"
+                    className="rounded-[var(--radius-xl)] object-cover"
+                    onError={() => setClassroomImageFailed(true)}
+                  />
+                )}
               </div>
               <div
-                className="hidden h-full w-full lg:block"
+                className="relative hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(6.7% 0%, 100% 0%, 100% 100%, 0.7% 100%)" }}
               >
-                <PlaceholderImage
-                  label={academicsHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
-                />
+                {classroomImageFailed ? (
+                  <PlaceholderImage
+                    label={academicsHero.imageLabel}
+                    tone="navy"
+                    className="h-full w-full rounded-none border-0"
+                  />
+                ) : (
+                  <Image
+                    src={CLASSROOM_IMAGE_SRC}
+                    alt="Students learning in a Nalanda Academy classroom"
+                    fill
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    className="object-cover"
+                    onError={() => setClassroomImageFailed(true)}
+                  />
+                )}
               </div>
             </div>
           </motion.div>
@@ -232,7 +264,7 @@ export function AcademicSection() {
               </h2>
             </motion.div>
 
-            <div className="mt-9 grid grid-cols-2 gap-x-6 gap-y-9">
+            <div className="mt-9 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-9">
               {learningApproach.items.map((item) => {
                 const Icon = iconMap[item.icon];
                 return (
@@ -254,11 +286,24 @@ export function AcademicSection() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: easing }}
           >
-            <PlaceholderImage
-              label={learningApproach.imageLabel}
-              tone="paper"
-              className="aspect-[4/3] h-full w-full rounded-[var(--radius-xl)] lg:aspect-auto"
-            />
+            {teacherDiscussionImageFailed ? (
+              <PlaceholderImage
+                label={learningApproach.imageLabel}
+                tone="paper"
+                className="aspect-[4/3] h-full w-full rounded-[var(--radius-xl)] lg:aspect-auto"
+              />
+            ) : (
+              <div className="relative aspect-[4/3] h-full w-full overflow-hidden rounded-[var(--radius-xl)] lg:aspect-auto">
+                <Image
+                  src={TEACHER_DISCUSSION_IMAGE_SRC}
+                  alt="Teacher discussing schoolwork with students at Nalanda Academy"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                  onError={() => setTeacherDiscussionImageFailed(true)}
+                />
+              </div>
+            )}
           </motion.div>
         </div>
       </Container>

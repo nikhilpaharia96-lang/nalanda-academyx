@@ -53,19 +53,22 @@ export function MobileMenu({
             </button>
           </div>
 
-          <nav className="flex flex-1 flex-col justify-center gap-1 px-6" aria-label="Mobile">
+          <nav
+            className="flex flex-1 flex-col justify-center gap-0.5 overflow-y-auto px-6 py-4"
+            aria-label="Mobile"
+          >
             {primaryNav.map((item, i) => (
               <motion.div
                 key={item.href}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: 0.05 + i * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Link
                   href={item.href}
                   onClick={onClose}
                   className={cn(
-                    "focus-ring flex min-h-[52px] items-center border-b border-white/10 font-display text-3xl font-semibold text-white/90 transition-colors hover:text-gold-400",
+                    "focus-ring flex min-h-[46px] items-center border-b border-white/10 font-display text-2xl font-semibold text-white/90 transition-colors hover:text-gold-400",
                     pathname === item.href && "text-gold-400"
                   )}
                 >
@@ -75,16 +78,9 @@ export function MobileMenu({
             ))}
           </nav>
 
-          <div className="flex flex-col gap-3 px-6 pb-10 pt-6">
+          <div className="flex flex-col gap-3 px-6 pb-8 pt-4">
             <Button href="/admission" variant="primary" className="w-full bg-gold-500 text-navy-950 hover:bg-gold-400">
               Admission
-            </Button>
-            <Button
-              href="/contact"
-              variant="secondary"
-              className="w-full border-white/25 text-white hover:bg-white hover:text-navy-950"
-            >
-              Contact
             </Button>
           </div>
         </motion.div>

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { FacultyPhoto } from "@/components/ui/FacultyPhoto";
 import {
   facultyHero,
   featuredFaculty,
@@ -70,7 +70,12 @@ function FacultyGridCard({ member }: { member: FacultyMember }) {
     <div className="group overflow-hidden rounded-[var(--radius-lg)] border border-line bg-white shadow-[var(--shadow-sm)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold-400/50 hover:shadow-[var(--shadow-md)]">
       <div className="overflow-hidden">
         <div className="transition-transform duration-500 ease-out group-hover:scale-[1.04]">
-          <PlaceholderImage label={member.photoAlt} className="aspect-[4/5] w-full border-0" />
+          <FacultyPhoto
+            photoUrl={member.photoUrl}
+            photoAlt={member.photoAlt}
+            isDemo={member.isDemo}
+            className="aspect-[4/5] w-full"
+          />
         </div>
       </div>
       <div className="flex items-start justify-between gap-3 p-5">
@@ -163,20 +168,26 @@ export function FacultySectionView({ faculty }: { faculty: FacultyMember[] }) {
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
               <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={featuredFaculty.photoAlt}
+                <FacultyPhoto
+                  photoUrl={featuredFaculty.photoUrl}
+                  photoAlt={featuredFaculty.photoAlt}
+                  isDemo={featuredFaculty.isDemo}
                   tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  priority
+                  className="h-full w-full rounded-[var(--radius-xl)]"
                 />
               </div>
               <div
                 className="hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(0% 0%, 93.2% 0%, 85.2% 100%, 0% 100%)" }}
               >
-                <PlaceholderImage
-                  label={featuredFaculty.photoAlt}
+                <FacultyPhoto
+                  photoUrl={featuredFaculty.photoUrl}
+                  photoAlt={featuredFaculty.photoAlt}
+                  isDemo={featuredFaculty.isDemo}
                   tone="navy"
-                  className="h-full w-full rounded-none border-0"
+                  priority
+                  className="h-full w-full"
                 />
               </div>
             </div>

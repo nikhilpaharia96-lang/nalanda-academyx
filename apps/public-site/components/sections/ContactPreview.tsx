@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   type LucideIcon,
   Headset,
@@ -58,6 +60,7 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function ContactPreview() {
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
   const socials = (
     [
       { key: "instagram", href: socialLinks.instagram, label: "Instagram" },
@@ -125,22 +128,44 @@ export function ContactPreview() {
               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
-              <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={getInTouchHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
-                />
+              <div className="relative h-full w-full lg:hidden">
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={getInTouchHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  />
+                ) : (
+                  <Image
+                    src={getInTouchHero.image.src}
+                    alt={getInTouchHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="rounded-[var(--radius-xl)] object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
               <div
-                className="hidden h-full w-full lg:block"
+                className="relative hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
               >
-                <PlaceholderImage
-                  label={getInTouchHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
-                />
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={getInTouchHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-none border-0"
+                  />
+                ) : (
+                  <Image
+                    src={getInTouchHero.image.src}
+                    alt={getInTouchHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
             </div>
 

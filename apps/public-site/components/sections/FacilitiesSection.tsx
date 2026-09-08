@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   type LucideIcon,
   ShieldCheck,
@@ -72,6 +74,8 @@ function RuleHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function FacilitiesSection() {
+  const [campusImageFailed, setCampusImageFailed] = useState(false);
+
   return (
     <section className="bg-paper">
       {/* ================= 1. INTRO / CAMPUS HERO ================= */}
@@ -131,22 +135,44 @@ export function FacilitiesSection() {
               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
-              <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={campusHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
-                />
+              <div className="relative h-full w-full lg:hidden">
+                {campusImageFailed ? (
+                  <PlaceholderImage
+                    label={campusHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  />
+                ) : (
+                  <Image
+                    src={campusHero.image.src}
+                    alt={campusHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="rounded-[var(--radius-xl)] object-cover"
+                    onError={() => setCampusImageFailed(true)}
+                  />
+                )}
               </div>
               <div
-                className="hidden h-full w-full lg:block"
+                className="relative hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
               >
-                <PlaceholderImage
-                  label={campusHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
-                />
+                {campusImageFailed ? (
+                  <PlaceholderImage
+                    label={campusHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-none border-0"
+                  />
+                ) : (
+                  <Image
+                    src={campusHero.image.src}
+                    alt={campusHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    onError={() => setCampusImageFailed(true)}
+                  />
+                )}
               </div>
             </div>
 
@@ -227,12 +253,22 @@ export function FacilitiesSection() {
               <motion.div key={facility.slug} variants={fadeUp} className="group">
                 <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-line bg-white shadow-[var(--shadow-sm)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold-400/50 hover:shadow-[var(--shadow-md)]">
                   <div className="overflow-hidden">
-                    <div className="transition-transform duration-500 ease-out group-hover:scale-[1.04]">
-                      <PlaceholderImage
-                        label={facility.imageQuery}
-                        tone="paper"
-                        className="aspect-[4/3] w-full border-0"
-                      />
+                    <div className="relative aspect-[4/3] w-full overflow-hidden transition-transform duration-500 ease-out group-hover:scale-[1.04]">
+                      {facility.image ? (
+                        <Image
+                          src={facility.image.src}
+                          alt={facility.image.alt}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <PlaceholderImage
+                          label={facility.imageQuery}
+                          tone="paper"
+                          className="h-full w-full border-0"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -289,12 +325,14 @@ export function FacilitiesSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: easing }}
-            className="min-h-[220px] lg:min-h-full"
+            className="relative min-h-[220px] overflow-hidden lg:min-h-full"
           >
-            <PlaceholderImage
-              label={campusImageFeature.imageLabel}
-              tone="navy"
-              className="h-full w-full border-0"
+            <Image
+              src={campusImageFeature.image.src}
+              alt={campusImageFeature.image.alt}
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
             />
           </motion.div>
 

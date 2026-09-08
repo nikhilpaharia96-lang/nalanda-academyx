@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
   type LucideIcon,
   Bell,
@@ -121,6 +122,7 @@ function NoticeRow({ notice }: { notice: Notice }) {
 
 export function NoticesSectionView({ notices }: { notices: Notice[] }) {
   const [visibleCount, setVisibleCount] = useState(5);
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
   const visibleNotices = notices.slice(0, visibleCount);
   const hasMore = visibleCount < notices.length;
   const importantNotice = notices.find((n) => n.important) ?? null;
@@ -184,22 +186,44 @@ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
-              <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={noticesHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
-                />
+              <div className="relative h-full w-full lg:hidden">
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={noticesHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  />
+                ) : (
+                  <Image
+                    src={noticesHero.image.src}
+                    alt={noticesHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="rounded-[var(--radius-xl)] object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
               <div
-                className="hidden h-full w-full lg:block"
+                className="relative hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
               >
-                <PlaceholderImage
-                  label={noticesHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
-                />
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={noticesHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-none border-0"
+                  />
+                ) : (
+                  <Image
+                    src={noticesHero.image.src}
+                    alt={noticesHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
             </div>
 

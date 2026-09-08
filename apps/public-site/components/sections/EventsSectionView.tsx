@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
   type LucideIcon,
   GraduationCap,
@@ -123,6 +125,8 @@ function EventRow({ event }: { event: SchoolEvent }) {
 export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
   const featured = events[0];
   const featuredDate = featured ? getDateParts(featured.date) : null;
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
+  const [featureImageFailed, setFeatureImageFailed] = useState(false);
 
   return (
     <section className="bg-paper">
@@ -189,22 +193,44 @@ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
               style={{ clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
-              <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label={eventsHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
-                />
+              <div className="relative h-full w-full lg:hidden">
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={eventsHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                  />
+                ) : (
+                  <Image
+                    src={eventsHero.image.src}
+                    alt={eventsHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="rounded-[var(--radius-xl)] object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
               <div
-                className="hidden h-full w-full lg:block"
+                className="relative hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(8.8% 0%, 100% 0%, 100% 100%, 0.8% 100%)" }}
               >
-                <PlaceholderImage
-                  label={eventsHero.imageLabel}
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
-                />
+                {heroImageFailed ? (
+                  <PlaceholderImage
+                    label={eventsHero.image.alt}
+                    tone="navy"
+                    className="h-full w-full rounded-none border-0"
+                  />
+                ) : (
+                  <Image
+                    src={eventsHero.image.src}
+                    alt={eventsHero.image.alt}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    onError={() => setHeroImageFailed(true)}
+                  />
+                )}
               </div>
             </div>
 
@@ -334,11 +360,24 @@ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
             transition={{ duration: 0.8, ease: easing }}
             className="overflow-hidden rounded-[var(--radius-lg)] border border-line shadow-[var(--shadow-sm)]"
           >
-            <PlaceholderImage
-              label={eventsImageFeature.imageLabel}
-              tone="navy"
-              className="aspect-[4/5] w-full border-0 lg:aspect-auto lg:h-full"
-            />
+            <div className="relative aspect-[4/5] w-full lg:aspect-auto lg:h-full">
+              {featureImageFailed ? (
+                <PlaceholderImage
+                  label={eventsImageFeature.image.alt}
+                  tone="navy"
+                  className="h-full w-full border-0"
+                />
+              ) : (
+                <Image
+                  src={eventsImageFeature.image.src}
+                  alt={eventsImageFeature.image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="object-cover"
+                  onError={() => setFeatureImageFailed(true)}
+                />
+              )}
+            </div>
             <div className="border-t border-line bg-navy-950 px-5 py-4">
               <p className="font-display text-sm italic leading-relaxed text-white/80">
                 &ldquo;{eventsImageFeature.caption}&rdquo;
