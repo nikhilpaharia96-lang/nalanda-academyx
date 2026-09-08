@@ -427,21 +427,22 @@ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
                   Quick Links
                 </h3>
               </div>
-              <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-2">
+              <div className="mt-5 flex flex-col gap-1">
                 {quickLinks.map((item) => {
                   const Icon = iconMap[item.icon];
                   return (
                     <Link
                       key={item.title}
                       href={item.href}
-                      className="focus-ring group flex flex-col items-center gap-2 text-center"
+                      className="focus-ring group flex items-center gap-3 rounded-[var(--radius-md)] py-2 transition-colors duration-300 ease-out hover:bg-paper"
                     >
-                      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-navy-950/15 text-navy-950 transition-colors duration-300 ease-out group-hover:border-gold-500 group-hover:text-gold-500">
-                        <Icon className="h-5 w-5" strokeWidth={1.5} />
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-navy-950/15 text-navy-950 transition-colors duration-300 ease-out group-hover:border-gold-500 group-hover:text-gold-500">
+                        <Icon className="h-4 w-4" strokeWidth={1.5} />
                       </span>
                       <span className="font-data text-[11px] font-semibold uppercase tracking-wider text-navy-950">
                         {item.title}
                       </span>
+                      <ArrowRight className="ml-auto h-3.5 w-3.5 text-navy-950/30 transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:text-gold-500" />
                     </Link>
                   );
                 })}
