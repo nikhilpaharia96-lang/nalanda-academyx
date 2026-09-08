@@ -17,7 +17,18 @@ export const campusHero = {
   headingAccent: "Excellence",
   description:
     "Nalanda Academy provides a safe, modern and stimulating environment where students learn, grow, and thrive. Our facilities are designed to support academic excellence and holistic development.",
-  imageLabel: "Campus exterior photography placeholder — replace with official imagery",
+  // `isDemo: true` marks this as a temporary presentation visual — it is
+  // an AI-generated concept image, NOT a verified photograph of the real
+  // Nalanda Academy campus. Replace the file at `image.src` (same
+  // filename/path) with official, approved campus photography when
+  // supplied — no component changes needed.
+  image: {
+    src: "/images/facilities/campus-exterior.webp",
+    width: 1440,
+    height: 965,
+    alt: "Campus building exterior with lawns and pathways — AI-generated concept visual, not an official Nalanda Academy photograph",
+    isDemo: true,
+  },
   quote: {
     lines: ["Great facilities", "create great", "opportunities."],
     accent: "opportunities.",
@@ -62,6 +73,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "Technology-enabled classrooms that make learning interactive and engaging.",
     imageQuery: "modern school classroom",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/smart-classroom.webp",
+      alt: "Smart classroom with an interactive display and students at desks — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
   {
     slug: "science-laboratories",
@@ -72,6 +88,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "Well-equipped spaces for practical learning and experimentation.",
     imageQuery: "school science laboratory",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/science-lab.webp",
+      alt: "Students conducting an experiment in a science laboratory — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
   {
     slug: "library",
@@ -82,6 +103,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "A learning resource center with books, journals and digital resources.",
     imageQuery: "school library reading room",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/library.webp",
+      alt: "Students reading and studying in a library — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
   {
     slug: "computer-lab",
@@ -92,6 +118,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "A dedicated environment for digital learning and technology skills.",
     imageQuery: "school computer lab",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/computer-lab.webp",
+      alt: "Students working at computer workstations in a computer lab — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
   {
     slug: "sports-facilities",
@@ -102,6 +133,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "Spaces supporting fitness, teamwork and student development.",
     imageQuery: "school sports field students",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/sports-facilities.webp",
+      alt: "Students running on an outdoor athletics track — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
   {
     slug: "auditorium",
@@ -112,6 +148,11 @@ export const campusFacilityShowcase: (Facility & { icon: string; number: string 
     description: "A space for events, performances, seminars and academic activities.",
     imageQuery: "school auditorium stage",
     isPlaceholder: true,
+    image: {
+      src: "/images/facilities/auditorium.webp",
+      alt: "Empty auditorium with rows of seating facing a lit stage — AI-generated concept visual, not an official Nalanda Academy photograph",
+      isDemo: true,
+    },
   },
 ];
 
@@ -146,7 +187,16 @@ export const additionalFacilities = [
 ];
 
 export const campusImageFeature = {
-  imageLabel: "Campus grounds / garden photography placeholder — replace with official imagery",
+  // `isDemo: true` marks this as a temporary presentation visual — it is
+  // an AI-generated concept image, NOT a verified photograph of the real
+  // Nalanda Academy campus. Replace the file at `image.src` (same
+  // filename/path) with official, approved campus photography when
+  // supplied — no component changes needed.
+  image: {
+    src: "/images/facilities/campus-grounds.webp",
+    alt: "Landscaped campus grounds with lawns, walkways and gardens — AI-generated concept visual, not an official Nalanda Academy photograph",
+    isDemo: true,
+  },
 };
 
 // Demo/placeholder entries — confirm which facilities actually exist on

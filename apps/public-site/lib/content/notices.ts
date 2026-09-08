@@ -16,7 +16,15 @@ export const noticesHero = {
   headingAccent: "Notices",
   description:
     "Stay informed with the latest updates, announcements and important information from Nalanda Academy.",
-  imageLabel: "Campus photography placeholder — replace with official imagery",
+  // `isDemo: true` marks this as a temporary presentation visual — an
+  // AI-generated concept image, NOT a verified photograph of a Nalanda
+  // Academy event or announcement. Replace `image.src` with official
+  // photography when supplied — no component changes needed.
+  image: {
+    src: "/images/notices/notices-hero.webp",
+    alt: "Student addressing an audience from a podium at an academic event — AI-generated concept visual, not an official Nalanda Academy photograph",
+    isDemo: true,
+  },
   stayUpdated: {
     title: "Stay Updated",
     body: "Never miss an important announcement.",

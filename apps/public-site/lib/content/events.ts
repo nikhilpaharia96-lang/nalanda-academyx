@@ -15,7 +15,16 @@ export const eventsHero = {
   headingAccent: "Nalanda",
   description:
     "Discover the events, activities and experiences that bring our academy community together.",
-  imageLabel: "Campus event photography placeholder — replace with official imagery",
+  // `isDemo: true` marks this as a temporary presentation visual — this
+  // photograph is from a different school's campus, used only to preview
+  // the layout, and is NOT a verified photograph of a Nalanda Academy
+  // event. Replace `image.src` (same filename/path) with official,
+  // approved event photography when supplied — no component changes needed.
+  image: {
+    src: "/images/events/events-hero.webp",
+    alt: "Students and teachers gathered for a morning school assembly — demo visual from another school, not an official Nalanda Academy photograph",
+    isDemo: true,
+  },
   cta: { label: "View All Events", href: "/events" },
 };
 
@@ -62,7 +71,15 @@ export const eventsPlanAhead = {
 };
 
 export const eventsImageFeature = {
-  imageLabel: "Event photography placeholder — replace with official imagery",
+  // `isDemo: true` marks this as a temporary presentation visual — an
+  // AI-generated concept image, NOT a verified photograph of a Nalanda
+  // Academy event. Replace `image.src` with official event photography
+  // when supplied — no component changes needed.
+  image: {
+    src: "/images/events/event-feature.webp",
+    alt: "Students in traditional dress performing a cultural dance on stage — AI-generated concept visual, not an official Nalanda Academy photograph",
+    isDemo: true,
+  },
   caption: "Celebrating learning, creativity and community.",
 };
 

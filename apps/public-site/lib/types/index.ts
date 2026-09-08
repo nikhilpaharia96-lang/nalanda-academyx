@@ -1,3 +1,11 @@
+export interface FacilityImage {
+  src: string;
+  alt: string;
+  isDemo?: boolean;
+  width?: number;
+  height?: number;
+}
+
 export interface Facility {
   slug: string;
   name: string;
@@ -5,6 +13,7 @@ export interface Facility {
   description: string;
   imageQuery: string; // used to derive a placeholder image
   isPlaceholder?: boolean;
+  image?: FacilityImage;
 }
 
 export interface FacultyMember {
@@ -14,6 +23,14 @@ export interface FacultyMember {
   subject: string;
   department: string;
   photoAlt: string;
+  /** Path under /public to a portrait image. Omit to fall back to PlaceholderImage. */
+  photoUrl?: string;
+  /**
+   * True when the photo + bio fields are stand-in demo content for design
+   * review, not verified official staff data. Renders a small "Demo Profile"
+   * badge. Set to false (or omit) once real, school-confirmed data is used.
+   */
+  isDemo?: boolean;
   isPlaceholder?: boolean;
 }
 
