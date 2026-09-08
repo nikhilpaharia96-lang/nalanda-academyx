@@ -430,10 +430,12 @@ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
               <div className="mt-5 flex flex-wrap gap-2.5">
                 {quickLinks.map((item) => {
                   const Icon = iconMap[item.icon];
+                  const isImageLink = /\.(png|jpe?g|webp|svg|pdf)$/i.test(item.href);
                   return (
                     <Link
                       key={item.title}
                       href={item.href}
+                      {...(isImageLink ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       className="focus-ring group flex items-center gap-2 rounded-full border border-navy-950/15 bg-white px-4 py-2 transition-colors duration-300 ease-out hover:border-gold-500 hover:bg-paper"
                     >
                       <Icon className="h-4 w-4 shrink-0 text-navy-950 transition-colors duration-300 ease-out group-hover:text-gold-500" strokeWidth={1.5} />
