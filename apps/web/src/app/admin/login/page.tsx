@@ -2,22 +2,11 @@
 
 import { useState } from "react";
 import { useAuth, ApiError } from "@/lib/auth-context";
-import { Loader2 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { GraduationCap, Loader2 } from "lucide-react";
 
-export function PortalLoginForm({
-  title,
-  subtitle,
-  demoEmail,
-  icon: Icon,
-}: {
-  title: string;
-  subtitle: string;
-  demoEmail: string;
-  icon: LucideIcon;
-}) {
+export default function AdminLoginPage() {
   const { login } = useAuth();
-  const [email, setEmail] = useState(demoEmail);
+  const [email, setEmail] = useState("admin@nalanda.demo");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -40,10 +29,10 @@ export function PortalLoginForm({
       <div className="w-full max-w-sm rounded-lg border border-white/10 bg-navy-light p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center gap-2 text-center">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/15">
-            <Icon className="h-6 w-6 text-gold" />
+            <GraduationCap className="h-6 w-6 text-gold" />
           </div>
           <h1 className="font-display text-xl font-bold text-white">Nalanda Academy Cloud</h1>
-          <p className="text-sm text-neutral-300">{subtitle}</p>
+          <p className="text-sm text-neutral-300">Sign in to the Admin Portal</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,7 +82,7 @@ export function PortalLoginForm({
         </form>
 
         <p className="mt-6 border-t border-white/10 pt-4 text-center text-xs text-neutral-400">
-          Powered by: Nikhil Paharia
+          Powered by: Nikhil <code className="text-gold">Paharia</code>
         </p>
       </div>
     </main>
