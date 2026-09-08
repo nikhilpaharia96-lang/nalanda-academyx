@@ -17,7 +17,7 @@ export default async function FacultyPage() {
       <PageHero
         eyebrow="Our Faculty"
         title="Teachers dedicated to every student's progress."
-        description="Placeholder faculty listings — replace with official staff data before publishing."
+        description="Meet the teachers and staff at Nalanda Academy."
         crumbs={[{ label: "Home", href: "/" }, { label: "Faculty" }]}
       />
       <section className="bg-white py-16 sm:py-20">

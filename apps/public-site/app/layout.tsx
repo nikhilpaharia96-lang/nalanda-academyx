@@ -36,6 +36,19 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Editorial serif, used only for the homepage hero headline — kept
+            separate from the site's sans-serif `--font-display` token so
+            the rest of the site's typography is untouched. Loaded via a
+            plain stylesheet link (not next/font) since it only needs to
+            reach the visitor's browser, not this build environment. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Great+Vibes&display=swap"
+        />
+      </head>
       <body className="font-body antialiased">
         <script
           type="application/ld+json"
