@@ -315,22 +315,27 @@ export function AcademicSection() {
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="rounded-[var(--radius-xl)] border border-line bg-blue-600/[0.05] p-8 sm:p-10 lg:p-12"
+          className="rounded-[var(--radius-xl)] border border-line bg-blue-600/[0.05] p-4 sm:p-10 lg:p-12"
         >
           <RuleHeading>{academicSupport.heading}</RuleHeading>
 
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Mobile: compact single row, all four items side by side.
+              Tablet/desktop keep their existing 2×2 / 4-across grid,
+              unchanged. */}
+          <div className="mt-6 grid grid-cols-4 gap-1.5 sm:mt-10 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
             {academicSupport.items.map((item) => {
               const Icon = iconMap[item.icon];
               return (
                 <motion.div key={item.title} variants={fadeUp} className="text-center">
-                  <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-navy-950/15 bg-white text-navy-950">
-                    <Icon className="h-6 w-6 text-gold-500" strokeWidth={1.5} />
+                  <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border-2 border-navy-950/15 bg-white text-navy-950 sm:h-14 sm:w-14">
+                    <Icon className="h-4 w-4 text-gold-500 sm:h-6 sm:w-6" strokeWidth={1.5} />
                   </span>
-                  <h3 className="mt-4 font-display text-sm font-semibold text-navy-950">
+                  <h3 className="mt-2 font-display text-[10px] font-semibold leading-tight text-navy-950 sm:mt-4 sm:text-sm">
                     {item.title}
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{item.body}</p>
+                  <p className="mt-1 text-[9px] leading-snug text-slate-600 sm:text-sm sm:leading-relaxed">
+                    {item.body}
+                  </p>
                 </motion.div>
               );
             })}
