@@ -106,16 +106,14 @@ export const facultyCta = {
 // role/designation, and the section/level they teach are published here —
 // personal contact details (phone number, personal email, date of birth)
 // from the source record are intentionally excluded from this public
-// website for privacy reasons. 15 of 17 staff have official photos
-// supplied; Nripen Teron and Gopa Chowdhury still render via the existing
-// placeholder image until their photos are provided.
+// website for privacy reasons. All 17 staff now have official photos.
 export const facultyMembers: FacultyMember[] = [
   { id: "rupam-doloi", name: "Rupam Doloi", designation: "Principal", subject: "Administration", department: "Administration", photoAlt: "Rupam Doloi, Principal", photoUrl: "/images/faculty/rupam%20doloi.jpg" },
   { id: "surya-pratim-chakravorty", name: "Surya Pratim Chakravorty", designation: "Director", subject: "Administration", department: "Administration", photoAlt: "Surya Pratim Chakravorty, Director", photoUrl: "/images/faculty/Surya%20Pratim%20chakravorty.jpg" },
   { id: "uttam-biswas", name: "Uttam Biswas", designation: "Teacher & Office Assistant", subject: "Primary & Upper Primary", department: "Primary & Upper Primary", photoAlt: "Uttam Biswas, Teacher & Office Assistant", photoUrl: "/images/faculty/Uttam-Biswas.jpg" },
   { id: "jitu-moni-sikdar", name: "Jitu Moni Sikdar", designation: "Teacher", subject: "Pre-Primary & Primary", department: "Pre-Primary & Primary", photoAlt: "Jitu Moni Sikdar, Teacher", photoUrl: "/images/faculty/Jitu.jpg" },
-  { id: "nripen-teron", name: "Nripen Teron", designation: "Teacher", subject: "Upper Primary & Secondary", department: "Upper Primary & Secondary", photoAlt: "Faculty portrait placeholder — replace with official photography", isPlaceholder: true },
-  { id: "gopa-chowdhury", name: "Gopa Chowdhury", designation: "Teacher", subject: "Pre-Primary", department: "Pre-Primary", photoAlt: "Faculty portrait placeholder — replace with official photography", isPlaceholder: true },
+  { id: "nripen-teron", name: "Nripen Teron", designation: "Teacher", subject: "Upper Primary & Secondary", department: "Upper Primary & Secondary", photoAlt: "Nripen Teron, Teacher", photoUrl: "/images/faculty/Nripen%20Teron.jpeg" },
+  { id: "gopa-chowdhury", name: "Gopa Chowdhury", designation: "Teacher", subject: "Pre-Primary", department: "Pre-Primary", photoAlt: "Gopa Chowdhury, Teacher", photoUrl: "/images/faculty/%20Gopa%20Chowdhury.jpeg" },
   { id: "nitu-moni-kalita", name: "Nitu Moni Kalita", designation: "Teacher", subject: "Upper Primary & Secondary", department: "Upper Primary & Secondary", photoAlt: "Nitu Moni Kalita, Teacher", photoUrl: "/images/faculty/Nitu%20Moni%20Kalita.jpg" },
   { id: "vicky-kumar-bharali", name: "Vicky Kumar Bharali", designation: "Teacher", subject: "Upper Primary", department: "Upper Primary", photoAlt: "Vicky Kumar Bharali, Teacher", photoUrl: "/images/faculty/Vickey%20Kumar%20Bharali.jpg" },
   { id: "mamoni-chakravorty", name: "Mamoni Chakravorty", designation: "Teacher", subject: "Primary", department: "Primary", photoAlt: "Mamoni Chakravorty, Teacher", photoUrl: "/images/faculty/mamoni%20chakravorty.jpg" },
@@ -135,9 +133,6 @@ export const subjects = Array.from(new Set(facultyMembers.map((f) => f.subject))
 // ---------------------------------------------------------------------------
 // REMAINING WORK
 // ---------------------------------------------------------------------------
-// - Nripen Teron and Gopa Chowdhury still need official photos — add a file
-//   under /public/images/faculty/, then set photoUrl on their entry above
-//   and remove isPlaceholder.
 // - "Dr. Kanailal Chakravorty.jpg" was found in /public/images/faculty/ but
 //   does not match any name in the official staff list this file is based
 //   on. Not wired in — confirm the name/role and add as a new entry (or
