@@ -331,18 +331,19 @@ export function Hero() {
             {siteConfig.description}
           </motion.p>
 
-          {/* CTAs — full-width and stacked on mobile for large, thumb-
-              friendly targets; back to their inline/content-width layout
-              from sm up, unchanged from before. */}
+          {/* CTAs — mobile: pill-shaped, sized to their own content and
+              left-aligned (not stretched full-width), stacked with a small
+              gap, matching the mobile reference. sm and up: unchanged from
+              before. */}
           <motion.div
             initial={initial ?? { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: easing, delay: 0.42 }}
-            className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4"
+            className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-4"
           >
             <a
               href="/about"
-              className="focus-ring group inline-flex w-full items-center justify-center gap-3 rounded-[var(--radius-md)] bg-gold-500 px-6 py-3.5 text-[15px] font-semibold text-navy-950 shadow-[var(--shadow-md)] transition-all duration-200 ease-out hover:bg-gold-400 active:scale-[0.98] sm:w-auto sm:justify-start sm:py-3 sm:text-sm"
+              className="focus-ring group inline-flex items-center justify-start gap-3 rounded-full bg-gold-500 px-7 py-3.5 text-[15px] font-semibold text-navy-950 shadow-[var(--shadow-md)] transition-all duration-200 ease-out hover:bg-gold-400 active:scale-[0.98] sm:rounded-[var(--radius-md)] sm:py-3 sm:text-sm"
             >
               Explore Academy
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy-950/15 transition-transform duration-200 group-hover:translate-x-0.5">
@@ -351,7 +352,7 @@ export function Hero() {
             </a>
             <a
               href="/admission"
-              className="focus-ring group inline-flex w-full items-center justify-center gap-2.5 rounded-[var(--radius-md)] border border-white/40 bg-white/5 px-6 py-3.5 text-[15px] font-semibold text-white backdrop-blur-sm transition-all duration-200 ease-out hover:border-gold-400 hover:bg-white/10 active:scale-[0.98] sm:w-auto sm:justify-start sm:py-3 sm:text-sm"
+              className="focus-ring group inline-flex items-center justify-start gap-2.5 rounded-full border border-white/40 bg-white/5 px-7 py-3.5 text-[15px] font-semibold text-white backdrop-blur-sm transition-all duration-200 ease-out hover:border-gold-400 hover:bg-white/10 active:scale-[0.98] sm:rounded-[var(--radius-md)] sm:py-3 sm:text-sm"
             >
               <GraduationCap className="h-4 w-4" aria-hidden />
               View Admissions
