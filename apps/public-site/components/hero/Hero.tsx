@@ -21,6 +21,8 @@ import {
   siteConfig,
   heroCarousel,
   heroWelcome,
+  heroSubheading,
+  heroClosingQuote,
   heroAccentLines,
   heroFeatureStrip,
 } from "@/lib/content/site";
@@ -309,6 +311,17 @@ export function Hero() {
             <span className="block text-gold-400">Academy</span>
           </motion.h1>
 
+          {/* Supporting subheading — mobile only, sits between the
+              headline and the description, matching the mobile reference. */}
+          <motion.p
+            initial={initial ?? { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easing, delay: 0.24 }}
+            className="font-editorial mt-3 text-2xl font-medium leading-tight text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.75)] sm:hidden"
+          >
+            {heroSubheading}
+          </motion.p>
+
           <motion.p
             initial={initial ?? { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -390,15 +403,16 @@ export function Hero() {
       )}
 
       {/* Mobile: compact single-row glass panel — small icons + labels only,
-          four-across, so it reads like a tight strip rather than a tall
-          grid. Reordered/re-iconed per the mobile reference. */}
+          four-across with thin dividers between each, so it reads like a
+          tight strip rather than a tall grid. Reordered/re-iconed per the
+          mobile reference. */}
       <Container className="relative pb-6 sm:hidden">
-        <StaggerGroup className="grid grid-cols-4 gap-1 rounded-2xl border border-white/15 bg-navy-950/45 px-1.5 py-4 shadow-[var(--shadow-lg)] backdrop-blur-md">
+        <StaggerGroup className="grid grid-cols-4 divide-x divide-white/15 rounded-2xl border border-white/15 bg-navy-950/45 py-4 shadow-[var(--shadow-lg)] backdrop-blur-md">
           {mobileFeatures.map((item) => {
             const Icon = featureIconMap[item.icon];
             return (
               <FadeUp as="li" key={item.title} className="list-none">
-                <div className="flex flex-col items-center gap-1.5 px-0.5 text-center">
+                <div className="flex flex-col items-center gap-1.5 px-1 text-center">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold-400/30 bg-white/5 text-gold-400">
                     <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden />
                   </span>
@@ -408,6 +422,22 @@ export function Hero() {
             );
           })}
         </StaggerGroup>
+      </Container>
+
+      {/* Mobile: simple closing line beneath the feature panel — no card,
+          just italic text with a short gold rule, matching the mobile
+          reference. */}
+      <Container className="relative pb-8 text-center sm:hidden">
+        <p className="font-editorial text-base italic text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
+          &ldquo;{heroClosingQuote.line}&rdquo;
+        </p>
+        <div className="mt-2 flex items-center justify-center gap-2">
+          <span aria-hidden className="h-px w-6 bg-gold-400/70" />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold-400">
+            {heroClosingQuote.attribution}
+          </span>
+          <span aria-hidden className="h-px w-6 bg-gold-400/70" />
+        </div>
       </Container>
 
       {/* Tablet: same glass strip as before, unchanged. */}
