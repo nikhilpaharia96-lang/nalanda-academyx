@@ -54,7 +54,14 @@ export interface ResultYear {
     distinctionCount: number | null;
     below60: number | null;
   };
-  toppers?: { rank: 1 | 2 | 3; name: string | null; percentage: number | null }[];
+  toppers?: {
+    rank: 1 | 2 | 3;
+    name: string | null;
+    percentage: number | null;
+    /** Path under /public to the topper's photo. Omit to fall back to the placeholder avatar icon. */
+    photo?: string;
+    photoAlt?: string;
+  }[];
   subjectToppers?: { subject: string; name: string | null; marks: string | null }[];
   studentProgressCategories?: string[];
   achievementNote?: string;
