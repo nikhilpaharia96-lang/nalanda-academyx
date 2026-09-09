@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline: "Building Knowledge. Inspiring Excellence. Shaping Futures.",
   description:
     "Nalanda Academy is a modern learning environment focused on academic excellence, character development and preparing students for a changing world.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.nalandaacademy.example",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.nalandaacademy.example",
 };
 
 // Homepage hero background carousel. These are real, unretouched Nalanda
@@ -40,6 +40,10 @@ export const heroCarousel = [
 // headline in the homepage hero.
 export const heroWelcome = "Welcome to";
 
+// Short supporting line shown between the headline and the description
+// paragraph on the mobile homepage hero.
+export const heroSubheading = "A Brighter Tomorrow Begins Here";
+
 // Short Hindi/Hinglish educational-philosophy line shown in the quote card
 // on the homepage hero. Presentation copy only — not attributed to any
 // person, so no source needs to be cited.
@@ -48,6 +52,13 @@ export const heroQuote = {
     "Shiksha sirf kitaabon tak seemit nahi,",
     "balki jeevan ko sahi disha dene ka maarg hai.",
   ],
+  attribution: "Nalanda Academy",
+};
+
+// Single-line closing quote shown beneath the feature panel on the mobile
+// homepage hero. Presentation copy only.
+export const heroClosingQuote = {
+  line: "Education today, a better tomorrow",
   attribution: "Nalanda Academy",
 };
 
