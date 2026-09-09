@@ -269,31 +269,157 @@ async function main() {
     }
   }
 
-  // Notices / Events / Faculty / Facilities
-  const existingNotice = await db.select().from(schema.notices).where(eq(schema.notices.slug, "demo-admission-open-2026-27"));
-  if (!existingNotice[0]) {
-    await db.insert(schema.notices).values({
-      title: "(DEMO) Admissions Open for 2026-27",
+  // Notices — a realistic, varied set so "07 Latest Notices" on the public
+  // site has real content immediately after seeding. Dates are relative to
+  // "today" so they stay newest-first-sensible however far in the future
+  // this seed is run.
+  const noticeSeeds = [
+    {
       slug: "demo-admission-open-2026-27",
-      content: "(DEMO) This is placeholder notice content for local development.",
+      title: "(DEMO) Admissions Open for 2026-27",
+      content: "(DEMO) Applications for the 2026-27 academic year are now open. Interested parents can apply online or collect the form from the front office.",
       category: "Admission",
       important: true,
       published: true,
-      publishedAt: new Date().toISOString(),
+      noticeDaysFromNow: -2,
+      ctaText: "Apply Online",
+      externalLink: "https://example.com/admissions/apply",
+      displayOrder: 0,
+    },
+    {
+      slug: "demo-half-yearly-datesheet-2026",
+      title: "(DEMO) Half-Yearly Examination Datesheet Released",
+      content: "(DEMO) The datesheet for the half-yearly examinations (Classes I-XII) has been released. Please download the attached circular for subject-wise timings.",
+      category: "Examination",
+      important: true,
+      published: true,
+      noticeDaysFromNow: -1,
+      attachmentUrl: "https://example.com/documents/half-yearly-datesheet-2026.pdf",
+      ctaText: "Download Datesheet",
+      displayOrder: 1,
+    },
+    {
+      slug: "demo-winter-break-holiday-2026",
+      title: "(DEMO) Winter Break Holiday Notice",
+      content: "(DEMO) The school will remain closed for winter break. Classes resume as per the academic calendar shared with parents.",
+      category: "Holiday",
+      important: false,
+      published: true,
+      noticeDaysFromNow: 0,
+      displayOrder: 2,
+    },
+    {
+      slug: "demo-result-declaration-upcoming",
+      title: "(DEMO) Draft: Result Declaration Schedule (not yet published)",
+      content: "(DEMO) Draft notice for the upcoming result declaration schedule — intentionally left unpublished to demonstrate the admin draft workflow.",
+      category: "Result",
+      important: false,
+      published: false,
+      noticeDaysFromNow: 3,
+      displayOrder: 3,
+    },
+  ] as const;
+
+  for (const n of noticeSeeds) {
+    const existing = await db.select().from(schema.notices).where(eq(schema.notices.slug, n.slug));
+    if (existing[0]) continue;
+    const noticeDate = new Date(Date.now() + n.noticeDaysFromNow * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    await db.insert(schema.notices).values({
+      title: n.title,
+      slug: n.slug,
+      content: n.content,
+      category: n.category,
+      important: n.important,
+      published: n.published,
+      publishedAt: n.published ? new Date().toISOString() : null,
+      noticeDate,
+      attachmentUrl: "attachmentUrl" in n ? n.attachmentUrl : undefined,
+      externalLink: "externalLink" in n ? n.externalLink : undefined,
+      ctaText: n.ctaText,
+      displayOrder: n.displayOrder,
       createdBy: "seed-script",
     });
   }
 
-  const existingEvent = await db.select().from(schema.events).where(eq(schema.events.slug, "demo-annual-day-2026"));
-  if (!existingEvent[0]) {
-    await db.insert(schema.events).values({
-      title: "(DEMO) Annual Day 2026",
+  // Events — a realistic, varied set for "06 Upcoming Events" on the public
+  // site. Dates are relative to "today" so at least a few are always in the
+  // future regardless of when the seed is run.
+  const eventSeeds = [
+    {
       slug: "demo-annual-day-2026",
-      description: "(DEMO) Placeholder event description for local development.",
+      title: "(DEMO) Annual Day 2026",
+      description: "(DEMO) An evening of music, dance and drama celebrating the achievements of our students, followed by the annual prize distribution.",
       category: "General",
-      date: "2026-12-15",
+      dateDaysFromNow: 21,
+      time: "17:00",
+      endTime: "20:00",
+      location: "School Auditorium",
       featured: true,
       published: true,
+      registrationUrl: "https://example.com/events/annual-day-2026/rsvp",
+      ctaText: "RSVP Now",
+      displayOrder: 0,
+    },
+    {
+      slug: "demo-science-exhibition-2026",
+      title: "(DEMO) Inter-School Science Exhibition",
+      description: "(DEMO) Students from Classes VI-XII showcase working models and research projects across physics, chemistry, biology and environmental science.",
+      category: "Academic",
+      dateDaysFromNow: 10,
+      time: "09:00",
+      endTime: "13:00",
+      location: "Senior Block, Ground Floor",
+      featured: false,
+      published: true,
+      ctaText: "Learn More",
+      displayOrder: 1,
+    },
+    {
+      slug: "demo-annual-sports-day-2026",
+      title: "(DEMO) Annual Sports Day",
+      description: "(DEMO) Track and field events, relay races and the much-awaited parents' race, capped off with the closing ceremony.",
+      category: "Sports",
+      dateDaysFromNow: 35,
+      time: "08:00",
+      endTime: "14:00",
+      location: "School Sports Ground",
+      featured: true,
+      published: true,
+      registrationUrl: "https://example.com/events/sports-day-2026/register",
+      ctaText: "Register to Participate",
+      displayOrder: 2,
+    },
+    {
+      slug: "demo-alumni-meet-draft",
+      title: "(DEMO) Draft: Alumni Meet (not yet published)",
+      description: "(DEMO) Draft event for a planned alumni get-together — intentionally left unpublished to demonstrate the admin draft workflow.",
+      category: "Community",
+      dateDaysFromNow: 60,
+      location: "School Campus",
+      featured: false,
+      published: false,
+      displayOrder: 3,
+    },
+  ] as const;
+
+  for (const e of eventSeeds) {
+    const existing = await db.select().from(schema.events).where(eq(schema.events.slug, e.slug));
+    if (existing[0]) continue;
+    const date = new Date(Date.now() + e.dateDaysFromNow * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    await db.insert(schema.events).values({
+      title: e.title,
+      slug: e.slug,
+      description: e.description,
+      category: e.category,
+      date,
+      time: "time" in e ? e.time : undefined,
+      endTime: "endTime" in e ? e.endTime : undefined,
+      location: e.location,
+      featured: e.featured,
+      published: e.published,
+      registrationUrl: "registrationUrl" in e ? e.registrationUrl : undefined,
+      ctaText: "ctaText" in e ? e.ctaText : undefined,
+      displayOrder: e.displayOrder,
     });
   }
 

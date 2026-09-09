@@ -17,6 +17,22 @@ export async function apiGet<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+/**
+ * Same as apiGet, but never throws: network errors, non-2xx responses, and
+ * malformed JSON are all logged and swallowed, resolving to `fallback`
+ * instead. Use this for anything rendered directly on a public page (e.g.
+ * homepage sections) where a backend hiccup must degrade to an empty state
+ * rather than crash the page.
+ */
+export async function apiGetSafe<T>(path: string, fallback: T): Promise<T> {
+  try {
+    return await apiGet<T>(path);
+  } catch (err) {
+    console.error(`[apiClient] apiGetSafe fallback for ${path}:`, err);
+    return fallback;
+  }
+}
+
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",

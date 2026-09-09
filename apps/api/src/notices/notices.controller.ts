@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { z } from "zod";
 import { NoticesService } from "./notices.service";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
@@ -16,6 +16,10 @@ const createSchema = z.object({
   category: z.enum(NOTICE_CATEGORIES),
   important: z.boolean().optional(),
   attachmentUrl: z.string().url().optional(),
+  externalLink: z.string().url().optional(),
+  ctaText: z.string().max(60).optional(),
+  noticeDate: z.string().date().optional(),
+  displayOrder: z.number().int().optional(),
 });
 const updateSchema = createSchema.partial();
 const publishSchema = z.object({ published: z.boolean() });
@@ -37,6 +41,16 @@ export class NoticesController {
   @UseGuards(OptionalJwtAuthGuard)
   list(@Query("search") search: string | undefined, @Query("category") category: string | undefined, @CurrentUser() user: AuthenticatedUser | undefined) {
     return this.noticesService.list({ search, category, includeUnpublished: isAdmin(user) });
+  }
+
+  // Admin-only lookup by primary key, used by the admin edit form. This is a
+  // two-segment path ("id/:id") so it never collides with the public
+  // single-segment ":slug" route below.
+  @Get("id/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("SUPER_ADMIN", "ADMIN")
+  getById(@Param("id") id: string) {
+    return this.noticesService.getById(id);
   }
 
   @Get(":slug")
@@ -64,5 +78,13 @@ export class NoticesController {
   @Roles("SUPER_ADMIN", "ADMIN")
   publish(@Param("id") id: string, @Body(new ZodValidationPipe(publishSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.noticesService.setPublished(id, dto.published, user.sub);
+  }
+
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("SUPER_ADMIN", "ADMIN")
+  remove(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.noticesService.remove(id, user.sub);
   }
 }

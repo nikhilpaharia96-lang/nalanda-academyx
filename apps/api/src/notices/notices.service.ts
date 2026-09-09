@@ -23,11 +23,13 @@ export class NoticesService {
       const clause = or(like(schema.notices.title, `%${filters.search}%`), like(schema.notices.content, `%${filters.search}%`));
       if (clause) conditions.push(clause);
     }
+    // Newest-first by the notice's own date, with displayOrder as a
+    // tie-breaker for same-day notices.
     return db
       .select()
       .from(schema.notices)
       .where(conditions.length ? and(...conditions) : undefined)
-      .orderBy(desc(schema.notices.publishedAt));
+      .orderBy(desc(schema.notices.noticeDate), schema.notices.displayOrder);
   }
 
   async getBySlug(slug: string, includeUnpublished: boolean) {
@@ -38,16 +40,49 @@ export class NoticesService {
     return row;
   }
 
-  async create(dto: { title: string; content: string; category: string; important?: boolean; attachmentUrl?: string }, actorId: string) {
+  async getById(id: string) {
+    const [row] = await db.select().from(schema.notices).where(eq(schema.notices.id, id));
+    if (!row) throw new NotFoundException("Notice not found");
+    return row;
+  }
+
+  async create(
+    dto: {
+      title: string;
+      content: string;
+      category: string;
+      important?: boolean;
+      attachmentUrl?: string;
+      externalLink?: string;
+      ctaText?: string;
+      noticeDate?: string;
+      displayOrder?: number;
+    },
+    actorId: string,
+  ) {
     const [row] = await db
       .insert(schema.notices)
-      .values({ ...dto, slug: slugify(dto.title), createdBy: actorId })
+      .values({ ...dto, noticeDate: dto.noticeDate ?? new Date().toISOString().slice(0, 10), slug: slugify(dto.title), createdBy: actorId })
       .returning();
     await this.auditService.log({ userId: actorId, action: "NOTICE_CREATE", entity: "Notice", entityId: row.id });
     return row;
   }
 
-  async update(id: string, dto: Partial<{ title: string; content: string; category: string; important: boolean; attachmentUrl: string }>, actorId: string) {
+  async update(
+    id: string,
+    dto: Partial<{
+      title: string;
+      content: string;
+      category: string;
+      important: boolean;
+      attachmentUrl: string;
+      externalLink: string;
+      ctaText: string;
+      noticeDate: string;
+      displayOrder: number;
+    }>,
+    actorId: string,
+  ) {
     const [existing] = await db.select().from(schema.notices).where(eq(schema.notices.id, id));
     if (!existing) throw new NotFoundException("Notice not found");
     const [row] = await db
@@ -69,5 +104,13 @@ export class NoticesService {
       .returning();
     await this.auditService.log({ userId: actorId, action: published ? "NOTICE_PUBLISH" : "NOTICE_UNPUBLISH", entity: "Notice", entityId: id });
     return row;
+  }
+
+  async remove(id: string, actorId: string) {
+    const [existing] = await db.select().from(schema.notices).where(eq(schema.notices.id, id));
+    if (!existing) throw new NotFoundException("Notice not found");
+    await db.delete(schema.notices).where(eq(schema.notices.id, id));
+    await this.auditService.log({ userId: actorId, action: "NOTICE_DELETE", entity: "Notice", entityId: id });
+    return { success: true };
   }
 }

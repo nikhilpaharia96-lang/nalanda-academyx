@@ -6,6 +6,8 @@
     "packages/*"
   ],
   "scripts": {
+    "build:packages": "npm run build --workspace=packages/shared && npm run build --workspace=packages/database",
+    "postinstall": "npm run build:packages",
     "dev:api": "npm run start:dev --workspace=apps/api",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:public-site": "npm run dev --workspace=apps/public-site",

@@ -496,7 +496,18 @@ export const notices = pgTable("notices", {
   important: boolean("important").notNull().default(false),
   published: boolean("published").notNull().default(false),
   attachmentUrl: text("attachment_url"),
+  // Optional external link (e.g. a government portal, a form) distinct from
+  // the uploaded attachment above.
+  externalLink: text("external_link"),
+  // Label for the attachment/external-link CTA, e.g. "Download Circular".
+  ctaText: text("cta_text"),
+  // The notice's own date (separate from publishedAt, which tracks when the
+  // publish toggle was flipped and is used for "newest first" ordering).
+  noticeDate: text("notice_date"),
   publishedAt: text("published_at"),
+  // Admin-controlled manual ordering, used as a tie-breaker alongside the
+  // newest-first publishedAt sort.
+  displayOrder: integer("display_order").notNull().default(0),
   createdBy: text("created_by").notNull(),
   ...timestamps,
 });
@@ -508,11 +519,20 @@ export const events = pgTable("events", {
   description: text("description").notNull(),
   category: text("category").notNull(),
   date: text("date").notNull(),
+  // Start time of the event. Named `time` for backward compatibility with
+  // existing rows/consumers; treat as "start time" going forward.
   time: text("time"),
+  endTime: text("end_time"),
   location: text("location"),
   featured: boolean("featured").notNull().default(false),
   published: boolean("published").notNull().default(false),
   coverImageUrl: text("cover_image_url"),
+  // Registration / RSVP / "learn more" link shown as the event's CTA button.
+  registrationUrl: text("registration_url"),
+  ctaText: text("cta_text"),
+  // Admin-controlled manual ordering; public listing still sorts by date
+  // (nearest upcoming first) with this as a tie-breaker for same-day events.
+  displayOrder: integer("display_order").notNull().default(0),
   ...timestamps,
 });
 

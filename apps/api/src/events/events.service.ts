@@ -19,11 +19,17 @@ export class EventsService {
     if (filters.when === "upcoming") conditions.push(gte(schema.events.date, today));
     if (filters.when === "past") conditions.push(lt(schema.events.date, today));
 
+    // Nearest-upcoming-first for the default/"upcoming" case; displayOrder is
+    // a tie-breaker for events that land on the same date. "past" events stay
+    // most-recent-first.
     return db
       .select()
       .from(schema.events)
       .where(conditions.length ? and(...conditions) : undefined)
-      .orderBy(filters.when === "past" ? desc(schema.events.date) : schema.events.date);
+      .orderBy(
+        filters.when === "past" ? desc(schema.events.date) : schema.events.date,
+        schema.events.displayOrder,
+      );
   }
 
   async getBySlug(slug: string, includeUnpublished: boolean) {
@@ -33,13 +39,53 @@ export class EventsService {
     return { ...row, images };
   }
 
-  async create(dto: { title: string; description: string; category: string; date: string; time?: string; location?: string; featured?: boolean; coverImageUrl?: string }, actorId: string) {
+  async getById(id: string) {
+    const [row] = await db.select().from(schema.events).where(eq(schema.events.id, id));
+    if (!row) throw new NotFoundException("Event not found");
+    const images = await db.select().from(schema.eventImages).where(eq(schema.eventImages.eventId, row.id));
+    return { ...row, images };
+  }
+
+  async create(
+    dto: {
+      title: string;
+      description: string;
+      category: string;
+      date: string;
+      time?: string;
+      endTime?: string;
+      location?: string;
+      featured?: boolean;
+      coverImageUrl?: string;
+      registrationUrl?: string;
+      ctaText?: string;
+      displayOrder?: number;
+    },
+    actorId: string,
+  ) {
     const [row] = await db.insert(schema.events).values({ ...dto, slug: slugify(dto.title) }).returning();
     await this.auditService.log({ userId: actorId, action: "EVENT_CREATE", entity: "Event", entityId: row.id });
     return row;
   }
 
-  async update(id: string, dto: Partial<{ title: string; description: string; category: string; date: string; time: string; location: string; featured: boolean; coverImageUrl: string }>, actorId: string) {
+  async update(
+    id: string,
+    dto: Partial<{
+      title: string;
+      description: string;
+      category: string;
+      date: string;
+      time: string;
+      endTime: string;
+      location: string;
+      featured: boolean;
+      coverImageUrl: string;
+      registrationUrl: string;
+      ctaText: string;
+      displayOrder: number;
+    }>,
+    actorId: string,
+  ) {
     const [existing] = await db.select().from(schema.events).where(eq(schema.events.id, id));
     if (!existing) throw new NotFoundException("Event not found");
     const [row] = await db
@@ -65,5 +111,14 @@ export class EventsService {
     const [row] = await db.insert(schema.eventImages).values({ eventId, imageUrl, displayOrder }).returning();
     await this.auditService.log({ userId: actorId, action: "EVENT_IMAGE_ADD", entity: "EventImage", entityId: row.id });
     return row;
+  }
+
+  async remove(id: string, actorId: string) {
+    const [existing] = await db.select().from(schema.events).where(eq(schema.events.id, id));
+    if (!existing) throw new NotFoundException("Event not found");
+    // event_images rows cascade-delete via the FK's onDelete: "cascade".
+    await db.delete(schema.events).where(eq(schema.events.id, id));
+    await this.auditService.log({ userId: actorId, action: "EVENT_DELETE", entity: "Event", entityId: id });
+    return { success: true };
   }
 }

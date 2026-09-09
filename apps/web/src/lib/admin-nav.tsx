@@ -25,6 +25,7 @@ import {
   Boxes,
   Percent,
   SlidersHorizontal,
+  CalendarDays,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -96,7 +97,22 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { href: "/admin/store/settings", label: "Store Settings", icon: SlidersHorizontal },
     ],
   },
-  { label: "Notices", icon: Megaphone, href: "/admin/notices", comingSoon: true },
+  {
+    label: "Events",
+    icon: CalendarDays,
+    children: [
+      { href: "/admin/events", label: "All Events" },
+      { href: "/admin/events/new", label: "Add Event", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "Notices",
+    icon: Megaphone,
+    children: [
+      { href: "/admin/notices", label: "All Notices" },
+      { href: "/admin/notices/new", label: "Add Notice", icon: Megaphone },
+    ],
+  },
   { label: "Documents", icon: FolderKanban, href: "/admin/documents", comingSoon: true },
   { label: "Reports", icon: FileBarChart, href: "/admin/reports", comingSoon: true },
   { label: "Settings", icon: Settings, href: "/admin/settings", comingSoon: true },

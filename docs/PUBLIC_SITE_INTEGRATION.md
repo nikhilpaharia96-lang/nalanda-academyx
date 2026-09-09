@@ -73,36 +73,46 @@ nalanda.edu/api/*  (or api.nalanda.edu) → apps/api
 No code change is required to adopt this later — it's an infrastructure/proxy
 configuration step.
 
-## Backend integration — deliberately NOT done yet
+## Backend integration
 
-The public site's own service layer (`lib/services/*Service.ts`) already implements
-exactly the "clean integration boundary" this task asked for: every service branches
-on `USE_MOCK_DATA` (true whenever `NEXT_PUBLIC_API_URL` is empty) and falls back to
-`lib/content/*.ts`. That boundary was preserved untouched, and `NEXT_PUBLIC_API_URL`
-is left unset, so the public site continues running entirely on its own mock content
-and cannot be broken by API downtime or shape mismatches.
+**Events & Notices — done.** The `EventsController`/`NoticesController` public GET
+routes are unauthenticated (`OptionalJwtAuthGuard`, no `@Roles`) and return
+published-only content to anonymous callers; `apps/web` now has an Upcoming
+Events / Latest Notices admin section (create/edit/delete/publish, with the
+new `endTime`, `registrationUrl`, `ctaText`, `externalLink`, `displayOrder`
+fields — see `packages/database/migrations/0005_*`). `eventService.ts` and
+`noticeService.ts` map the API's DTO shape onto `lib/types/index.ts`'s
+`SchoolEvent`/`Notice` interfaces and fall back to an empty list (via
+`apiGetSafe`) if the API is unreachable, rather than throwing. Setting
+`NEXT_PUBLIC_API_URL` (see `.env.example`) switches these two sections from
+mock content to the live, admin-managed data; leaving it unset keeps the
+previous mock-content behavior for local/frontend-only work.
 
-Three concrete gaps must be closed before flipping that switch — intentionally left
-for a dedicated follow-up, not done as part of this integration:
+**Everything else — deliberately NOT done yet.** The public site's service
+layer for `FacultyController`, `FacilitiesController`, and `ResultsController`
+still branches on `USE_MOCK_DATA` and falls back to `lib/content/*.ts`
+untouched. Gaps that must be closed before flipping those switches too
+(intentionally left for a dedicated follow-up, out of scope for the
+events/notices work above):
 
-1. **Auth exemption**: `apps/api`'s `NoticesController`, `EventsController`,
-   `FacultyController`, `FacilitiesController`, and `ResultsController` currently
-   require a logged-in session for *reads* (`@UseGuards(JwtAuthGuard, RolesGuard)` at
-   the controller level). Public consumption needs unauthenticated GET access to
-   published content, mirroring the pattern already used for
-   `AdmissionsController.create` and `MessagesController.create`.
-2. **Path naming**: the public site expects `POST /api/contact`; the API currently
-   exposes this as `POST /api/messages`.
-3. **Response-shape gaps**: several fields the public site's `lib/types/index.ts`
-   expects don't exist on the current Drizzle schema/DTOs yet — e.g. `Notice.publishedDate`
-   (API has `publishedAt`), `ResultYear`'s richer fields (`schoolAverage`,
+1. **Auth exemption**: `FacultyController`, `FacilitiesController`, and
+   `ResultsController` currently require a logged-in session for *reads*
+   (`@UseGuards(JwtAuthGuard, RolesGuard)` at the controller level). Public
+   consumption needs unauthenticated GET access to published content,
+   mirroring the pattern events/notices now use.
+2. **Path naming**: the public site expects `POST /api/contact`; the API
+   currently exposes this as `POST /api/messages`.
+3. **Response-shape gaps**: several fields the public site's
+   `lib/types/index.ts` expects don't exist on the current Drizzle
+   schema/DTOs yet — e.g. `ResultYear`'s richer fields (`schoolAverage`,
    `performanceHighlights`, `toppers`, `subjectToppers`), `Facility.imageQuery`/
-   `isPlaceholder`, `FacultyMember.photoAlt`/`isPlaceholder`. The admission form also
-   sends `classApplyingFor` (free text) and `guardianName`/`phone`/`email` where the
-   API expects `classId` (a foreign key) and `parentName`/`parentPhone`/`parentEmail`.
+   `isPlaceholder`, `FacultyMember.photoAlt`/`isPlaceholder`. The admission form
+   also sends `classApplyingFor` (free text) and `guardianName`/`phone`/`email`
+   where the API expects `classId` (a foreign key) and
+   `parentName`/`parentPhone`/`parentEmail`.
 
-Recommended approach when this work is picked up: add a thin mapping layer inside
-each of the public site's service functions (translate the real API response into the
-exact interface shape already declared in `lib/types/index.ts`) rather than changing
-either side's naming conventions wholesale — keeps both the API's existing contract
-(used by the portals) and the public site's existing component code untouched.
+Recommended approach when this remaining work is picked up: the same thin
+mapping-layer pattern used in `eventService.ts`/`noticeService.ts` — translate
+the real API response into the exact interface shape already declared in
+`lib/types/index.ts` — rather than changing either side's naming conventions
+wholesale.
