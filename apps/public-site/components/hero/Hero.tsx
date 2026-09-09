@@ -389,13 +389,24 @@ export function Hero() {
         </div>
       )}
 
-      {/* Mobile: compact 2×2 glass card grid, reordered/re-iconed per the
-          mobile reference, with centered icon+text per card. */}
-      <Container className="relative pb-8 sm:hidden">
-        <StaggerGroup className="grid grid-cols-2 gap-x-4 gap-y-5 rounded-2xl border border-white/15 bg-navy-950/45 p-5 shadow-[var(--shadow-lg)] backdrop-blur-md">
-          {mobileFeatures.map((item) => (
-            <FeatureCard key={item.title} {...item} centerOnMobile />
-          ))}
+      {/* Mobile: compact single-row glass panel — small icons + labels only,
+          four-across, so it reads like a tight strip rather than a tall
+          grid. Reordered/re-iconed per the mobile reference. */}
+      <Container className="relative pb-6 sm:hidden">
+        <StaggerGroup className="grid grid-cols-4 gap-1 rounded-2xl border border-white/15 bg-navy-950/45 px-1.5 py-4 shadow-[var(--shadow-lg)] backdrop-blur-md">
+          {mobileFeatures.map((item) => {
+            const Icon = featureIconMap[item.icon];
+            return (
+              <FadeUp as="li" key={item.title} className="list-none">
+                <div className="flex flex-col items-center gap-1.5 px-0.5 text-center">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold-400/30 bg-white/5 text-gold-400">
+                    <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+                  </span>
+                  <h3 className="text-[9.5px] font-semibold leading-[1.15] text-white">{item.title}</h3>
+                </div>
+              </FadeUp>
+            );
+          })}
         </StaggerGroup>
       </Container>
 
