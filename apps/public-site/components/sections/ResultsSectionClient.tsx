@@ -92,10 +92,10 @@ export function ResultsSectionClient({ result }: { result: ResultYear }) {
     distinctionCount: null,
     below60: null,
   };
-  const toppers = result.toppers ?? [
-    { rank: 1 as const, name: null, percentage: null },
-    { rank: 2 as const, name: null, percentage: null },
-    { rank: 3 as const, name: null, percentage: null },
+  const toppers: NonNullable<ResultYear["toppers"]> = result.toppers ?? [
+    { rank: 1, name: null, percentage: null },
+    { rank: 2, name: null, percentage: null },
+    { rank: 3, name: null, percentage: null },
   ];
   const subjectToppers = result.subjectToppers ?? [];
   const progressCategories = result.studentProgressCategories ?? [];
