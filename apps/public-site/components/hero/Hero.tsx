@@ -12,7 +12,6 @@ import {
   GraduationCap,
   ArrowRight,
   ArrowLeft,
-  Quote,
   type LucideIcon,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -22,7 +21,6 @@ import {
   siteConfig,
   heroCarousel,
   heroWelcome,
-  heroQuote,
   heroAccentLines,
   heroFeatureStrip,
 } from "@/lib/content/site";
@@ -320,41 +318,13 @@ export function Hero() {
             {siteConfig.description}
           </motion.p>
 
-          {/* Quote card */}
-          <motion.div
-            initial={initial ?? { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: easing, delay: 0.42 }}
-            className="relative mt-7 max-w-md overflow-hidden rounded-xl border border-gold-400/40 bg-navy-950/40 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5"
-          >
-            <span
-              aria-hidden
-              className="absolute -left-1 -top-1 h-10 w-10 rounded-br-xl border-b border-r border-gold-400/30"
-            />
-            <Quote
-              aria-hidden
-              className="h-8 w-8 shrink-0 fill-gold-400/20 text-gold-400/70 sm:h-6 sm:w-6"
-              strokeWidth={1.5}
-            />
-            <p className="mt-2 text-[15px] italic leading-relaxed text-white/90 sm:text-base">
-              {heroQuote.lines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </p>
-            <p className="mt-3 text-right text-sm italic text-gold-400/90">
-              — {heroQuote.attribution}
-            </p>
-          </motion.div>
-
           {/* CTAs — full-width and stacked on mobile for large, thumb-
               friendly targets; back to their inline/content-width layout
               from sm up, unchanged from before. */}
           <motion.div
             initial={initial ?? { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: easing, delay: 0.54 }}
+            transition={{ duration: 0.6, ease: easing, delay: 0.42 }}
             className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4"
           >
             <a
