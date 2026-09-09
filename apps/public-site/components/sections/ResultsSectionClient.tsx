@@ -20,9 +20,11 @@ import {
   ScrollText,
   Briefcase,
 } from "lucide-react";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { DemoImage } from "@/components/ui/DemoImage";
+import { resultsHeroImage } from "@/lib/content/results";
 import type { ResultYear } from "@/lib/types";
 
 const easing = [0.16, 1, 0.3, 1] as const;
@@ -174,20 +176,24 @@ export function ResultsSectionClient({ result }: { result: ResultYear }) {
             />
             <div className="absolute inset-3 overflow-hidden rounded-[var(--radius-xl)] lg:inset-0 lg:rounded-none">
               <div className="h-full w-full lg:hidden">
-                <PlaceholderImage
-                  label="Nalanda Academy campus placeholder — replace with official imagery"
-                  tone="navy"
-                  className="h-full w-full rounded-[var(--radius-xl)] border-0"
+                <DemoImage
+                  src={resultsHeroImage.src}
+                  alt={resultsHeroImage.alt}
+                  isDemo={resultsHeroImage.isDemo}
+                  sizes="100vw"
+                  className="h-full w-full rounded-[var(--radius-xl)]"
                 />
               </div>
               <div
                 className="hidden h-full w-full lg:block"
                 style={{ clipPath: "polygon(6.7% 0%, 100% 0%, 100% 100%, 0.7% 100%)" }}
               >
-                <PlaceholderImage
-                  label="Nalanda Academy campus placeholder — replace with official imagery"
-                  tone="navy"
-                  className="h-full w-full rounded-none border-0"
+                <DemoImage
+                  src={resultsHeroImage.src}
+                  alt={resultsHeroImage.alt}
+                  isDemo={resultsHeroImage.isDemo}
+                  sizes="60vw"
+                  className="h-full w-full"
                 />
               </div>
             </div>
@@ -300,8 +306,22 @@ export function ResultsSectionClient({ result }: { result: ResultYear }) {
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {toppers.map((topper) => (
               <motion.div key={topper.rank} variants={fadeUp} className="text-center">
-                <div className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-dashed border-gold-500/40 bg-white text-slate-300">
-                  <CircleUserRound className="h-11 w-11" strokeWidth={1.25} />
+                <div
+                  className={`relative mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-white text-slate-300 ${
+                    topper.photo ? "border-2 border-gold-500/60" : "border-2 border-dashed border-gold-500/40"
+                  }`}
+                >
+                  {topper.photo ? (
+                    <Image
+                      src={topper.photo}
+                      alt={topper.photoAlt ?? topper.name ?? "Class X topper"}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <CircleUserRound className="h-11 w-11" strokeWidth={1.25} />
+                  )}
                   <span className="absolute -top-2 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-gold-500 font-data text-xs font-bold text-navy-950">
                     {rankLabel[topper.rank]}
                   </span>
