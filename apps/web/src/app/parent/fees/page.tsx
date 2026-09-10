@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 import { api, downloadFile } from "@/lib/api-client";
 import { payFee } from "@/lib/razorpay";
 import { PARENT_NAV } from "@/lib/parent-nav";
-import { formatCurrency, formatDate, humanize, statusBadgeClass } from "@/lib/fees";
+import { formatCurrency, formatDate, humanize, monthName, statusBadgeClass } from "@/lib/fees";
 import { Loader2, Receipt as ReceiptIcon, Download, X } from "lucide-react";
 
 interface StudentFee {
@@ -228,7 +228,7 @@ function ReceiptModal({ receipt, onClose, onDownload }: { receipt: ReceiptData; 
           {receipt.student && <Row label="Admission No." value={receipt.student.admissionNumber} />}
           {receipt.class && <Row label="Class" value={`${receipt.class}${receipt.section ? " — " + receipt.section : ""}`} />}
           {receipt.feeType && <Row label="Fee Type" value={humanize(receipt.feeType)} />}
-          {receipt.feeMonth && <Row label="Month" value={String(receipt.feeMonth)} />}
+          {receipt.feeMonth && <Row label="Month" value={monthName(receipt.feeMonth)} />}
           <Row label="Amount" value={formatCurrency(receipt.amount)} />
           <Row label="Payment Method" value={receipt.paymentCategory === "Offline" ? `Offline — ${humanize(receipt.method)}` : "Online — Razorpay"} />
           <Row label="Transaction ID" value={receipt.transactionId ?? "—"} mono />
