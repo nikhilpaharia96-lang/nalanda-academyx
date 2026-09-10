@@ -36,6 +36,26 @@ export function formatCurrency(amount: number | null | undefined): string {
   return `₹${amount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 }
 
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export function monthName(month: number | null | undefined): string {
+  if (!month || month < 1 || month > 12) return "—";
+  return MONTH_NAMES[month - 1];
+}
+
 export function formatDate(value: string | null | undefined): string {
   if (!value) return "—";
   try {
