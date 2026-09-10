@@ -7,6 +7,26 @@ function formatINR(amount: number | null): string {
   return `Rs. ${amount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 }
 
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+function formatMonth(month: number | null | undefined): string {
+  if (!month || month < 1 || month > 12) return "—";
+  return MONTH_NAMES[month - 1];
+}
+
 function row(doc: PDFKit.PDFDocument, label: string, value: string, y: number) {
   doc.font("Helvetica").fontSize(10).fillColor("#525252").text(label, 50, y);
   doc.font("Helvetica-Bold").fontSize(10).fillColor("#0B1F3A").text(value, 260, y, { width: 285, align: "left" });
@@ -68,7 +88,7 @@ export class PdfReceiptService {
     row(doc, "Fee Type", receipt.feeType ?? "—", y);
     y += 18;
     if (receipt.feeMonth) {
-      row(doc, "Month", String(receipt.feeMonth), y);
+      row(doc, "Month", formatMonth(receipt.feeMonth), y);
       y += 18;
     }
     row(doc, "Payment Method", receipt.paymentCategory === "Offline" ? `Offline - ${receipt.method}` : "Online - Razorpay", y);
