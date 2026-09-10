@@ -1,0 +1,6 @@
+Drop the real chairperson photo/letter here with this EXACT filename
+(spaces and casing matter — it's referenced verbatim in lib/content/about.ts):
+
+    MESSAGE FROM THE CHAIRPERSON.jpeg
+
+Delete this text file once the real image is in place.
