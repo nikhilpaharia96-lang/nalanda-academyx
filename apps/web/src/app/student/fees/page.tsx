@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { api, downloadFile } from "@/lib/api-client";
 import { payFee } from "@/lib/razorpay";
 import { STUDENT_NAV } from "@/lib/student-nav";
-import { formatCurrency, formatDate, humanize, statusBadgeClass } from "@/lib/fees";
+import { formatCurrency, formatDate, humanize, monthName, statusBadgeClass } from "@/lib/fees";
 import { Loader2, Receipt as ReceiptIcon, Download, X } from "lucide-react";
 
 interface StudentFee {
@@ -294,7 +294,7 @@ function ReceiptModal({ receipt, onClose, onDownload }: { receipt: ReceiptData; 
           {receipt.student && <Row label="Admission No." value={receipt.student.admissionNumber} />}
           {receipt.class && <Row label="Class" value={`${receipt.class}${receipt.section ? " — " + receipt.section : ""}`} />}
           {receipt.feeType && <Row label="Fee Type" value={humanize(receipt.feeType)} />}
-          {receipt.feeMonth && <Row label="Month" value={String(receipt.feeMonth)} />}
+          {receipt.feeMonth && <Row label="Month" value={monthName(receipt.feeMonth)} />}
           <Row label="Amount Paid" value={formatCurrency(receipt.amount)} />
           {receipt.remainingAfterThisPayment !== null && receipt.remainingAfterThisPayment > 0.01 && (
             <Row label="Remaining Balance" value={formatCurrency(receipt.remainingAfterThisPayment)} />
