@@ -8,6 +8,11 @@ export const aboutPreview = {
   tagline: "Shaping Minds. Building Character. Inspiring Futures.",
   body: "Nalanda Academy is dedicated to nurturing young minds with knowledge, values, and vision. We provide a supportive learning environment where students can learn, grow, and prepare for a successful future.",
   cta: { label: "Discover More", href: "/about" },
+  chairpersonCta: {
+    label: "Chairperson Message",
+    imageSrc: "/images/about/MESSAGE FROM THE CHAIRPERSON.jpeg",
+    imageAlt: "Message from the Chairperson",
+  },
   // `isDemo: true` marks this as a temporary presentation visual, not a
   // verified photograph of real Nalanda Academy staff, students or campus.
   // Replace the file at `image.src` (same filename/path) with official
