@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { aboutPreview, aboutFeatureStrip, aboutVisionMission, aboutGallery } from "@/lib/content/about";
 
 const easing = [0.16, 1, 0.3, 1] as const;
@@ -37,6 +39,8 @@ const featureIconMap: Record<string, LucideIcon> = {
 };
 
 export function AboutSection() {
+  const [chairpersonOpen, setChairpersonOpen] = useState(false);
+
   return (
     <section className="relative overflow-hidden bg-paper">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-stretch">
@@ -85,7 +89,7 @@ export function AboutSection() {
             {aboutPreview.body}
           </motion.p>
 
-          <motion.div variants={fadeUp} className="mt-9">
+          <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
             <Button
               href={aboutPreview.cta.href}
               variant="primary"
@@ -93,6 +97,9 @@ export function AboutSection() {
               className="bg-navy-950 text-gold-400 hover:bg-navy-900 hover:text-gold-300"
             >
               {aboutPreview.cta.label}
+            </Button>
+            <Button variant="secondary" onClick={() => setChairpersonOpen(true)}>
+              {aboutPreview.chairpersonCta.label}
             </Button>
           </motion.div>
         </motion.div>
@@ -263,6 +270,13 @@ export function AboutSection() {
           </motion.div>
         </div>
       </Container>
+
+      <ImageLightbox
+        open={chairpersonOpen}
+        onClose={() => setChairpersonOpen(false)}
+        src={aboutPreview.chairpersonCta.imageSrc}
+        alt={aboutPreview.chairpersonCta.imageAlt}
+      />
     </section>
   );
 }
