@@ -21,7 +21,7 @@ const statLabels: { key: "appeared" | "passed" | "passPercentage" | "distinction
 
 export default async function ResultsPage() {
   const years = await getResultYears();
-  const latest = years[0];
+  const latest = years[0] ?? null;
 
   return (
     <>
@@ -35,54 +35,64 @@ export default async function ResultsPage() {
       <section className="bg-white py-16 sm:py-20">
         <Container>
           <SectionHeading eyebrow="Select a Year" eyebrowIndex="01" heading="Performance overview" />
-          <div className="mt-8">
-            <YearSelector years={years.map((y) => y.year)} activeYear={latest.year} />
-          </div>
+          {latest ? (
+            <>
+              <div className="mt-8">
+                <YearSelector years={years.map((y) => y.year)} activeYear={latest.year} />
+              </div>
 
-          <FadeUp className="mt-10 overflow-hidden rounded-[var(--radius-xl)] border border-line">
-            <div className="grid divide-y divide-line sm:grid-cols-5 sm:divide-x sm:divide-y-0">
-              {statLabels.map((stat) => {
-                const value = latest[stat.key];
-                return (
-                  <div key={stat.key} className="bg-paper p-7 text-center sm:bg-white">
-                    <p className="font-display text-3xl font-semibold tabular-nums text-navy-950">
-                      {latest.published && value !== null ? `${value}${stat.suffix ?? ""}` : "—"}
-                    </p>
-                    <p className="mt-2 font-data text-[11px] uppercase tracking-wider text-slate-400">
-                      {stat.label}
-                    </p>
-                  </div>
-                );
-              })}
+              <FadeUp className="mt-10 overflow-hidden rounded-[var(--radius-xl)] border border-line">
+                <div className="grid divide-y divide-line sm:grid-cols-5 sm:divide-x sm:divide-y-0">
+                  {statLabels.map((stat) => {
+                    const value = latest[stat.key];
+                    return (
+                      <div key={stat.key} className="bg-paper p-7 text-center sm:bg-white">
+                        <p className="font-display text-3xl font-semibold tabular-nums text-navy-950">
+                          {latest.published && value !== null ? `${value}${stat.suffix ?? ""}` : "—"}
+                        </p>
+                        <p className="mt-2 font-data text-[11px] uppercase tracking-wider text-slate-400">
+                          {stat.label}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+                {!latest.published && (
+                  <p className="border-t border-line bg-paper px-7 py-4 text-center text-sm text-slate-500">
+                    Official data will be published here.
+                  </p>
+                )}
+              </FadeUp>
+            </>
+          ) : (
+            <p className="mt-8 rounded-[var(--radius-lg)] border border-dashed border-line p-10 text-center text-sm text-slate-500">
+              Results are not available yet. Please check back soon.
+            </p>
+          )}
+        </Container>
+      </section>
+
+      {years.length > 0 && (
+        <section className="bg-paper py-16 sm:py-20">
+          <Container>
+            <SectionHeading eyebrow="Historical Results" eyebrowIndex="02" heading="Results timeline (2017 – 2026)" />
+            <div className="mt-10 divide-y divide-line border-y border-line">
+              {years.map((r) => (
+                <a
+                  key={r.year}
+                  href={`/results/${r.year}`}
+                  className="focus-ring flex items-center justify-between gap-6 py-5 transition-colors hover:bg-white sm:px-4"
+                >
+                  <span className="font-data text-sm text-navy-950">{r.year}</span>
+                  <span className="text-sm text-slate-500">
+                    {r.published ? `Pass percentage: ${r.passPercentage}%` : "Results for this year have not been published."}
+                  </span>
+                </a>
+              ))}
             </div>
-            {!latest.published && (
-              <p className="border-t border-line bg-paper px-7 py-4 text-center text-sm text-slate-500">
-                Official data will be published here.
-              </p>
-            )}
-          </FadeUp>
-        </Container>
-      </section>
-
-      <section className="bg-paper py-16 sm:py-20">
-        <Container>
-          <SectionHeading eyebrow="Historical Results" eyebrowIndex="02" heading="Results timeline (2017 – 2026)" />
-          <div className="mt-10 divide-y divide-line border-y border-line">
-            {years.map((r) => (
-              <a
-                key={r.year}
-                href={`/results/${r.year}`}
-                className="focus-ring flex items-center justify-between gap-6 py-5 transition-colors hover:bg-white sm:px-4"
-              >
-                <span className="font-data text-sm text-navy-950">{r.year}</span>
-                <span className="text-sm text-slate-500">
-                  {r.published ? `Pass percentage: ${r.passPercentage}%` : "Results for this year have not been published."}
-                </span>
-              </a>
-            ))}
-          </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
+      )}
     </>
   );
 }
