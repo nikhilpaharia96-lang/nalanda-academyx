@@ -166,8 +166,8 @@ export function Hero() {
                   priority={i === 0}
                   loading={i === 0 ? undefined : "eager"}
                   sizes="100vw"
-                  quality={85}
-                  className="object-cover [filter:contrast(1.06)_saturate(1.08)_brightness(1.02)]"
+                  quality={95}
+                  className="object-cover [filter:contrast(1.04)_saturate(1.06)_brightness(1.06)]"
                 />
               </motion.div>
             </div>
@@ -192,7 +192,7 @@ export function Hero() {
             to stay bright and clearly visible. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 [background:radial-gradient(120%_100%_at_50%_40%,transparent_55%,rgba(10,26,51,0.28)_100%)]"
+          className="pointer-events-none absolute inset-0 [background:radial-gradient(120%_100%_at_50%_40%,transparent_60%,rgba(10,26,51,0.18)_100%)]"
         />
       </div>
 
@@ -204,7 +204,7 @@ export function Hero() {
           below, tuned for the narrower, taller frame. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 hidden bg-[linear-gradient(100deg,rgba(10,26,51,0.92)_0%,rgba(10,26,51,0.82)_18%,rgba(10,26,51,0.55)_36%,rgba(10,26,51,0.24)_52%,rgba(10,26,51,0.06)_68%,rgba(10,26,51,0)_82%)] sm:block"
+        className="absolute inset-0 -z-10 hidden bg-[linear-gradient(100deg,rgba(10,26,51,0.78)_0%,rgba(10,26,51,0.66)_18%,rgba(10,26,51,0.42)_36%,rgba(10,26,51,0.18)_52%,rgba(10,26,51,0.04)_68%,rgba(10,26,51,0)_82%)] sm:block"
       />
       {/* Mobile-only overlay — dark down the left column (where all the
           copy sits, top to bottom) fading out toward the right, plus extra
@@ -212,12 +212,12 @@ export function Hero() {
           the sky, palm trees and right-hand building bright and visible. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(112deg,rgba(10,26,51,0.88)_0%,rgba(10,26,51,0.8)_24%,rgba(10,26,51,0.62)_44%,rgba(10,26,51,0.36)_64%,rgba(10,26,51,0.12)_82%,rgba(10,26,51,0)_96%)] sm:hidden"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(112deg,rgba(10,26,51,0.74)_0%,rgba(10,26,51,0.66)_24%,rgba(10,26,51,0.48)_44%,rgba(10,26,51,0.26)_64%,rgba(10,26,51,0.08)_82%,rgba(10,26,51,0)_96%)] sm:hidden"
       />
       {/* Very subtle bottom vignette for blending — not a full dark layer. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-navy-950/45 to-transparent"
+        className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-navy-950/30 to-transparent"
       />
 
       {/* Handwritten accent over the campus photograph, opposite the main
