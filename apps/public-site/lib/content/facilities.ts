@@ -163,7 +163,7 @@ export const additionalFacilities = [
   {
     icon: "bus" as const,
     title: "Transport Facility",
-    body: "[Official facility information to be added]",
+    body: "[Official facility information to be added sir]",
     confirmed: false,
   },
   {
@@ -175,13 +175,13 @@ export const additionalFacilities = [
   {
     icon: "utensils" as const,
     title: "Canteen",
-    body: "[Official facility information to be added]",
+    body: "[Official facility information to be added sir]",
     confirmed: false,
   },
   {
     icon: "cross" as const,
     title: "Medical / First Aid",
-    body: "[Official facility information to be added]",
+    body: "[Official facility information to be added sir]",
     confirmed: false,
   },
 ];
