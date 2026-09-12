@@ -56,16 +56,16 @@ export const aboutFeatureStrip = [
 export const aboutVisionMission = {
   vision: {
     title: "Our Vision",
-    body: "Demo copy — to create an inspiring learning environment where every student can discover their strengths, develop their character, and become a responsible contributor to society.",
+    body: "to create an inspiring learning environment where every student can discover their strengths, develop their character, and become a responsible contributor to society.",
   },
   mission: {
     title: "Our Mission",
     points: [
-      "Demo copy — deliver quality and concept-driven education.",
-      "Demo copy — encourage critical thinking, creativity, and innovation.",
-      "Demo copy — build confidence, discipline, leadership, and responsibility.",
-      "Demo copy — provide a safe, supportive, and inspiring learning environment.",
-      "Demo copy — prepare students for higher education, careers, and a changing world.",
+      " deliver quality and concept-driven education.",
+      "encourage critical thinking, creativity, and innovation.",
+      "build confidence, discipline, leadership, and responsibility.",
+      "provide a safe, supportive, and inspiring learning environment.",
+      "prepare students for higher education, careers, and a changing world.",
     ],
   },
 };
@@ -116,23 +116,23 @@ export const aboutStory = {
   eyebrow: "Our Story",
   heading: "[Official school history to be added]",
   paragraphs: [
-    "Demo copy — replace with the school's official founding story, milestones and guiding philosophy once supplied by the administration.",
-    "Demo copy — describe the institution's academic approach, values and community here.",
+    "replace with the school's official founding story, milestones and guiding philosophy once supplied by the administration.",
+    "describe the institution's academic approach, values and community here.",
   ],
 };
 
 export const missionValues = [
   {
     title: "Our Mission",
-    body: "Demo copy — replace with the school's official mission statement.",
+    body: "replace with the school's official mission statement.",
   },
   {
     title: "Our Vision",
-    body: "Demo copy — replace with the school's official vision statement.",
+    body: "replace with the school's official vision statement.",
   },
   {
     title: "Our Values",
-    body: "Demo copy — discipline, curiosity, integrity and community (placeholder — confirm official values).",
+    body: "discipline, curiosity, integrity and community (placeholder — confirm official values).",
   },
 ];
 
@@ -141,7 +141,7 @@ export const principalMessage = {
   designation: "Principal, Nalanda Academy",
   photoAlt: "Portrait placeholder for the Principal of Nalanda Academy",
   message:
-    "Demo copy — replace with the Principal's official welcome message once supplied by the school administration.",
+    "replace with the Principal's official welcome message once supplied by the school administration.",
 };
 
 export const milestones: { year: string; label: string }[] = [
