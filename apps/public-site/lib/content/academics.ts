@@ -70,7 +70,7 @@ export const academicPrograms = [
     tagline: "Foundations for Lifelong Learning",
     description:
       "A strong academic foundation for students with focus on concepts, values and curiosity.",
-    grades: "Grades: I – X",
+    grades: "Grades: Nursery – X",
   },
   {
     number: "02",
