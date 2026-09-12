@@ -56,7 +56,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     children: [
       { href: "/admin/students", label: "All Students" },
       { href: "/admin/students/new", label: "Add Student", icon: UserPlus },
-      { href: "/admin/admissions", label: "Admissions", icon: ClipboardList, comingSoon: true },
+      { href: "/admin/admissions", label: "Admissions", icon: ClipboardList },
     ],
   },
   {

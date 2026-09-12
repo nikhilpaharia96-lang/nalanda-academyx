@@ -3,20 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { submitAdmissionEnquiry, type AdmissionEnquiryPayload } from "@/lib/services/admissionService";
-
-const classOptions = [
-  "Class I",
-  "Class II",
-  "Class III",
-  "Class IV",
-  "Class V",
-  "Class VI",
-  "Class VII",
-  "Class VIII",
-  "Class IX",
-  "Class X",
-];
+import { submitAdmissionEnquiry, type AdmissionClassOption, type AdmissionEnquiryPayload } from "@/lib/services/admissionService";
 
 type FormState = AdmissionEnquiryPayload;
 type Errors = Partial<Record<keyof FormState, string>>;
@@ -25,11 +12,11 @@ const initialState: FormState = {
   studentName: "",
   dateOfBirth: "",
   gender: "",
-  classApplyingFor: "",
+  classId: "",
   previousSchool: "",
-  guardianName: "",
-  phone: "",
-  email: "",
+  parentName: "",
+  parentPhone: "",
+  parentEmail: "",
   address: "",
   message: "",
 };
@@ -43,15 +30,15 @@ function validate(form: FormState): Errors {
   if (!form.dateOfBirth) errors.dateOfBirth = "Date of birth is required.";
   else if (new Date(form.dateOfBirth) > new Date()) errors.dateOfBirth = "Date of birth cannot be in the future.";
   if (!form.gender) errors.gender = "Please select a gender.";
-  if (!form.classApplyingFor) errors.classApplyingFor = "Please select a class.";
-  if (!form.guardianName.trim()) errors.guardianName = "Parent/guardian name is required.";
-  if (!phonePattern.test(form.phone)) errors.phone = "Enter a valid phone number.";
-  if (!emailPattern.test(form.email)) errors.email = "Enter a valid email address.";
+  if (!form.classId) errors.classId = "Please select a class.";
+  if (!form.parentName.trim()) errors.parentName = "Parent/guardian name is required.";
+  if (!phonePattern.test(form.parentPhone)) errors.parentPhone = "Enter a valid phone number.";
+  if (!emailPattern.test(form.parentEmail)) errors.parentEmail = "Enter a valid email address.";
   if (!form.address.trim()) errors.address = "Address is required.";
   return errors;
 }
 
-export function AdmissionForm() {
+export function AdmissionForm({ classes }: { classes: AdmissionClassOption[] }) {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -139,9 +126,9 @@ export function AdmissionForm() {
               aria-invalid={!!errors.gender}
             >
               <option value="">Select</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
             </select>
             {errors.gender && <p className="mt-1 text-xs text-red-600">{errors.gender}</p>}
           </div>
@@ -152,16 +139,18 @@ export function AdmissionForm() {
             <select
               id="classFor"
               className={fieldClass}
-              value={form.classApplyingFor}
-              onChange={(e) => update("classApplyingFor", e.target.value)}
-              aria-invalid={!!errors.classApplyingFor}
+              value={form.classId}
+              onChange={(e) => update("classId", e.target.value)}
+              aria-invalid={!!errors.classId}
             >
               <option value="">Select</option>
-              {classOptions.map((c) => (
-                <option key={c}>{c}</option>
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
             </select>
-            {errors.classApplyingFor && <p className="mt-1 text-xs text-red-600">{errors.classApplyingFor}</p>}
+            {errors.classId && <p className="mt-1 text-xs text-red-600">{errors.classId}</p>}
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="prevSchool" className="mb-1.5 block text-sm text-slate-600">
@@ -181,45 +170,45 @@ export function AdmissionForm() {
         <legend className="font-display text-base font-semibold text-navy-950">Parent / Guardian Details</legend>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="guardianName" className="mb-1.5 block text-sm text-slate-600">
+            <label htmlFor="parentName" className="mb-1.5 block text-sm text-slate-600">
               Parent/Guardian Name
             </label>
             <input
-              id="guardianName"
+              id="parentName"
               className={fieldClass}
-              value={form.guardianName}
-              onChange={(e) => update("guardianName", e.target.value)}
-              aria-invalid={!!errors.guardianName}
+              value={form.parentName}
+              onChange={(e) => update("parentName", e.target.value)}
+              aria-invalid={!!errors.parentName}
             />
-            {errors.guardianName && <p className="mt-1 text-xs text-red-600">{errors.guardianName}</p>}
+            {errors.parentName && <p className="mt-1 text-xs text-red-600">{errors.parentName}</p>}
           </div>
           <div>
-            <label htmlFor="phone" className="mb-1.5 block text-sm text-slate-600">
+            <label htmlFor="parentPhone" className="mb-1.5 block text-sm text-slate-600">
               Phone
             </label>
             <input
-              id="phone"
+              id="parentPhone"
               type="tel"
               className={fieldClass}
-              value={form.phone}
-              onChange={(e) => update("phone", e.target.value)}
-              aria-invalid={!!errors.phone}
+              value={form.parentPhone}
+              onChange={(e) => update("parentPhone", e.target.value)}
+              aria-invalid={!!errors.parentPhone}
             />
-            {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
+            {errors.parentPhone && <p className="mt-1 text-xs text-red-600">{errors.parentPhone}</p>}
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="email" className="mb-1.5 block text-sm text-slate-600">
+            <label htmlFor="parentEmail" className="mb-1.5 block text-sm text-slate-600">
               Email
             </label>
             <input
-              id="email"
+              id="parentEmail"
               type="email"
               className={fieldClass}
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              aria-invalid={!!errors.email}
+              value={form.parentEmail}
+              onChange={(e) => update("parentEmail", e.target.value)}
+              aria-invalid={!!errors.parentEmail}
             />
-            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
+            {errors.parentEmail && <p className="mt-1 text-xs text-red-600">{errors.parentEmail}</p>}
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="address" className="mb-1.5 block text-sm text-slate-600">

@@ -5,6 +5,7 @@ import { PageHero } from "@/components/hero/PageHero";
 import { Badge } from "@/components/ui/Badge";
 import { FadeUp, StaggerGroup } from "@/components/motion/Reveal";
 import { AdmissionForm } from "@/components/sections/AdmissionForm";
+import { fetchAdmissionClasses } from "@/lib/services/admissionService";
 import {
   admissionStatus,
   admissionProcess,
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
   description: "Begin your journey at Nalanda Academy — admission process, requirements and enquiry form.",
 };
 
-export default function AdmissionPage() {
+export default async function AdmissionPage() {
+  const classes = await fetchAdmissionClasses();
+
   return (
     <>
       <PageHero
@@ -110,7 +113,7 @@ export default function AdmissionPage() {
         <Container className="max-w-3xl">
           <SectionHeading eyebrow="Apply Now" eyebrowIndex="04" heading="Ready to begin? Submit your enquiry." />
           <div className="mt-10 rounded-[var(--radius-xl)] border border-line bg-white p-6 sm:p-10">
-            <AdmissionForm />
+            <AdmissionForm classes={classes} />
           </div>
         </Container>
       </section>

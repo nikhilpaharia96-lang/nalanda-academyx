@@ -25,6 +25,14 @@ export class AdmissionsService {
     return db.select().from(schema.admissionApplications).orderBy(schema.admissionApplications.createdAt);
   }
 
+  listClassesForPublicForm() {
+    return db
+      .select({ id: schema.classes.id, name: schema.classes.name, displayOrder: schema.classes.displayOrder })
+      .from(schema.classes)
+      .where(eq(schema.classes.active, true))
+      .orderBy(schema.classes.displayOrder);
+  }
+
   async getById(id: string) {
     const [row] = await db.select().from(schema.admissionApplications).where(eq(schema.admissionApplications.id, id));
     if (!row) throw new NotFoundException("Admission application not found");
@@ -42,6 +50,7 @@ export class AdmissionsService {
     parentPhone: string;
     parentEmail?: string;
     address?: string;
+    message?: string;
   }) {
     const applicationNumber = `ADM-APP-${new Date().getFullYear()}-${randomBytes(3).toString("hex").toUpperCase()}`;
     const [row] = await db.insert(schema.admissionApplications).values({ applicationNumber, ...dto }).returning();

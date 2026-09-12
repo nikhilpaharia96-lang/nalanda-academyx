@@ -19,12 +19,22 @@ const createSchema = z.object({
   parentPhone: z.string().min(6),
   parentEmail: z.string().email().optional(),
   address: z.string().optional(),
+  message: z.string().optional(),
 });
 const statusSchema = z.object({ status: z.enum(ADMISSION_STATUSES) });
 
 @Controller("admissions")
 export class AdmissionsController {
   constructor(private readonly admissionsService: AdmissionsService) {}
+
+  // Public, unauthenticated — powers the "Class Applying For" dropdown on
+  // the public-site admission form. Registered before the dynamic ":id"
+  // route below so "classes" is never swallowed as an :id value. Returns
+  // only id/name/displayOrder for active classes — nothing sensitive.
+  @Get("classes")
+  listClassesForPublicForm() {
+    return this.admissionsService.listClassesForPublicForm();
+  }
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
