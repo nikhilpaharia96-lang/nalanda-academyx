@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LogOut, GraduationCap, Loader2, Menu, X } from "lucide-react";
+import { LogOut, Loader2, Menu, X } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -29,7 +30,7 @@ function SidebarContents({
   return (
     <>
       <div className="flex items-center gap-2 border-b border-white/10 px-5 py-5">
-        <GraduationCap className="h-5 w-5 text-gold" />
+        <Image src="/images/brand/nalanda-academy-logo.webp" alt="Nalanda Academy" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />
         <div>
           <div className="font-display text-sm font-bold leading-tight">Nalanda Cloud</div>
           <div className="text-[10px] uppercase tracking-widest text-gold">{portalLabel}</div>
@@ -115,7 +116,7 @@ export function PortalShell({
       {/* Mobile top bar */}
       <div className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-neutral-200 bg-navy px-4 py-3 text-white md:hidden">
         <div className="flex items-center gap-2">
-          <GraduationCap className="h-5 w-5 text-gold" />
+          <Image src="/images/brand/nalanda-academy-logo.webp" alt="Nalanda Academy" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
           <span className="font-display text-sm font-bold">Nalanda Cloud</span>
         </div>
         <button

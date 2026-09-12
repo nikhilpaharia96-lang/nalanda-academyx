@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useAuth, ApiError } from "@/lib/auth-context";
-import { GraduationCap, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function AdminLoginPage() {
   const { login } = useAuth();
@@ -29,7 +30,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm rounded-lg border border-white/10 bg-navy-light p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center gap-2 text-center">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/15">
-            <GraduationCap className="h-6 w-6 text-gold" />
+            <Image src="/images/brand/nalanda-academy-logo.webp" alt="Nalanda Academy" width={32} height={32} className="h-8 w-8 object-contain" />
           </div>
           <h1 className="font-display text-xl font-bold text-white">Nalanda Academy Cloud</h1>
           <p className="text-sm text-neutral-300">Sign in to the Admin Portal</p>
