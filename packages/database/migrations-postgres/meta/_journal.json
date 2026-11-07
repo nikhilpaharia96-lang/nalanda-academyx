@@ -43,6 +43,13 @@
       "when": 1788913633161,
       "tag": "0005_mighty_switch",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793981785154,
+      "tag": "0006_left_rawhide_kid",
+      "breakpoints": true
     }
   ]
 }

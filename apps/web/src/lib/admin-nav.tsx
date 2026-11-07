@@ -26,6 +26,10 @@ import {
   Percent,
   SlidersHorizontal,
   CalendarDays,
+  CalendarClock,
+  BookOpen,
+  BedDouble,
+  ArrowUpCircle,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -81,6 +85,10 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   },
   { label: "Attendance", icon: CalendarCheck, href: "/admin/attendance", comingSoon: true },
   { label: "Classes & Departments", icon: Building2, href: "/admin/classes" },
+  { label: "Timetable", icon: CalendarClock, href: "/admin/timetable" },
+  { label: "Library", icon: BookOpen, href: "/admin/library" },
+  { label: "Hostel", icon: BedDouble, href: "/admin/hostel" },
+  { label: "Promotions", icon: ArrowUpCircle, href: "/admin/promotions" },
   { label: "Parents", icon: UsersRound, href: "/admin/parents", comingSoon: true },
   { label: "Exams & Results", icon: Award, href: "/admin/exams" },
   {

@@ -926,3 +926,100 @@ export const storeBundleItemsRelations = relations(storeBundleItems, ({ one }) =
   bundle: one(storeBundles, { fields: [storeBundleItems.bundleId], references: [storeBundles.id] }),
   product: one(storeProducts, { fields: [storeBundleItems.productId], references: [storeProducts.id] }),
 }));
+
+// ---------------------------------------------------------------------------
+// TIMETABLE / LIBRARY / HOSTEL / PROMOTIONS  (ported from LAV_SMS concepts)
+// ---------------------------------------------------------------------------
+
+export const timeSlots = sqliteTable("time_slots", {
+  id: id(),
+  name: text("name").notNull().unique(), // e.g. "Period 1"
+  startTime: text("start_time").notNull(), // HH:MM
+  endTime: text("end_time").notNull(), // HH:MM
+  displayOrder: integer("display_order").notNull().default(0),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+});
+
+export const timetableEntries = sqliteTable("timetable_entries", {
+  id: id(),
+  classId: text("class_id").notNull().references(() => classes.id, { onDelete: "cascade" }),
+  sectionId: text("section_id").notNull().references(() => sections.id, { onDelete: "cascade" }),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  timeSlotId: text("time_slot_id").notNull().references(() => timeSlots.id, { onDelete: "cascade" }),
+  dayOfWeek: integer("day_of_week").notNull(), // 1 = Monday ... 7 = Sunday
+  subjectId: text("subject_id").notNull().references(() => subjects.id),
+  teacherId: text("teacher_id").references(() => teachers.id),
+  room: text("room"),
+  ...timestamps,
+}, (t) => ({
+  slotUnique: uniqueIndex("timetable_slot_unique").on(t.classId, t.sectionId, t.academicYearId, t.dayOfWeek, t.timeSlotId),
+  teacherIdx: index("timetable_teacher_idx").on(t.teacherId, t.academicYearId, t.dayOfWeek, t.timeSlotId),
+}));
+
+export const books = sqliteTable("books", {
+  id: id(),
+  title: text("title").notNull(),
+  author: text("author"),
+  isbn: text("isbn").unique(),
+  category: text("category"),
+  location: text("location"), // shelf / rack
+  totalCopies: integer("total_copies").notNull().default(1),
+  availableCopies: integer("available_copies").notNull().default(1),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+}, (t) => ({ titleIdx: index("books_title_idx").on(t.title) }));
+
+// Lifecycle: REQUESTED -> ISSUED -> RETURNED, or REQUESTED -> REJECTED / CANCELLED
+export const bookRequests = sqliteTable("book_requests", {
+  id: id(),
+  bookId: text("book_id").notNull().references(() => books.id),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("REQUESTED"),
+  requestedAt: text("requested_at").notNull().$defaultFn(() => new Date().toISOString()),
+  issuedAt: text("issued_at"),
+  dueDate: text("due_date"),
+  returnedAt: text("returned_at"),
+  remarks: text("remarks"),
+  ...timestamps,
+}, (t) => ({
+  studentIdx: index("book_requests_student_idx").on(t.studentId, t.status),
+  bookIdx: index("book_requests_book_idx").on(t.bookId, t.status),
+}));
+
+export const hostels = sqliteTable("hostels", {
+  id: id(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  capacity: integer("capacity"), // optional overall capacity
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+});
+
+// One ACTIVE allocation per student (vacatedAt IS NULL) is enforced in the service.
+export const hostelAllocations = sqliteTable("hostel_allocations", {
+  id: id(),
+  hostelId: text("hostel_id").notNull().references(() => hostels.id),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  roomNumber: text("room_number").notNull(),
+  allocatedAt: text("allocated_at").notNull().$defaultFn(() => new Date().toISOString()),
+  vacatedAt: text("vacated_at"),
+}, (t) => ({
+  studentIdx: index("hostel_alloc_student_idx").on(t.studentId, t.vacatedAt),
+  hostelIdx: index("hostel_alloc_hostel_idx").on(t.hostelId, t.vacatedAt),
+}));
+
+// Audit trail of end-of-year promotions. PROMOTED | REPEATED | GRADUATED
+export const promotions = sqliteTable("promotions", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  fromClassId: text("from_class_id").notNull().references(() => classes.id),
+  fromSectionId: text("from_section_id").notNull().references(() => sections.id),
+  fromAcademicYearId: text("from_academic_year_id").notNull().references(() => academicYears.id),
+  toClassId: text("to_class_id").references(() => classes.id),
+  toSectionId: text("to_section_id").references(() => sections.id),
+  toAcademicYearId: text("to_academic_year_id").references(() => academicYears.id),
+  outcome: text("outcome").notNull(),
+  promotedBy: text("promoted_by").notNull(),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+}, (t) => ({ studentIdx: index("promotions_student_idx").on(t.studentId) }));

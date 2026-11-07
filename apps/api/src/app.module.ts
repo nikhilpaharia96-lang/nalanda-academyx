@@ -27,6 +27,10 @@ import { SettingsModule } from "./settings/settings.module";
 import { AuditLogsModule } from "./audit-logs/audit-logs.module";
 import { ReportsModule } from "./reports/reports.module";
 import { StoreModule } from "./store/store.module";
+import { TimetableModule } from "./timetable/timetable.module";
+import { LibraryModule } from "./library/library.module";
+import { HostelModule } from "./hostel/hostel.module";
+import { PromotionsModule } from "./promotions/promotions.module";
 
 @Module({
   imports: [
@@ -56,6 +60,10 @@ import { StoreModule } from "./store/store.module";
     AuditLogsModule,
     ReportsModule,
     StoreModule,
+    TimetableModule,
+    LibraryModule,
+    HostelModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

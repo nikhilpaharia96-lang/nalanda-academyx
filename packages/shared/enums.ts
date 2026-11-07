@@ -102,3 +102,7 @@ export const STORE_ORDER_STATUSES = [
 ] as const;
 
 export const STORE_COUPON_DISCOUNT_TYPES = ["PERCENT", "FLAT"] as const;
+
+export const BOOK_REQUEST_STATUSES = ["REQUESTED", "ISSUED", "RETURNED", "REJECTED", "CANCELLED"] as const;
+export const PROMOTION_OUTCOMES = ["PROMOTED", "REPEATED", "GRADUATED"] as const;
+export const DAYS_OF_WEEK = [1, 2, 3, 4, 5, 6, 7] as const; // 1 = Monday ... 7 = Sunday
