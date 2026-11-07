@@ -31,6 +31,9 @@ import { TimetableModule } from "./timetable/timetable.module";
 import { LibraryModule } from "./library/library.module";
 import { HostelModule } from "./hostel/hostel.module";
 import { PromotionsModule } from "./promotions/promotions.module";
+import { TransportModule } from "./transport/transport.module";
+import { HomeworkModule } from "./homework/homework.module";
+import { LeaveModule } from "./leave/leave.module";
 
 @Module({
   imports: [
@@ -64,6 +67,9 @@ import { PromotionsModule } from "./promotions/promotions.module";
     LibraryModule,
     HostelModule,
     PromotionsModule,
+    TransportModule,
+    HomeworkModule,
+    LeaveModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

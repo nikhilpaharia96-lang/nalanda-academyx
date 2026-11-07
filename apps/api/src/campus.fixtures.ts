@@ -52,3 +52,23 @@ export async function makeStudent(base: { year: { id: string }; c1: { id: string
 
 export const admin = { sub: "admin-1", email: "a@x.test", role: "SUPER_ADMIN" as const };
 export const studentUser = (profileId: string) => ({ sub: "u-" + profileId, email: "s@x.test", role: "STUDENT" as const, profileId });
+
+export async function assignTeacher(
+  base: { year: { id: string }; c1: { id: string }; s1: { id: string } },
+  teacher: { id: string },
+  classId = base.c1.id,
+  sectionId = base.s1.id,
+) {
+  await db.insert(schema.teacherClassAssignments).values({ teacherId: teacher.id, classId, sectionId, subject: "Math", academicYearId: base.year.id });
+}
+
+export async function makeParent(student: { id: string }) {
+  const u = uniq();
+  const [user] = await db.insert(schema.users).values({ email: `p-${u}@x.test`, passwordHash: "x", role: "PARENT" }).returning();
+  const [parent] = await db.insert(schema.parents).values({ userId: user.id, name: `Parent ${u}`, phone: "9999999999" }).returning();
+  await db.insert(schema.parentStudents).values({ parentId: parent.id, studentId: student.id, relationship: "FATHER" });
+  return parent;
+}
+
+export const teacherUser = (profileId: string) => ({ sub: "tu-" + profileId, email: "t@x.test", role: "TEACHER" as const, profileId });
+export const parentUser = (profileId: string) => ({ sub: "pu-" + profileId, email: "p@x.test", role: "PARENT" as const, profileId });

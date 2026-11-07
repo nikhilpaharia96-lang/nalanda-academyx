@@ -1023,3 +1023,70 @@ export const promotions = sqliteTable("promotions", {
   promotedBy: text("promoted_by").notNull(),
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
 }, (t) => ({ studentIdx: index("promotions_student_idx").on(t.studentId) }));
+
+// ---------------------------------------------------------------------------
+// TRANSPORT / HOMEWORK / LEAVE REQUESTS
+// ---------------------------------------------------------------------------
+
+export const transportRoutes = sqliteTable("transport_routes", {
+  id: id(),
+  name: text("name").notNull().unique(),
+  vehicleNumber: text("vehicle_number"),
+  driverName: text("driver_name"),
+  driverPhone: text("driver_phone"),
+  // Informational only for now: not yet wired into the fee engine.
+  monthlyFee: real("monthly_fee"),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+});
+
+export const transportStops = sqliteTable("transport_stops", {
+  id: id(),
+  routeId: text("route_id").notNull().references(() => transportRoutes.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  pickupTime: text("pickup_time"), // HH:MM
+  stopOrder: integer("stop_order").notNull().default(0),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+}, (t) => ({ routeNameUnique: uniqueIndex("transport_stops_route_name_unique").on(t.routeId, t.name) }));
+
+// One ACTIVE assignment per student (endedAt IS NULL) is enforced in the service.
+export const transportAssignments = sqliteTable("transport_assignments", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  routeId: text("route_id").notNull().references(() => transportRoutes.id),
+  stopId: text("stop_id").references(() => transportStops.id),
+  startedAt: text("started_at").notNull().$defaultFn(() => new Date().toISOString()),
+  endedAt: text("ended_at"),
+}, (t) => ({
+  studentIdx: index("transport_assign_student_idx").on(t.studentId, t.endedAt),
+  routeIdx: index("transport_assign_route_idx").on(t.routeId, t.endedAt),
+}));
+
+export const homework = sqliteTable("homework", {
+  id: id(),
+  classId: text("class_id").notNull().references(() => classes.id, { onDelete: "cascade" }),
+  sectionId: text("section_id").notNull().references(() => sections.id, { onDelete: "cascade" }),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  subjectId: text("subject_id").notNull().references(() => subjects.id),
+  teacherId: text("teacher_id").references(() => teachers.id), // null when posted by an admin
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: text("due_date").notNull(), // YYYY-MM-DD
+  createdByUserId: text("created_by_user_id").notNull(),
+  ...timestamps,
+}, (t) => ({ classIdx: index("homework_class_idx").on(t.classId, t.sectionId, t.dueDate) }));
+
+// PENDING -> APPROVED | REJECTED (by admin / class teacher), or CANCELLED by the applicant.
+export const leaveRequests = sqliteTable("leave_requests", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  fromDate: text("from_date").notNull(),
+  toDate: text("to_date").notNull(),
+  reason: text("reason").notNull(),
+  status: text("status").notNull().default("PENDING"),
+  appliedByUserId: text("applied_by_user_id").notNull(),
+  reviewedByUserId: text("reviewed_by_user_id"),
+  reviewNote: text("review_note"),
+  reviewedAt: text("reviewed_at"),
+  ...timestamps,
+}, (t) => ({ studentIdx: index("leave_student_idx").on(t.studentId, t.status) }));

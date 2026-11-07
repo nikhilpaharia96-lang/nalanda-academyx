@@ -90,3 +90,53 @@ export const promoteSchema = z.object({
     .max(500),
 });
 export type PromoteDto = z.infer<typeof promoteSchema>;
+
+// --- Transport ---------------------------------------------------------------
+const optHhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Use HH:MM (24h)").optional();
+export const transportRouteSchema = z.object({
+  name: z.string().min(1),
+  vehicleNumber: z.string().optional(),
+  driverName: z.string().optional(),
+  driverPhone: z.string().optional(),
+  monthlyFee: z.number().nonnegative().optional(),
+});
+export const transportRouteUpdateSchema = transportRouteSchema.partial().extend({ active: z.boolean().optional() });
+export const transportStopSchema = z.object({
+  name: z.string().min(1),
+  pickupTime: optHhmm,
+  stopOrder: z.number().int().min(0).optional(),
+});
+export const transportAssignSchema = z.object({
+  studentId: z.string().min(1),
+  routeId: z.string().min(1),
+  stopId: z.string().min(1).optional(),
+});
+
+// --- Homework ------------------------------------------------------------------
+export const homeworkSchema = z.object({
+  classId: z.string().min(1),
+  sectionId: z.string().min(1),
+  academicYearId: z.string().min(1),
+  subjectId: z.string().min(1),
+  title: z.string().min(1).max(200),
+  description: z.string().max(5000).optional(),
+  dueDate: z.string().date(),
+});
+export const homeworkUpdateSchema = z.object({
+  subjectId: z.string().min(1).optional(),
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().max(5000).optional(),
+  dueDate: z.string().date().optional(),
+});
+
+// --- Leave requests ---------------------------------------------------------------
+export const leaveApplySchema = z.object({
+  studentId: z.string().min(1).optional(), // required for parents/admins, ignored for students
+  fromDate: z.string().date(),
+  toDate: z.string().date(),
+  reason: z.string().min(3).max(1000),
+});
+export const leaveReviewSchema = z.object({
+  decision: z.enum(["APPROVED", "REJECTED"]),
+  note: z.string().max(500).optional(),
+});
