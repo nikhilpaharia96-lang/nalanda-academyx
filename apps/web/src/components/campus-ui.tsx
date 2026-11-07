@@ -95,3 +95,42 @@ export function useBaseData(opts: { subjects?: boolean } = {}) {
 
   return { years, classes, sections, subjects, error, loading };
 }
+
+export interface StudentHit { id: string; name: string; studentId: string }
+
+/** Type-ahead student search used by admin screens. */
+export function StudentPicker({ value, onPick, label = "Student (type name or ID)" }: {
+  value: StudentHit | null; onPick: (s: StudentHit | null) => void; label?: string;
+}) {
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<StudentHit[]>([]);
+
+  useEffect(() => {
+    if (value || q.trim().length < 2) { setHits([]); return; }
+    const t = setTimeout(() => {
+      api.get<{ data: StudentHit[] }>(`/students?search=${encodeURIComponent(q)}&pageSize=8`).then((r) => setHits(r.data)).catch(() => setHits([]));
+    }, 250);
+    return () => clearTimeout(t);
+  }, [q, value]);
+
+  return (
+    <div>
+      <Field label={label}>
+        <input
+          className={inputClass}
+          value={value ? `${value.name} (${value.studentId})` : q}
+          onChange={(e) => { if (value) onPick(null); setQ(e.target.value); }}
+        />
+      </Field>
+      {hits.length > 0 && (
+        <div className="mt-1 rounded-md border border-neutral-200 bg-white">
+          {hits.map((s) => (
+            <button key={s.id} type="button" className="block w-full px-3 py-2 text-left text-sm hover:bg-neutral-50" onClick={() => { onPick(s); setQ(""); setHits([]); }}>
+              {s.name} <span className="text-neutral-400">{s.studentId}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

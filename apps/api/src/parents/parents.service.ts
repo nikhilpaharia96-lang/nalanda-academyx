@@ -27,7 +27,7 @@ export class ParentsService {
     const students = await Promise.all(
       links.map(async (link) => {
         const [student] = await db.select().from(schema.students).where(eq(schema.students.id, link.studentId));
-        return { ...student, relationship: link.relationship, isPrimary: link.isPrimary };
+        return { ...student, linkId: link.id, relationship: link.relationship, isPrimary: link.isPrimary };
       }),
     );
     return students;
