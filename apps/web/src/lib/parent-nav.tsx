@@ -1,12 +1,15 @@
-import { LayoutDashboard, ClipboardCheck, Wallet, Award, Bell as BellIcon, FileText, Settings, Megaphone, CalendarDays, Users, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, ClipboardCheck, Wallet, Award, Bell as BellIcon, FileText, Settings, Megaphone, CalendarDays, Users, ShoppingCart, NotebookPen, CalendarOff, Bus } from "lucide-react";
 
 export const PARENT_NAV = [
   { href: "/parent/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/parent/children", label: "My Children", icon: Users },
   { href: "/parent/attendance", label: "Attendance", icon: ClipboardCheck },
+  { href: "/parent/homework", label: "Homework", icon: NotebookPen },
+  { href: "/parent/leave", label: "Leave", icon: CalendarOff },
+  { href: "/parent/transport", label: "Transport", icon: Bus },
   { href: "/parent/fees", label: "Fees & Payments", icon: Wallet },
   { href: "/parent/results", label: "Results", icon: Award },
-  { href: "/parent/store", label: "School Store", icon: ShoppingCart },
+  { href: "/parent/store", label: "School Store", icon: ShoppingCart, NotebookPen, CalendarOff, Bus },
   { href: "/parent/notices", label: "Notices", icon: Megaphone },
   { href: "/parent/events", label: "Events", icon: CalendarDays },
   { href: "/parent/notifications", label: "Notifications", icon: BellIcon },

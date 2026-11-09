@@ -2,16 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { PortalShell } from "@/components/portal-shell";
+import { TEACHER_NAV } from "@/lib/teacher-nav";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api-client";
 import { LayoutDashboard, ClipboardCheck, User, Loader2, BookOpen } from "lucide-react";
 import Link from "next/link";
 
-const NAV = [
-  { href: "/teacher/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/teacher/attendance", label: "Attendance", icon: ClipboardCheck },
-  { href: "/teacher/profile", label: "Profile", icon: User },
-];
 
 interface Assignment {
   id: string;
@@ -46,7 +42,7 @@ export default function TeacherDashboardPage() {
   const sectionName = (id: string) => sections.find((s) => s.id === id)?.name ?? id;
 
   return (
-    <PortalShell navItems={NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
+    <PortalShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 sm:px-8">
         <p className="font-mono text-xs uppercase tracking-widest text-academic">Teacher Portal</p>
         <h1 className="font-display text-2xl font-bold text-navy">Dashboard</h1>

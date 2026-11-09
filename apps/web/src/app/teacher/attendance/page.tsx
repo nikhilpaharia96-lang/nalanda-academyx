@@ -3,15 +3,11 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PortalShell } from "@/components/portal-shell";
+import { TEACHER_NAV } from "@/lib/teacher-nav";
 import { useAuth } from "@/lib/auth-context";
 import { api, ApiError } from "@/lib/api-client";
 import { LayoutDashboard, ClipboardCheck, User, Loader2, Check, X, Clock, Coffee } from "lucide-react";
 
-const NAV = [
-  { href: "/teacher/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/teacher/attendance", label: "Attendance", icon: ClipboardCheck },
-  { href: "/teacher/profile", label: "Profile", icon: User },
-];
 
 interface Assignment { id: string; classId: string; sectionId: string; subject: string; academicYearId: string }
 interface ClassRow { id: string; name: string }
@@ -124,7 +120,7 @@ function AttendanceContent() {
   const sectionName = (id?: string) => sections.find((s) => s.id === id)?.name ?? "";
 
   return (
-    <PortalShell navItems={NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
+    <PortalShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-4 py-5 sm:px-8 sm:py-6">
         <p className="font-mono text-xs uppercase tracking-widest text-academic">Teacher Portal</p>
         <h1 className="font-display text-xl font-bold text-navy sm:text-2xl">Mark Attendance</h1>

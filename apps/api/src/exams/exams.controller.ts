@@ -49,7 +49,7 @@ export class ExamsController {
   // -- Subjects ---------------------------------------------------------------
 
   @Get("subjects")
-  @Roles(...ADMIN_ROLES)
+  @Roles(...ADMIN_ROLES, "TEACHER") // read-only: teachers need subject names for homework
   listSubjects() {
     return this.examsService.listSubjects();
   }

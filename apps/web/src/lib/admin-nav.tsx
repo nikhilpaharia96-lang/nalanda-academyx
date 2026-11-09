@@ -30,6 +30,9 @@ import {
   BookOpen,
   BedDouble,
   ArrowUpCircle,
+  Bus,
+  CalendarOff,
+  NotebookPen,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -87,6 +90,9 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Classes & Departments", icon: Building2, href: "/admin/classes" },
   { label: "Timetable", icon: CalendarClock, href: "/admin/timetable" },
   { label: "Library", icon: BookOpen, href: "/admin/library" },
+  { label: "Transport", icon: Bus, href: "/admin/transport" },
+  { label: "Homework", icon: NotebookPen, href: "/admin/homework" },
+  { label: "Leave Requests", icon: CalendarOff, href: "/admin/leave" },
   { label: "Hostel", icon: BedDouble, href: "/admin/hostel" },
   { label: "Promotions", icon: ArrowUpCircle, href: "/admin/promotions" },
   { label: "Parents", icon: UsersRound, href: "/admin/parents" },
