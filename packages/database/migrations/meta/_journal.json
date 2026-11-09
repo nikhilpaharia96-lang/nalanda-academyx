@@ -57,6 +57,13 @@
       "when": 1794064415250,
       "tag": "0007_magenta_namora",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1794211010389,
+      "tag": "0008_curious_infant_terrible",
+      "breakpoints": true
     }
   ]
 }

@@ -108,3 +108,6 @@ export const PROMOTION_OUTCOMES = ["PROMOTED", "REPEATED", "GRADUATED"] as const
 export const DAYS_OF_WEEK = [1, 2, 3, 4, 5, 6, 7] as const; // 1 = Monday ... 7 = Sunday
 
 export const LEAVE_STATUSES = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"] as const;
+
+export const CERTIFICATE_TYPES = ["BONAFIDE", "TRANSFER", "CHARACTER"] as const;
+export const CERTIFICATE_STATUSES = ["ISSUED", "CANCELLED"] as const;

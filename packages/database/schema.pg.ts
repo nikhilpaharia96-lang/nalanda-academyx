@@ -1146,3 +1146,27 @@ export const leaveRequests = pgTable("leave_requests", {
   reviewedAt: text("reviewed_at"),
   ...timestamps,
 }, (t) => ({ studentIdx: index("leave_student_idx").on(t.studentId, t.status) }));
+
+// ---------------------------------------------------------------------------
+// CERTIFICATES (bonafide / transfer / character)
+// ---------------------------------------------------------------------------
+
+// Student details are frozen in `snapshot` (JSON) at issue time so a re-download years later
+// still shows the class and data the certificate was issued with.
+export const certificates = pgTable("certificates", {
+  id: id(),
+  certificateNumber: text("certificate_number").notNull().unique(),
+  type: text("type").notNull(), // BONAFIDE | TRANSFER | CHARACTER
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  issuedOn: text("issued_on").notNull(), // YYYY-MM-DD
+  purpose: text("purpose"),
+  reason: text("reason"),
+  conduct: text("conduct"),
+  dateOfLeaving: text("date_of_leaving"),
+  remarks: text("remarks"),
+  snapshot: text("snapshot").notNull(),
+  status: text("status").notNull().default("ISSUED"), // ISSUED | CANCELLED
+  cancelledReason: text("cancelled_reason"),
+  issuedByUserId: text("issued_by_user_id").notNull(),
+  ...timestamps,
+}, (t) => ({ studentIdx: index("certificates_student_idx").on(t.studentId, t.type, t.status) }));

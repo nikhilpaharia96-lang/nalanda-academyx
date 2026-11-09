@@ -140,3 +140,18 @@ export const leaveReviewSchema = z.object({
   decision: z.enum(["APPROVED", "REJECTED"]),
   note: z.string().max(500).optional(),
 });
+
+// --- Certificates ----------------------------------------------------------------------
+export const issueCertificateSchema = z.object({
+  type: z.enum(["BONAFIDE", "TRANSFER", "CHARACTER"]),
+  studentId: z.string().min(1),
+  purpose: z.string().max(200).optional(), // bonafide
+  reason: z.string().max(300).optional(), // TC: reason for leaving
+  conduct: z.string().max(100).optional(), // TC / character
+  dateOfLeaving: z.string().date().optional(), // required for TC
+  remarks: z.string().max(300).optional(),
+  // TC only: also mark the student TRANSFERRED and end hostel/transport allocations.
+  markStudentLeft: z.boolean().optional(),
+});
+export type IssueCertificateDto = z.infer<typeof issueCertificateSchema>;
+export const cancelCertificateSchema = z.object({ reason: z.string().min(3).max(300) });

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Bus, Phone } from "lucide-react";
-import { api } from "@/lib/api-client";
+import { api, downloadFile } from "@/lib/api-client";
 import { Empty, ErrorBox, Field, Spinner, errMsg, ghostBtn, inputClass, primaryBtn } from "@/components/campus-ui";
 
 export const LEAVE_STYLE: Record<string, string> = {
@@ -144,6 +144,33 @@ export function TransportPanel({ studentId }: { studentId: string }) {
         <div><dt className="text-xs text-neutral-500">Driver</dt><dd className="font-medium text-navy">{info.driverName || "—"}</dd></div>
       </dl>
       {info.driverPhone && <a href={`tel:${info.driverPhone}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-academic"><Phone className="h-4 w-4" /> Call driver</a>}
+    </div>
+  );
+}
+
+interface CertRow { id: string; certificateNumber: string; type: string; issuedOn: string; studentName: string }
+const CERT_LABEL: Record<string, string> = { BONAFIDE: "Bonafide Certificate", TRANSFER: "Transfer Certificate", CHARACTER: "Character Certificate" };
+
+/** Issued certificates for the signed-in student, or the selected child for a parent. */
+export function CertificatesPanel({ studentId }: { studentId?: string }) {
+  const [rows, setRows] = useState<CertRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setRows(null);
+    api.get<CertRow[]>(`/certificates${studentId ? `?studentId=${studentId}` : ""}`).then(setRows).catch((e) => { setError(errMsg(e)); setRows([]); });
+  }, [studentId]);
+
+  if (!rows) return <Spinner />;
+  return (
+    <div className="space-y-3">
+      {error && <ErrorBox message={error} />}
+      {rows.length === 0 ? <Empty text="No certificates issued yet. Please contact the school office to request one." /> : rows.map((c) => (
+        <div key={c.id} className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3">
+          <div><p className="text-sm font-semibold text-navy">{CERT_LABEL[c.type] || c.type}</p><p className="font-mono text-xs text-neutral-500">{c.certificateNumber} · {c.issuedOn}</p></div>
+          <button className={ghostBtn} onClick={() => downloadFile(`/certificates/${c.id}/pdf`, `${c.certificateNumber.replace(/\//g, "-")}.pdf`).catch((e) => setError(errMsg(e)))}>Download</button>
+        </div>
+      ))}
     </div>
   );
 }
