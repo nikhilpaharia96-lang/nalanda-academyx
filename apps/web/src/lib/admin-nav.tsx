@@ -34,6 +34,7 @@ import {
   CalendarOff,
   NotebookPen,
   FileBadge,
+  BadgePercent,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -84,6 +85,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { href: "/admin/payments/receive", label: "Receive Payment", icon: Wallet },
       { href: "/admin/fees/pending", label: "Pending Fees", icon: AlertCircle },
       { href: "/admin/payments/receipts", label: "Receipts", icon: Receipt },
+      { href: "/admin/fees/concessions", label: "Concessions", icon: BadgePercent },
       { href: "/admin/fees/reports", label: "Fee Reports", icon: BarChart3 },
     ],
   },

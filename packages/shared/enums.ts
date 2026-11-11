@@ -111,3 +111,5 @@ export const LEAVE_STATUSES = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"] a
 
 export const CERTIFICATE_TYPES = ["BONAFIDE", "TRANSFER", "CHARACTER"] as const;
 export const CERTIFICATE_STATUSES = ["ISSUED", "CANCELLED"] as const;
+
+export const CONCESSION_TYPES = ["PERCENT", "FLAT"] as const;

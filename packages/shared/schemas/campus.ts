@@ -155,3 +155,29 @@ export const issueCertificateSchema = z.object({
 });
 export type IssueCertificateDto = z.infer<typeof issueCertificateSchema>;
 export const cancelCertificateSchema = z.object({ reason: z.string().min(3).max(300) });
+
+// --- Fee concessions -------------------------------------------------------------------------
+export const concessionSchema = z
+  .object({
+    name: z.string().min(2).max(80),
+    type: z.enum(["PERCENT", "FLAT"]),
+    value: z.number().positive(),
+    feeType: z.string().min(1).optional(), // omit = applies to every fee type
+    description: z.string().max(300).optional(),
+  })
+  .refine((v) => v.type !== "PERCENT" || v.value <= 100, { message: "A percentage cannot exceed 100", path: ["value"] });
+export const concessionUpdateSchema = z.object({
+  name: z.string().min(2).max(80).optional(),
+  value: z.number().positive().optional(),
+  feeType: z.string().min(1).nullable().optional(),
+  description: z.string().max(300).optional(),
+  active: z.boolean().optional(),
+});
+export const grantConcessionSchema = z.object({
+  studentId: z.string().min(1),
+  concessionId: z.string().min(1),
+  academicYearId: z.string().min(1),
+  reason: z.string().min(3).max(300),
+  // Also discount this student's already-generated fees that are completely unpaid.
+  applyToExisting: z.boolean().optional(),
+});

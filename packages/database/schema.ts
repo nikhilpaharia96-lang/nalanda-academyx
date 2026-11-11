@@ -1114,3 +1114,41 @@ export const certificates = sqliteTable("certificates", {
   issuedByUserId: text("issued_by_user_id").notNull(),
   ...timestamps,
 }, (t) => ({ studentIdx: index("certificates_student_idx").on(t.studentId, t.type, t.status) }));
+
+// ---------------------------------------------------------------------------
+// FEE CONCESSIONS (RTE, sibling, scholarship, staff ward ...)
+// Additive only: student_fees / payments are untouched. A concession lowers the
+// `amount` of fees generated AFTER it is granted (or explicitly applied to
+// existing unpaid fees); every discount is recorded in student_fee_concessions.
+// ---------------------------------------------------------------------------
+
+export const concessions = sqliteTable("concessions", {
+  id: id(),
+  name: text("name").notNull().unique(),
+  type: text("type").notNull(), // PERCENT | FLAT
+  value: real("value").notNull(), // percent (0-100] or rupees per fee
+  feeType: text("fee_type"), // null = every fee type
+  description: text("description"),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  ...timestamps,
+});
+
+export const studentConcessions = sqliteTable("student_concessions", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  concessionId: text("concession_id").notNull().references(() => concessions.id),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  reason: text("reason").notNull(),
+  grantedByUserId: text("granted_by_user_id").notNull(),
+  revokedAt: text("revoked_at"),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+}, (t) => ({ studentIdx: index("student_concessions_idx").on(t.studentId, t.academicYearId, t.revokedAt) }));
+
+export const studentFeeConcessions = sqliteTable("student_fee_concessions", {
+  id: id(),
+  studentFeeId: text("student_fee_id").notNull().references(() => studentFees.id, { onDelete: "cascade" }),
+  concessionId: text("concession_id").notNull().references(() => concessions.id),
+  originalAmount: real("original_amount").notNull(), // the fee amount before ANY concession
+  discountAmount: real("discount_amount").notNull(),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+}, (t) => ({ unique: uniqueIndex("student_fee_concessions_unique").on(t.studentFeeId, t.concessionId) }));

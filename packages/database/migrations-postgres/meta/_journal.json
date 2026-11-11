@@ -64,6 +64,13 @@
       "when": 1794211011369,
       "tag": "0008_condemned_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794211429245,
+      "tag": "0009_bizarre_nighthawk",
+      "breakpoints": true
     }
   ]
 }

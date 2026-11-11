@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, Optional } from "@nestjs/common";
 import { and, eq, gte, inArray, isNull, lte, or, type SQL } from "drizzle-orm";
 import { db, schema } from "@nalanda/database";
 import { AuditService } from "../common/audit.service";
 import { OwnershipService } from "../common/ownership.service";
+import { ConcessionsService } from "../concessions/concessions.service";
 import type { AuthenticatedUser } from "../common/types/authenticated-user";
 
 type StudentFeeRow = typeof schema.studentFees.$inferSelect;
@@ -25,6 +26,8 @@ export class FeesService {
   constructor(
     private readonly auditService: AuditService,
     private readonly ownershipService: OwnershipService,
+    // Optional: when absent (or no concession applies) fees are generated exactly as before.
+    @Optional() private readonly concessions?: ConcessionsService,
   ) {}
 
   // --- Fee structures --------------------------------------------------------
@@ -141,6 +144,10 @@ export class FeesService {
       const existing = await db.select().from(schema.studentFees).where(and(...existingConditions));
       if (existing[0]) continue;
 
+      // Apply any active fee concessions (RTE, sibling, scholarship ...) to the amount.
+      const quote = this.concessions ? await this.concessions.quote(student.id, structure.academicYearId, structure.feeType, structure.amount) : null;
+      const discounted = !!quote && quote.discount > 0;
+      const now = new Date().toISOString();
       const [row] = await db
         .insert(schema.studentFees)
         .values({
@@ -149,10 +156,21 @@ export class FeesService {
           academicYearId: structure.academicYearId,
           month,
           year: dto.year,
-          amount: structure.amount,
+          amount: discounted ? quote!.net : structure.amount,
           dueDate,
+          // A 100% concession means nothing is payable: mark it WAIVED like an admin waiver would.
+          ...(discounted && quote!.net === 0 ? { status: "WAIVED", waivedAt: now, waivedReason: `Fee concession: ${quote!.items.map((i) => i.name).join(", ")}` } : {}),
         })
         .returning();
+      if (discounted) {
+        try {
+          await this.concessions!.recordApplied(row.id, quote!);
+        } catch (err) {
+          // Keep amount and its record consistent: undo the fee so a retry regenerates it cleanly.
+          await db.delete(schema.studentFees).where(eq(schema.studentFees.id, row.id));
+          throw err;
+        }
+      }
       created.push(row);
     }
 
