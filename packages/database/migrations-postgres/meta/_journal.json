@@ -71,6 +71,13 @@
       "when": 1794211429245,
       "tag": "0009_bizarre_nighthawk",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794542432644,
+      "tag": "0010_loving_kabuki",
+      "breakpoints": true
     }
   ]
 }

@@ -181,3 +181,33 @@ export const grantConcessionSchema = z.object({
   // Also discount this student's already-generated fees that are completely unpaid.
   applyToExisting: z.boolean().optional(),
 });
+
+// --- Staff payroll & attendance -----------------------------------------------------------------------
+const money = z.number().min(0).max(10_000_000);
+export const salaryStructureSchema = z.object({
+  basic: z.number().positive().max(10_000_000),
+  hra: money.default(0),
+  da: money.default(0),
+  otherAllowances: money.default(0),
+  pfPercent: z.number().min(0).max(100).default(0),
+  professionalTax: money.default(0),
+  otherDeductions: money.default(0),
+});
+export const staffAttendanceSchema = z.object({
+  date: z.string().date(),
+  records: z.array(z.object({
+    teacherId: z.string().min(1),
+    status: z.enum(["PRESENT", "ABSENT", "HALF_DAY", "LEAVE"]),
+    note: z.string().max(200).optional(),
+  })).min(1).max(500),
+});
+export const generatePayslipsSchema = z.object({
+  month: z.number().int().min(1).max(12),
+  year: z.number().int().min(2000).max(2100),
+});
+export const adjustPayslipSchema = z.object({ lopDays: z.number().min(0).max(31) });
+export const payPayslipSchema = z.object({
+  paidOn: z.string().date(),
+  paymentMode: z.enum(["CASH", "UPI", "BANK_TRANSFER", "CHEQUE", "OTHER"]),
+  paymentReference: z.string().max(100).optional(),
+});

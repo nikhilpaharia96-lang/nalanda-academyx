@@ -113,3 +113,6 @@ export const CERTIFICATE_TYPES = ["BONAFIDE", "TRANSFER", "CHARACTER"] as const;
 export const CERTIFICATE_STATUSES = ["ISSUED", "CANCELLED"] as const;
 
 export const CONCESSION_TYPES = ["PERCENT", "FLAT"] as const;
+
+export const STAFF_ATTENDANCE_STATUSES = ["PRESENT", "ABSENT", "HALF_DAY", "LEAVE"] as const;
+export const PAYSLIP_STATUSES = ["GENERATED", "PAID"] as const;

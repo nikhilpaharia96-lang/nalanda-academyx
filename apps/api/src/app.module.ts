@@ -36,6 +36,7 @@ import { HomeworkModule } from "./homework/homework.module";
 import { LeaveModule } from "./leave/leave.module";
 import { CertificatesModule } from "./certificates/certificates.module";
 import { ConcessionsModule } from "./concessions/concessions.module";
+import { PayrollModule } from "./payroll/payroll.module";
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { ConcessionsModule } from "./concessions/concessions.module";
     LeaveModule,
     CertificatesModule,
     ConcessionsModule,
+    PayrollModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

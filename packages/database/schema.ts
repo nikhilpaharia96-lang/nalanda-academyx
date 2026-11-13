@@ -1152,3 +1152,59 @@ export const studentFeeConcessions = sqliteTable("student_fee_concessions", {
   discountAmount: real("discount_amount").notNull(),
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
 }, (t) => ({ unique: uniqueIndex("student_fee_concessions_unique").on(t.studentFeeId, t.concessionId) }));
+
+// ---------------------------------------------------------------------------
+// STAFF PAYROLL & ATTENDANCE (teachers). Additive: no existing table changes.
+// ---------------------------------------------------------------------------
+
+// One CURRENT structure per teacher. Old months stay correct because every payslip stores its own copy of the numbers.
+export const salaryStructures = sqliteTable("salary_structures", {
+  id: id(),
+  teacherId: text("teacher_id").notNull().unique().references(() => teachers.id, { onDelete: "cascade" }),
+  basic: real("basic").notNull(),
+  hra: real("hra").notNull().default(0),
+  da: real("da").notNull().default(0),
+  otherAllowances: real("other_allowances").notNull().default(0),
+  pfPercent: real("pf_percent").notNull().default(0), // % of (earned) basic; 0 = no PF
+  professionalTax: real("professional_tax").notNull().default(0), // flat per month
+  otherDeductions: real("other_deductions").notNull().default(0), // flat per month
+  ...timestamps,
+});
+
+export const staffAttendance = sqliteTable("staff_attendance", {
+  id: id(),
+  teacherId: text("teacher_id").notNull().references(() => teachers.id, { onDelete: "cascade" }),
+  date: text("date").notNull(), // YYYY-MM-DD
+  status: text("status").notNull(), // PRESENT | ABSENT | HALF_DAY | LEAVE (paid)
+  note: text("note"),
+  markedByUserId: text("marked_by_user_id").notNull(),
+  ...timestamps,
+}, (t) => ({ unique: uniqueIndex("staff_attendance_unique").on(t.teacherId, t.date) }));
+
+export const payslips = sqliteTable("payslips", {
+  id: id(),
+  teacherId: text("teacher_id").notNull().references(() => teachers.id),
+  month: integer("month").notNull(), // 1-12
+  year: integer("year").notNull(),
+  // Full-month components as they were when generated:
+  basic: real("basic").notNull(),
+  hra: real("hra").notNull(),
+  da: real("da").notNull(),
+  otherAllowances: real("other_allowances").notNull(),
+  pfPercent: real("pf_percent").notNull(),
+  professionalTax: real("professional_tax").notNull(),
+  otherDeductions: real("other_deductions").notNull(),
+  // Attendance and the calculated result:
+  workingDays: real("working_days").notNull(),
+  lopDays: real("lop_days").notNull(), // loss-of-pay days
+  grossEarned: real("gross_earned").notNull(),
+  pfAmount: real("pf_amount").notNull(),
+  totalDeductions: real("total_deductions").notNull(),
+  netPay: real("net_pay").notNull(),
+  status: text("status").notNull().default("GENERATED"), // GENERATED | PAID
+  paidOn: text("paid_on"),
+  paymentMode: text("payment_mode"),
+  paymentReference: text("payment_reference"),
+  generatedByUserId: text("generated_by_user_id").notNull(),
+  ...timestamps,
+}, (t) => ({ unique: uniqueIndex("payslips_teacher_month_unique").on(t.teacherId, t.year, t.month) }));

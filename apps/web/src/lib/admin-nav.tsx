@@ -35,6 +35,7 @@ import {
   NotebookPen,
   FileBadge,
   BadgePercent,
+  Banknote,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -97,6 +98,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Homework", icon: NotebookPen, href: "/admin/homework" },
   { label: "Leave Requests", icon: CalendarOff, href: "/admin/leave" },
   { label: "Certificates", icon: FileBadge, href: "/admin/certificates" },
+  { label: "Payroll", icon: Banknote, href: "/admin/payroll" },
   { label: "Hostel", icon: BedDouble, href: "/admin/hostel" },
   { label: "Promotions", icon: ArrowUpCircle, href: "/admin/promotions" },
   { label: "Parents", icon: UsersRound, href: "/admin/parents" },
