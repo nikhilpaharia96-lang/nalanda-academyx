@@ -211,3 +211,15 @@ export const payPayslipSchema = z.object({
   paymentMode: z.enum(["CASH", "UPI", "BANK_TRANSFER", "CHEQUE", "OTHER"]),
   paymentReference: z.string().max(100).optional(),
 });
+
+// --- Staff logins (Accountant ...) -----------------------------------------------------------------------
+export const STAFF_ACCOUNT_ROLES = ["ACCOUNTANT"] as const;
+export const createStaffAccountSchema = z.object({
+  role: z.enum(STAFF_ACCOUNT_ROLES),
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  phone: z.string().min(6).max(20).optional(),
+  designation: z.string().max(100).optional(),
+  password: z.string().min(8).max(100).optional(), // omit to auto-generate a temporary password
+});
+export const staffAccountStatusSchema = z.object({ status: z.enum(["ACTIVE", "INACTIVE"]) });

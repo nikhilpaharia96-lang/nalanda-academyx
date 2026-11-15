@@ -36,6 +36,7 @@ import {
   FileBadge,
   BadgePercent,
   Banknote,
+  KeyRound,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -99,6 +100,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Leave Requests", icon: CalendarOff, href: "/admin/leave" },
   { label: "Certificates", icon: FileBadge, href: "/admin/certificates" },
   { label: "Payroll", icon: Banknote, href: "/admin/payroll" },
+  { label: "Staff Logins", icon: KeyRound, href: "/admin/staff-accounts" },
   { label: "Hostel", icon: BedDouble, href: "/admin/hostel" },
   { label: "Promotions", icon: ArrowUpCircle, href: "/admin/promotions" },
   { label: "Parents", icon: UsersRound, href: "/admin/parents" },
@@ -137,3 +139,14 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Reports", icon: FileBarChart, href: "/admin/reports" },
   { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
+
+/** Accountants only get the money screens. The API enforces this too; this keeps the menu and URLs tidy. */
+export const ACCOUNTANT_ALLOWED_PREFIXES = ["/admin/fees", "/admin/payments", "/admin/payroll"];
+
+export function navForRole(role: string | undefined): AdminNavGroup[] {
+  if (role !== "ACCOUNTANT") return ADMIN_NAV;
+  return ADMIN_NAV.filter((g) => g.label === "Fees & Payments" || g.label === "Payroll");
+}
+
+export const isAccountantPathAllowed = (pathname: string) =>
+  ACCOUNTANT_ALLOWED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));

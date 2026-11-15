@@ -23,6 +23,10 @@ export class AuthService {
       const [row] = await db.select({ id: schema.teachers.id }).from(schema.teachers).where(eq(schema.teachers.userId, userId));
       return row?.id;
     }
+    if (role === "ACCOUNTANT") {
+      const [row] = await db.select({ id: schema.staffAccounts.id }).from(schema.staffAccounts).where(eq(schema.staffAccounts.userId, userId));
+      return row?.id;
+    }
     if (role === "PARENT") {
       const [row] = await db.select({ id: schema.parents.id }).from(schema.parents).where(eq(schema.parents.userId, userId));
       return row?.id;

@@ -18,7 +18,9 @@ export class TeachersService {
   async getByIdForUser(id: string, user: AuthenticatedUser) {
     const [teacher] = await db.select().from(schema.teachers).where(eq(schema.teachers.id, id));
     if (!teacher) throw new NotFoundException("Teacher not found");
-    if (user.role === "TEACHER" && user.profileId !== id) throw new ForbiddenException();
+    // Allow-list: admins, or the teacher themself. (Previously only other TEACHERs were blocked, so
+    // students/parents could read any teacher's phone, email and address.)
+    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && !(user.role === "TEACHER" && user.profileId === id)) throw new ForbiddenException();
     return teacher;
   }
 
@@ -161,7 +163,8 @@ export class TeachersService {
   }
 
   // --- Class assignments ----------------------------------------------------
-  async listAssignments(teacherId: string) {
+  async listAssignments(teacherId: string, user: AuthenticatedUser) {
+    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && !(user.role === "TEACHER" && user.profileId === teacherId)) throw new ForbiddenException();
     return db.select().from(schema.teacherClassAssignments).where(eq(schema.teacherClassAssignments.teacherId, teacherId));
   }
 

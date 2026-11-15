@@ -325,7 +325,7 @@ export class PaymentsService {
     const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.id, paymentId));
     if (!payment) throw new NotFoundException("Payment not found");
     if (payment.status !== "PAID") throw new BadRequestException("A receipt is only available for successful payments");
-    if (payment.studentId) await this.ownershipService.assertCanAccessStudent(payment.studentId, user);
+    if (payment.studentId) await this.ownershipService.assertCanAccessStudentFinance(payment.studentId, user);
     const receipt = await this.receiptsService.getFullReceipt(paymentId);
     if (!receipt) throw new NotFoundException("Receipt not found");
     return receipt;

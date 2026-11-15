@@ -7,7 +7,7 @@ import { api, setAccessToken, refreshAccessToken, ApiError } from "./api-client"
 interface CurrentUser {
   id: string;
   email: string;
-  role: "SUPER_ADMIN" | "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
+  role: "SUPER_ADMIN" | "ADMIN" | "ACCOUNTANT" | "TEACHER" | "STUDENT" | "PARENT";
   profileId?: string;
 }
 
@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const home: Record<CurrentUser["role"], string> = {
         SUPER_ADMIN: "/admin/dashboard",
         ADMIN: "/admin/dashboard",
+        ACCOUNTANT: "/admin/fees",
         TEACHER: "/teacher/dashboard",
         STUDENT: "/student/dashboard",
         PARENT: "/parent/dashboard",

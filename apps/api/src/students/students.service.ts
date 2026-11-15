@@ -69,8 +69,11 @@ export class StudentsService {
           ),
         );
       if (assignment.length === 0) throw new ForbiddenException();
+    } else if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN") {
+      // Allow-list: any other role (e.g. ACCOUNTANT) is denied. This chain used to end with no "else",
+      // which silently allowed every role it didn't mention.
+      throw new ForbiddenException();
     }
-    // ADMIN / SUPER_ADMIN: unrestricted.
 
     return student;
   }

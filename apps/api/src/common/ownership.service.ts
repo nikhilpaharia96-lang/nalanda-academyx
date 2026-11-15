@@ -43,6 +43,15 @@ export class OwnershipService {
     throw new ForbiddenException();
   }
 
+  /**
+   * Like assertCanAccessStudent, but also lets finance staff (accountants) through. Use ONLY where a
+   * finance task needs the student: fee statements, receipts, concessions. Everywhere else accountants are denied.
+   */
+  async assertCanAccessStudentFinance(studentId: string, user: AuthenticatedUser) {
+    if (user.role === "ACCOUNTANT") return;
+    await this.assertCanAccessStudent(studentId, user);
+  }
+
   /** Throws unless `user` (a TEACHER) is assigned to this class+section. Admins always pass. */
   async assertTeacherAssignedToClass(classId: string, sectionId: string, user: AuthenticatedUser) {
     if (user.role === "SUPER_ADMIN" || user.role === "ADMIN") return;

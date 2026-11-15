@@ -17,12 +17,14 @@ export class ParentsService {
   async getByIdForUser(id: string, user: AuthenticatedUser) {
     const [parent] = await db.select().from(schema.parents).where(eq(schema.parents.id, id));
     if (!parent) throw new NotFoundException("Parent not found");
-    if (user.role === "PARENT" && user.profileId !== id) throw new ForbiddenException();
+    // Allow-list: admins, or the parent themself. (This used to only block other PARENTs, which let
+    // students and teachers read any parent's contact details.)
+    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && !(user.role === "PARENT" && user.profileId === id)) throw new ForbiddenException();
     return parent;
   }
 
   async getChildren(parentId: string, user: AuthenticatedUser) {
-    if (user.role === "PARENT" && user.profileId !== parentId) throw new ForbiddenException();
+    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && !(user.role === "PARENT" && user.profileId === parentId)) throw new ForbiddenException();
     const links = await db.select().from(schema.parentStudents).where(eq(schema.parentStudents.parentId, parentId));
     const students = await Promise.all(
       links.map(async (link) => {

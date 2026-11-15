@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin-shell";
 import { Modal } from "@/components/fees/Modal";
 import { api, ApiError } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { FEE_TYPES, FEE_FREQUENCIES, formatCurrency, humanize } from "@/lib/fees";
 import { Loader2, Plus, Pencil, Trash2, PlayCircle, Wallet } from "lucide-react";
 
@@ -326,6 +327,7 @@ function GenerateModal({ structure, onClose, onDone }: { structure: FeeStructure
 }
 
 export default function AdminFeesPage() {
+  const { user } = useAuth();
   const { classes } = useRefData();
   const [structures, setStructures] = useState<FeeStructure[]>([]);
   const [loading, setLoading] = useState(true);
@@ -464,9 +466,9 @@ export default function AdminFeesPage() {
                         <button onClick={() => setFormTarget(s)} title="Edit" className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100">
                           <Pencil className="h-4 w-4" />
                         </button>
-                        <button onClick={() => remove(s)} title="Delete" className="rounded-md p-1.5 text-red-500 hover:bg-red-50">
+                        {user?.role !== "ACCOUNTANT" && <button onClick={() => remove(s)} title="Delete" className="rounded-md p-1.5 text-red-500 hover:bg-red-50">
                           <Trash2 className="h-4 w-4" />
-                        </button>
+                        </button>}
                       </div>
                     </td>
                   </tr>

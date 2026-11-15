@@ -17,13 +17,13 @@ export class PayrollController {
   constructor(private readonly payrollService: PayrollService) {}
 
   @Get("structures")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   structures() {
     return this.payrollService.listStructures();
   }
 
   @Put("structures/:teacherId")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   upsertStructure(@Param("teacherId") teacherId: string, @Body(new ZodValidationPipe(salaryStructureSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.payrollService.upsertStructure(teacherId, dto, user.sub);
   }
@@ -35,13 +35,13 @@ export class PayrollController {
   }
 
   @Get("attendance")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   attendance(@Query("date") date: string) {
     return this.payrollService.attendanceForDate(date || new Date().toLocaleDateString("sv"));
   }
 
   @Get("attendance/summary")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   summary(@Query("month", new DefaultValuePipe(now.getMonth() + 1), ParseIntPipe) month: number, @Query("year", new DefaultValuePipe(now.getFullYear()), ParseIntPipe) year: number) {
     return this.payrollService.attendanceSummary(month, year);
   }
@@ -53,37 +53,37 @@ export class PayrollController {
   }
 
   @Post("payslips/generate")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   generate(@Body(new ZodValidationPipe(generatePayslipsSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.payrollService.generate(dto.month, dto.year, user.sub);
   }
 
   @Get("payslips")
-  @Roles("SUPER_ADMIN", "ADMIN", "TEACHER")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT", "TEACHER")
   list(@CurrentUser() user: AuthenticatedUser, @Query("month") month?: string, @Query("year") year?: string, @Query("teacherId") teacherId?: string) {
     return this.payrollService.list(user, { month: month ? Number(month) : undefined, year: year ? Number(year) : undefined, teacherId });
   }
 
   @Post("payslips/:id/adjust")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   adjust(@Param("id") id: string, @Body(new ZodValidationPipe(adjustPayslipSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.payrollService.adjust(id, dto.lopDays, user.sub);
   }
 
   @Post("payslips/:id/pay")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   pay(@Param("id") id: string, @Body(new ZodValidationPipe(payPayslipSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.payrollService.markPaid(id, dto, user.sub);
   }
 
   @Delete("payslips/:id")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   remove(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
     return this.payrollService.remove(id, user.sub);
   }
 
   @Get("payslips/:id/pdf")
-  @Roles("SUPER_ADMIN", "ADMIN", "TEACHER")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT", "TEACHER")
   async pdf(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser, @Res() res: Response) {
     const { pdf, filename } = await this.payrollService.renderPdf(id, user);
     res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="${filename}"`, "Content-Length": pdf.length });

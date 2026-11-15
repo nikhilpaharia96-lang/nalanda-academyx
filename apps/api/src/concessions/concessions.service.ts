@@ -185,8 +185,8 @@ export class ConcessionsService {
 
   /** A student's grants plus how much has actually been discounted so far. Students/parents may view their own. */
   async forStudent(studentId: string, user: AuthenticatedUser) {
-    await this.ownershipService.assertCanAccessStudent(studentId, user);
-    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.role !== "STUDENT" && user.role !== "PARENT") throw new ForbiddenException();
+    await this.ownershipService.assertCanAccessStudentFinance(studentId, user);
+    if (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.role !== "ACCOUNTANT" && user.role !== "STUDENT" && user.role !== "PARENT") throw new ForbiddenException();
     const grants = await db
       .select({
         id: schema.studentConcessions.id, reason: schema.studentConcessions.reason, revokedAt: schema.studentConcessions.revokedAt,

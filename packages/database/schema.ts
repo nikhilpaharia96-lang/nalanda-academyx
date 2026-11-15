@@ -38,7 +38,7 @@ export const users = sqliteTable("users", {
   email: text("email").notNull().unique(),
   phone: text("phone").unique(),
   passwordHash: text("password_hash").notNull(),
-  role: text("role").notNull(), // SUPER_ADMIN | ADMIN | TEACHER | STUDENT | PARENT
+  role: text("role").notNull(), // SUPER_ADMIN | ADMIN | ACCOUNTANT | TEACHER | STUDENT | PARENT
   status: text("status").notNull().default("ACTIVE"),
   lastLoginAt: text("last_login_at"),
   // Set true whenever the Admin creates an account with a system-generated
@@ -1208,3 +1208,16 @@ export const payslips = sqliteTable("payslips", {
   generatedByUserId: text("generated_by_user_id").notNull(),
   ...timestamps,
 }, (t) => ({ unique: uniqueIndex("payslips_teacher_month_unique").on(t.teacherId, t.year, t.month) }));
+
+// ---------------------------------------------------------------------------
+// STAFF ACCOUNTS: logins for non-teaching staff (currently ACCOUNTANT). The
+// users row holds email/password/role/status; this row holds the person's details.
+// ---------------------------------------------------------------------------
+export const staffAccounts = sqliteTable("staff_accounts", {
+  id: id(),
+  userId: text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  phone: text("phone"),
+  designation: text("designation"),
+  ...timestamps,
+});

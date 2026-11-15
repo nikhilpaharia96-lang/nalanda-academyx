@@ -40,7 +40,7 @@ export class PaymentsController {
 
   @Post("offline")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   recordOffline(@Body(new ZodValidationPipe(recordOfflinePaymentSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.paymentsService.recordOfflinePayment(dto, user.sub);
   }
@@ -48,7 +48,7 @@ export class PaymentsController {
   /** Admin "Payments / Received Payments" dashboard — full filter set. */
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   list(
     @Query("status") status?: string,
     @Query("method") method?: string,
@@ -67,7 +67,7 @@ export class PaymentsController {
    * successful payments (an unsuccessful attempt has no receipt to show). */
   @Get("receipts")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   receipts(
     @Query("method") method?: string,
     @Query("studentId") studentId?: string,

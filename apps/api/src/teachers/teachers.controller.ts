@@ -63,8 +63,8 @@ export class TeachersController {
   }
 
   @Get(":id/assignments")
-  listAssignments(@Param("id") id: string) {
-    return this.teachersService.listAssignments(id);
+  listAssignments(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.teachersService.listAssignments(id, user);
   }
 
   @Post(":id/assignments")

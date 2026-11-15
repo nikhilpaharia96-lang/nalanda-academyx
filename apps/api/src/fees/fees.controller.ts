@@ -86,13 +86,13 @@ export class FeesController {
   }
 
   @Post("structures")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   createStructure(@Body(new ZodValidationPipe(createStructureSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.feesService.createFeeStructure(dto, user.sub);
   }
 
   @Patch("structures/:id")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   updateStructure(@Param("id") id: string, @Body(new ZodValidationPipe(updateStructureSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.feesService.updateFeeStructure(id, dto, user.sub);
   }
@@ -104,7 +104,7 @@ export class FeesController {
   }
 
   @Post("structures/:id/generate")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   generate(@Param("id") id: string, @Body(new ZodValidationPipe(generateSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.feesService.generateFeesForPeriod(id, dto, user.sub);
   }
@@ -117,25 +117,25 @@ export class FeesController {
   // --- Admin dashboards ----------------------------------------------------
 
   @Get("admin/overview")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   adminOverview(@Query(new ZodValidationPipe(overviewQuerySchema)) query: any) {
     return this.feesService.adminFeeOverview(query);
   }
 
   @Get("pending")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   pending(@Query(new ZodValidationPipe(overviewQuerySchema)) query: any) {
     return this.feesService.pendingFees(query);
   }
 
   @Get("pending/breakdown")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   pendingBreakdown(@Query(new ZodValidationPipe(breakdownQuerySchema)) query: any) {
     return this.feesService.pendingBreakdown(query.feeStructureId, query.month, query.year);
   }
 
   @Get("reports/summary")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   reportsSummary(@Query(new ZodValidationPipe(overviewQuerySchema)) query: any) {
     return this.feesService.reportsSummary(query);
   }
@@ -147,7 +147,7 @@ export class FeesController {
   }
 
   @Get("student-fees")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   listAll(@Query("status") status?: string, @Query("classId") classId?: string) {
     return this.feesService.listAllStudentFees({ status, classId });
   }
@@ -155,13 +155,13 @@ export class FeesController {
   // --- Extra / one-off fees --------------------------------------------------
 
   @Get("extra")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   listExtra(@Query("classId") classId?: string, @Query("status") status?: string) {
     return this.feesService.listExtraFees({ classId, status });
   }
 
   @Post("extra")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   createExtra(@Body(new ZodValidationPipe(createExtraFeeSchema)) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.feesService.createExtraFee(dto, user.sub);
   }

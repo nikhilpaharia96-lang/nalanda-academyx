@@ -76,6 +76,7 @@ export class ReportsController {
   }
 
   @Get("fees")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   fees(@Query("from") from?: string, @Query("to") to?: string) {
     return this.reportsService.feeCollectionSummary({ from, to });
   }

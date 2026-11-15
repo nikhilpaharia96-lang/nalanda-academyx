@@ -5,6 +5,7 @@ import { BadgePercent, Plus } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
 import { Modal } from "@/components/modal";
 import { api } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { Empty, ErrorBox, Field, PageHeader, Spinner, StudentPicker, errMsg, ghostBtn, inputClass, primaryBtn, useBaseData, type StudentHit } from "@/components/campus-ui";
 
 interface Scheme { id: string; name: string; type: "PERCENT" | "FLAT"; value: number; feeType: string | null; description: string | null; active: boolean }
@@ -17,6 +18,8 @@ const valueLabel = (s: { type: string; value: number }) => (s.type === "PERCENT"
 const EMPTY = { name: "", type: "PERCENT", value: "", feeType: "", description: "" };
 
 export default function AdminConcessionsPage() {
+  const { user } = useAuth();
+  const canEdit = user?.role !== "ACCOUNTANT"; // accountants can view schemes and the report; admins grant and edit
   const base = useBaseData();
   const [tab, setTab] = useState<"schemes" | "grant" | "report">("schemes");
   const [schemes, setSchemes] = useState<Scheme[] | null>(null);
@@ -75,11 +78,11 @@ export default function AdminConcessionsPage() {
   return (
     <AdminShell>
       <PageHeader title="Fee Concessions" icon={BadgePercent}>
-        {tab === "schemes" && <button className={primaryBtn} onClick={() => { setForm(EMPTY); setModalError(null); setModal({}); }}><Plus className="h-4 w-4" /> New Scheme</button>}
+        {canEdit && tab === "schemes" && <button className={primaryBtn} onClick={() => { setForm(EMPTY); setModalError(null); setModal({}); }}><Plus className="h-4 w-4" /> New Scheme</button>}
       </PageHeader>
       <div className="space-y-4 p-6 md:p-8">
         <div className="flex gap-2">
-          {([["schemes", "Schemes"], ["grant", "Give to student"], ["report", "Report"]] as const).map(([k, l]) => (
+          {([["schemes", "Schemes"], ["grant", "Give to student"], ["report", "Report"]] as const).filter(([k]) => k !== "grant" || canEdit).map(([k, l]) => (
             <button key={k} onClick={() => { setTab(k); setNotice(null); }} className={`rounded-md px-4 py-1.5 text-sm font-medium ${tab === k ? "bg-navy text-white" : "bg-white text-navy ring-1 ring-neutral-300"}`}>{l}</button>
           ))}
         </div>
@@ -93,10 +96,10 @@ export default function AdminConcessionsPage() {
                   <p className="text-sm font-semibold text-navy">{s.name}{!s.active && <span className="ml-2 text-xs text-neutral-400">(inactive)</span>}</p>
                   <p className="text-xs text-neutral-500">{valueLabel(s)} · {s.feeType ? s.feeType.replace(/_/g, " ").toLowerCase() : "all fee types"}</p>
                 </div>
-                <div className="flex gap-2">
+                {canEdit && <div className="flex gap-2">
                   <button className={ghostBtn} onClick={() => { setForm({ name: s.name, type: s.type, value: String(s.value), feeType: s.feeType || "", description: s.description || "" }); setModalError(null); setModal({ edit: s }); }}>Edit</button>
                   <button className={ghostBtn} onClick={async () => { try { await api.patch(`/concessions/${s.id}`, { active: !s.active }); loadSchemes(); } catch (e) { setError(errMsg(e)); } }}>{s.active ? "Deactivate" : "Activate"}</button>
-                </div>
+                </div>}
               </div>
             ))}
           </div>

@@ -186,7 +186,7 @@ export class FeesService {
 
   // --- Student fees --------------------------------------------------------
   async getStudentFees(studentId: string, user: AuthenticatedUser) {
-    await this.ownershipService.assertCanAccessStudent(studentId, user);
+    await this.ownershipService.assertCanAccessStudentFinance(studentId, user);
     const fees = await db.select().from(schema.studentFees).where(eq(schema.studentFees.studentId, studentId)).orderBy(schema.studentFees.dueDate);
     const extras = await db.select().from(schema.extraFees).where(eq(schema.extraFees.studentId, studentId));
 

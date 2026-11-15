@@ -14,7 +14,7 @@ export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
   @Get()
-  @Roles("SUPER_ADMIN", "ADMIN", "TEACHER")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT", "TEACHER")
   list(@Query(new ZodValidationPipe(listStudentsQuerySchema)) query: any) {
     return this.studentsService.list(query);
   }

@@ -7,7 +7,8 @@ import type { AuthenticatedUser } from "../common/types/authenticated-user";
 import { calculatePay, dateStr, daysBeforeJoining, daysInMonth, workingDaysIn, type PayComponents } from "./payroll-calc";
 import { PdfPayslipService } from "./pdf-payslip.service";
 
-const isAdmin = (u: AuthenticatedUser) => u.role === "SUPER_ADMIN" || u.role === "ADMIN";
+// Admins and accountants run payroll; teachers only ever see their own PAID payslips.
+const isAdmin = (u: AuthenticatedUser) => u.role === "SUPER_ADMIN" || u.role === "ADMIN" || u.role === "ACCOUNTANT";
 type Payslip = typeof schema.payslips.$inferSelect;
 
 @Injectable()

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { ADMIN_NAV, type AdminNavGroup } from "@/lib/admin-nav";
+import { navForRole, isAccountantPathAllowed, type AdminNavGroup } from "@/lib/admin-nav";
 import { LogOut, Loader2, ChevronDown, Menu, X, Clock3 } from "lucide-react";
 
 function isGroupActive(group: AdminNavGroup, pathname: string): boolean {
@@ -51,11 +51,11 @@ function NavLink({
   );
 }
 
-function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
+function AdminNav({ onNavigate, groups }: { onNavigate?: () => void; groups: AdminNavGroup[] }) {
   const pathname = usePathname();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    for (const group of ADMIN_NAV) {
+    for (const group of groups) {
       if (group.children) initial[group.label] = isGroupActive(group, pathname);
     }
     return initial;
@@ -65,7 +65,7 @@ function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Admin navigation">
-      {ADMIN_NAV.map((group) => {
+      {groups.map((group) => {
         const Icon = group.icon;
         const active = isGroupActive(group, pathname);
 
@@ -134,10 +134,10 @@ function SidebarContents({ onNavigate }: { onNavigate?: () => void }) {
         <Image src="/images/brand/nalanda-academy-logo.webp" alt="Nalanda Academy" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />
         <div>
           <div className="font-display text-sm font-bold leading-tight">Nalanda Cloud</div>
-          <div className="text-[10px] uppercase tracking-widest text-gold">Admin Portal</div>
+          <div className="text-[10px] uppercase tracking-widest text-gold">{user?.role === "ACCOUNTANT" ? "Accounts Portal" : "Admin Portal"}</div>
         </div>
       </div>
-      <AdminNav onNavigate={onNavigate} />
+      <AdminNav onNavigate={onNavigate} groups={navForRole(user?.role)} />
       <div className="border-t border-white/10 p-3">
         <div className="mb-2 truncate px-2 text-xs text-neutral-400">{user?.email}</div>
         <button
@@ -165,7 +165,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   // every /dashboard/admin* route, so a signed-in Teacher/Student/Parent (e.g. after
   // switching accounts in another tab) never sees the admin shell flash before their
   // API calls start failing with 403s.
-  const authorized = !!user && (user.role === "SUPER_ADMIN" || user.role === "ADMIN");
+  // Accountants may use the shell too, but only for the money screens (see isAccountantPathAllowed).
+  const authorized = !!user && (user.role === "SUPER_ADMIN" || user.role === "ADMIN" || user.role === "ACCOUNTANT");
+  const pathname = usePathname();
+  const blockedForAccountant = user?.role === "ACCOUNTANT" && !isAccountantPathAllowed(pathname);
+
+  useEffect(() => {
+    if (!loading && blockedForAccountant) router.replace("/admin/fees");
+  }, [loading, blockedForAccountant, router]);
 
   useEffect(() => {
     if (!loading && user && !authorized) {
@@ -173,7 +180,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     }
   }, [loading, user, authorized, logout]);
 
-  if (loading || !user || !authorized) {
+  if (loading || !user || !authorized || blockedForAccountant) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-100">
         <Loader2 className="h-6 w-6 animate-spin text-academic" />

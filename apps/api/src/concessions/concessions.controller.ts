@@ -14,7 +14,7 @@ export class ConcessionsController {
   constructor(private readonly concessionsService: ConcessionsService) {}
 
   @Get()
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   list() {
     return this.concessionsService.list();
   }
@@ -27,7 +27,7 @@ export class ConcessionsController {
 
   // Fixed paths are declared before ":id" so they are never read as an id.
   @Get("report")
-  @Roles("SUPER_ADMIN", "ADMIN")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
   report(@Query("academicYearId") academicYearId?: string) {
     return this.concessionsService.report(academicYearId);
   }
@@ -45,7 +45,7 @@ export class ConcessionsController {
   }
 
   @Get("student/:studentId")
-  @Roles("SUPER_ADMIN", "ADMIN", "STUDENT", "PARENT")
+  @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT", "STUDENT", "PARENT")
   forStudent(@Param("studentId") studentId: string, @CurrentUser() user: AuthenticatedUser) {
     return this.concessionsService.forStudent(studentId, user);
   }

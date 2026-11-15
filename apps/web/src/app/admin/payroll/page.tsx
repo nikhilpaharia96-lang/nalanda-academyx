@@ -5,6 +5,7 @@ import { Wallet } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
 import { Modal } from "@/components/modal";
 import { api, downloadFile } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { Empty, ErrorBox, Field, PageHeader, Spinner, errMsg, ghostBtn, inputClass, primaryBtn } from "@/components/campus-ui";
 
 interface StructureRow { teacherId: string; name: string; employeeId: string; designation: string | null; structure: null | { basic: number; hra: number; da: number; otherAllowances: number; pfPercent: number; professionalTax: number; otherDeductions: number } }
@@ -18,6 +19,8 @@ const ZERO = { basic: "", hra: "0", da: "0", otherAllowances: "0", pfPercent: "0
 const STATUSES: [string, string, string][] = [["PRESENT", "P", "bg-emerald-600 text-white"], ["ABSENT", "A", "bg-red-600 text-white"], ["HALF_DAY", "½", "bg-amber-500 text-white"], ["LEAVE", "L", "bg-neutral-600 text-white"]];
 
 export default function AdminPayrollPage() {
+  const { user } = useAuth();
+  const canMarkAttendance = user?.role !== "ACCOUNTANT"; // accountants run payroll but don't mark staff attendance
   const [tab, setTab] = useState<"salary" | "attendance" | "payslips">("payslips");
   const [error, setError] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
@@ -59,7 +62,7 @@ export default function AdminPayrollPage() {
       <PageHeader title="Payroll" icon={Wallet} />
       <div className="space-y-4 p-6 md:p-8">
         <div className="flex flex-wrap gap-2">
-          {([["payslips", "Payslips"], ["attendance", "Staff attendance"], ["salary", "Salary setup"]] as const).map(([k, l]) => (
+          {([["payslips", "Payslips"], ["attendance", "Staff attendance"], ["salary", "Salary setup"]] as const).filter(([k]) => k !== "attendance" || canMarkAttendance).map(([k, l]) => (
             <button key={k} onClick={() => { setTab(k); setNotice(null); setError(null); }} className={`rounded-md px-4 py-1.5 text-sm font-medium ${tab === k ? "bg-navy text-white" : "bg-white text-navy ring-1 ring-neutral-300"}`}>{l}</button>
           ))}
         </div>
