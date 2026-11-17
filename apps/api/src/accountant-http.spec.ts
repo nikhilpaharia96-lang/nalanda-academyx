@@ -64,6 +64,15 @@ describe("accountant over HTTP", () => {
     }
   });
 
+  it("the student list an accountant gets contains no personal details", async () => {
+    const b = await makeBase();
+    const s = await makeStudent(b);
+    const r = await call("GET", `/students?search=${s.studentId}`, tokens.acc);
+    expect(r.status).toBe(200);
+    expect(r.body.data).toHaveLength(1);
+    expect(JSON.stringify(r.body)).not.toMatch(/dateOfBirth|address|fatherName|motherName|"phone"|photoUrl|userId/);
+  });
+
   it("an accountant is refused everything else with 403 (and unauthenticated gets 401)", async () => {
     const b = await makeBase();
     const s = await makeStudent(b);

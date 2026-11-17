@@ -56,7 +56,7 @@ export default function AdminStaffAccountsPage() {
       </PageHeader>
       <div className="space-y-4 p-6 md:p-8">
         <p className="rounded-md bg-neutral-50 px-4 py-3 text-xs text-neutral-600">
-          An accountant signs in at the normal admin login page. They can see and use only <b>Fees &amp; Payments</b> and <b>Payroll</b>: record payments, generate fees, view receipts and reports, and run payslips. They cannot waive fees, delete fee structures, give concessions, mark staff attendance, or see student, teacher or parent records.
+          An accountant signs in at the normal admin login page. They can see and use only <b>Fees &amp; Payments</b> and <b>Payroll</b>: record payments, generate fees, view receipts and reports, and run payslips. They cannot waive fees, delete fee structures, give concessions, mark staff attendance, or open student, teacher or parent records. When taking a payment they can search a student by name or ID and see only name, ID and class.
         </p>
         {error && <ErrorBox message={error} />}
         {!rows ? <Spinner /> : rows.length === 0 ? <Empty text="No staff logins yet." /> : (

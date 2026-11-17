@@ -36,6 +36,19 @@ describe("access allow-lists (no role is let through just because it wasn't ment
     await expect(students.getByIdForUser(s.id, teacherUser(stranger.id))).rejects.toBeInstanceOf(ForbiddenException);
   });
 
+  it("student list: accountants get identity and class only, admins and teachers still get full rows", async () => {
+    const base = await makeBase();
+    const s = await makeStudent(base);
+    const q = { page: 1, pageSize: 50, search: s.studentId } as any;
+
+    const [forAccountant] = (await students.list(q, accountant)).data as any[];
+    expect(Object.keys(forAccountant).sort()).toEqual(["academicYearId", "admissionNumber", "classId", "id", "name", "rollNumber", "sectionId", "status", "studentId"]);
+    expect(JSON.stringify(forAccountant)).not.toMatch(/dateOfBirth|address|fatherName|motherName|phone|userId|photoUrl/);
+
+    const [forAdmin] = (await students.list(q, admin)).data as any[];
+    expect(forAdmin).toMatchObject({ dateOfBirth: s.dateOfBirth, userId: s.userId });
+  });
+
   it("parent details: only admins and the parent themself (students, teachers, accountants are denied)", async () => {
     const base = await makeBase();
     const child = await makeStudent(base);

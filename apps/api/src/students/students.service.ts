@@ -12,7 +12,7 @@ import { toFriendlyConflictError } from "../common/db-errors";
 export class StudentsService {
   constructor(private readonly auditService: AuditService) {}
 
-  async list(query: ListStudentsQuery) {
+  async list(query: ListStudentsQuery, user?: AuthenticatedUser) {
     const conditions: SQL[] = [];
     if (query.classId) conditions.push(eq(schema.students.classId, query.classId));
     if (query.sectionId) conditions.push(eq(schema.students.sectionId, query.sectionId));
@@ -38,8 +38,15 @@ export class StudentsService {
       db.select({ count: sql<number>`count(*)` }).from(schema.students).where(where),
     ]);
 
+    // Accountants only need to find a student to take a payment: give them identity and class, nothing personal
+    // (no date of birth, address, parents' names, phone, photo or login id).
+    const data =
+      user?.role === "ACCOUNTANT"
+        ? rows.map((r) => ({ id: r.id, name: r.name, studentId: r.studentId, admissionNumber: r.admissionNumber, classId: r.classId, sectionId: r.sectionId, academicYearId: r.academicYearId, rollNumber: r.rollNumber, status: r.status }))
+        : rows;
+
     return {
-      data: rows,
+      data,
       pagination: { page: query.page, pageSize: query.pageSize, total: Number(count) },
     };
   }

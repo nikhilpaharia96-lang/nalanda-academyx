@@ -15,8 +15,8 @@ export class StudentsController {
 
   @Get()
   @Roles("SUPER_ADMIN", "ADMIN", "ACCOUNTANT", "TEACHER")
-  list(@Query(new ZodValidationPipe(listStudentsQuerySchema)) query: any) {
-    return this.studentsService.list(query);
+  list(@Query(new ZodValidationPipe(listStudentsQuerySchema)) query: any, @CurrentUser() user: AuthenticatedUser) {
+    return this.studentsService.list(query, user);
   }
 
   @Get(":id")
