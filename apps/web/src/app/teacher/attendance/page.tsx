@@ -15,22 +15,10 @@ interface SectionRow { id: string; name: string; classId: string }
 type Status = "PRESENT" | "ABSENT" | "LATE" | "LEAVE" | "NOT_MARKED";
 interface RosterEntry { studentId: string; name: string; rollNumber: string; status: Status; remarks: string | null }
 
-const STATUS_CONFIG: { value: Exclude<Status, "NOT_MARKED">; short: string; label: string; active: string }[] = [
-  { value: "PRESENT", short: "P", label: "Present", active: "bg-emerald-600 text-white border-emerald-600" },
-  { value: "ABSENT", short: "A", label: "Absent", active: "bg-red-500 text-white border-red-500" },
-  { value: "LATE", short: "L", label: "Late", active: "bg-orange-500 text-white border-orange-500" },
-  { value: "LEAVE", short: "Lv", label: "Leave", active: "bg-yellow-400 text-slate-900 border-yellow-400" },
-];
-
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 outline-none focus:border-portal";
 const card = "rounded-3xl border border-slate-200 bg-white shadow-sm";
 
 const todayStr = () => new Date().toLocaleDateString("sv");
-
-function markedLabel(date: string, at: Date) {
-  const time = at.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true });
-  return `${date === todayStr() ? "Today" : new Date(date + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" })}, ${time}`;
-}
 
 function AttendanceContent() {
   const { user } = useAuth();
@@ -43,7 +31,6 @@ function AttendanceContent() {
   const [sectionId, setSectionId] = useState("");
   const [date, setDate] = useState(todayStr());
   const [roster, setRoster] = useState<RosterEntry[] | null>(null);
-  const [markedAt, setMarkedAt] = useState<Record<string, Date>>({});
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -81,9 +68,10 @@ function AttendanceContent() {
     if (!asg) return;
     setRoster(null);
     setMessage(null);
-    setMarkedAt({});
     try {
-      setRoster(await api.get<RosterEntry[]>(`/attendance/class/${asg.classId}/section/${asg.sectionId}?date=${date}`));
+      const data = await api.get<RosterEntry[]>(`/attendance/class/${asg.classId}/section/${asg.sectionId}?date=${date}`);
+      // One Present/Absent switch per student: anyone not yet marked starts as Present.
+      setRoster(data.map((r) => (r.status === "NOT_MARKED" ? { ...r, status: "PRESENT" as Status } : r)));
     } catch (err) {
       setMessage({ type: "error", text: err instanceof ApiError ? err.message : "Roster load nahi ho paya" });
       setRoster([]);
@@ -94,25 +82,16 @@ function AttendanceContent() {
     loadRoster();
   }, [loadRoster]);
 
-  function setStatus(studentId: string, status: Status) {
-    setRoster((prev) => prev?.map((r) => (r.studentId === studentId ? { ...r, status } : r)) ?? prev);
-    setMarkedAt((m) => ({ ...m, [studentId]: new Date() }));
-  }
-
-  function setRemarks(studentId: string, remarks: string) {
-    setRoster((prev) => prev?.map((r) => (r.studentId === studentId ? { ...r, remarks } : r)) ?? prev);
+  function toggle(studentId: string) {
+    setRoster((prev) => prev?.map((r) => (r.studentId === studentId ? { ...r, status: r.status === "PRESENT" ? "ABSENT" : "PRESENT" } : r)) ?? prev);
   }
 
   function markAllPresent() {
-    const now = new Date();
     setRoster((prev) => prev?.map((r) => ({ ...r, status: "PRESENT" as Status })) ?? prev);
-    setMarkedAt(Object.fromEntries((roster ?? []).map((r) => [r.studentId, now])));
   }
 
   async function save() {
     if (!asg || !roster) return;
-    const unmarked = roster.filter((r) => r.status === "NOT_MARKED").length;
-    if (unmarked > 0 && !confirm(`${unmarked} student(s) abhi mark nahi hue hain aur skip honge. Baaki save karein?`)) return;
     setSaving(true);
     setMessage(null);
     try {
@@ -139,8 +118,6 @@ function AttendanceContent() {
     return {
       present: r.filter((x) => x.status === "PRESENT").length,
       absent: r.filter((x) => x.status === "ABSENT").length,
-      late: r.filter((x) => x.status === "LATE").length,
-      leave: r.filter((x) => x.status === "LEAVE").length,
       total: r.length,
     };
   }, [roster]);
@@ -227,8 +204,6 @@ function AttendanceContent() {
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-slate-100 px-4 py-2.5 text-base text-slate-900">
                 <Tally dot="bg-emerald-500" label="Present" value={summary.present} />
                 <Tally dot="bg-red-500" label="Absent" value={summary.absent} />
-                <Tally dot="bg-orange-500" label="Late" value={summary.late} />
-                <Tally dot="bg-yellow-400" label="Leave" value={summary.leave} />
                 <span className="ml-auto font-bold">Total: {summary.total}</span>
               </div>
             </section>
@@ -247,41 +222,23 @@ function AttendanceContent() {
 
               <ul className="divide-y divide-slate-200">
                 {roster?.map((entry) => (
-                  <li key={entry.studentId} className="px-5 py-3">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                      <span className="w-7 shrink-0 font-mono text-lg text-slate-900">{entry.rollNumber.padStart(2, "0")}</span>
-                      <span className="min-w-[7rem] flex-1 text-lg text-slate-900">{entry.name.replace("(DEMO) ", "")}</span>
-                      <div className="flex shrink-0 gap-2">
-                        {STATUS_CONFIG.map((s) => {
-                          const on = entry.status === s.value;
-                          return (
-                            <button
-                              key={s.value}
-                              onClick={() => setStatus(entry.studentId, s.value)}
-                              aria-label={`Mark ${entry.name} as ${s.label}`}
-                              aria-pressed={on}
-                              className="flex flex-col items-center gap-0.5"
-                            >
-                              <span
-                                className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold transition ${
-                                  on ? s.active : "border-slate-300 bg-white text-slate-400"
-                                }`}
-                              >
-                                {s.short}
-                              </span>
-                              <span className="text-[11px] text-slate-500">{s.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {markedAt[entry.studentId] && <span className="text-sm text-slate-700 sm:ml-auto">{markedLabel(date, markedAt[entry.studentId])}</span>}
-                    </div>
-                    <input
-                      className="mt-2 w-full rounded-lg border border-slate-400 bg-white px-3 py-1.5 text-base text-slate-900 outline-none placeholder:text-slate-400 focus:border-portal"
-                      placeholder="Teacher note (optional)"
-                      value={entry.remarks ?? ""}
-                      onChange={(e) => setRemarks(entry.studentId, e.target.value)}
-                    />
+                  <li key={entry.studentId} className="flex items-center gap-3 px-5 py-3.5">
+                    <span className="w-7 shrink-0 font-mono text-lg text-slate-900">{entry.rollNumber.padStart(2, "0")}</span>
+                    <span className="min-w-0 flex-1 truncate text-lg text-slate-900">{entry.name.replace("(DEMO) ", "")}</span>
+                    <button
+                      role="switch"
+                      aria-checked={entry.status === "PRESENT"}
+                      aria-label={`${entry.name}: ${entry.status === "PRESENT" ? "Present" : "Absent"}`}
+                      onClick={() => toggle(entry.studentId)}
+                      className="flex shrink-0 items-center gap-2"
+                    >
+                      <span className={`w-14 text-right text-sm font-semibold ${entry.status === "PRESENT" ? "text-emerald-700" : entry.status === "ABSENT" ? "text-red-600" : "text-slate-500"}`}>
+                        {entry.status === "PRESENT" ? "Present" : entry.status === "ABSENT" ? "Absent" : entry.status === "LATE" ? "Late" : "Leave"}
+                      </span>
+                      <span className={`relative inline-block h-7 w-12 rounded-full transition ${entry.status === "PRESENT" ? "bg-emerald-500" : entry.status === "ABSENT" ? "bg-red-500" : "bg-slate-300"}`}>
+                        <span className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-all ${entry.status === "PRESENT" ? "left-[1.375rem]" : "left-0.5"}`} />
+                      </span>
+                    </button>
                   </li>
                 ))}
               </ul>
