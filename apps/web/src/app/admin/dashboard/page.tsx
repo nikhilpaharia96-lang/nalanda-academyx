@@ -199,10 +199,10 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-neutral-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
+    <section className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
         <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-academic" />
+          <span className="rounded-xl bg-portal-soft p-1.5 text-portal"><Icon className="h-4 w-4" /></span>
           <h2 className="font-display text-sm font-semibold text-navy">{title}</h2>
         </div>
         {action}
@@ -268,10 +268,12 @@ function StatCard({
   tone?: "good" | "warn";
 }) {
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</span>
-        <Icon className={`h-4 w-4 ${tone === "good" ? "text-emerald-600" : tone === "warn" ? "text-gold-dark" : "text-academic"}`} />
+        <span className={`rounded-xl p-2 ${tone === "good" ? "bg-emerald-50 text-emerald-600" : tone === "warn" ? "bg-amber-50 text-amber-600" : "bg-portal-soft text-portal"}`}>
+          <Icon className="h-4 w-4" />
+        </span>
       </div>
       <p className="mt-2 font-display text-2xl font-bold text-navy">{value}</p>
       {sub && <p className="mt-1 text-xs text-neutral-500">{sub}</p>}
@@ -680,13 +682,13 @@ function LatestNoticesSection() {
 export default function AdminDashboardPage() {
   return (
     <AdminShell>
-      <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 md:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-academic">Admin Portal</p>
-        <h1 className="font-display text-2xl font-bold text-navy">Dashboard</h1>
-        <p className="mt-1 text-sm text-neutral-500">A live overview of Nalanda Academy — every figure below comes from the database.</p>
-      </div>
+      <div className="space-y-6 p-4 sm:p-6 md:p-8">
+        <section className="rounded-3xl bg-portal p-6 text-white shadow-md">
+          <h1 className="font-display text-2xl font-bold sm:text-3xl">Welcome back!</h1>
+          <p className="mt-2 text-blue-100">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" })}</p>
+          <p className="text-sm text-blue-100">A live overview of Nalanda Academy — every figure below comes from the database.</p>
+        </section>
 
-      <div className="space-y-6 p-6 md:p-8">
         <StatCardsSection />
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">

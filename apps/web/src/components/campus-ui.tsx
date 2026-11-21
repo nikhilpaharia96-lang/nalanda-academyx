@@ -24,11 +24,11 @@ export function PageHeader({ title, icon: Icon, children, label = "Admin Portal"
   title: string; icon: React.ComponentType<{ className?: string }>; children?: React.ReactNode; label?: string;
 }) {
   return (
-    <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 md:px-8">
-      <p className="font-mono text-xs uppercase tracking-widest text-academic">{label}</p>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="border-b border-slate-200 bg-white px-4 py-5 sm:px-6 md:px-8">
+      <p className="text-xs font-semibold uppercase tracking-widest text-portal">{label}</p>
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Icon className="h-5 w-5 text-academic" />
+          <span className="rounded-xl bg-portal-soft p-1.5 text-portal"><Icon className="h-5 w-5" /></span>
           <h1 className="font-display text-2xl font-bold text-navy">{title}</h1>
         </div>
         {children}
