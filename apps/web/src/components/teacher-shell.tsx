@@ -7,7 +7,7 @@ const BOTTOM_NAV = [
   { href: "/teacher/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/teacher/attendance", label: "Attendance", icon: ClipboardCheck },
   { href: "/teacher/homework", label: "Homework", icon: NotebookPen },
-  { href: "/teacher/leave", label: "Leave", icon: CalendarOff },
+  { href: "/teacher/leave", label: "Leave Requests", icon: CalendarOff },
 ];
 
 type ShellProps = Omit<React.ComponentProps<typeof MobileShell>, "bottomNav" | "profileHref" | "profileEndpoint" | "notificationsHref">;
