@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { PortalShell } from "@/components/portal-shell";
+import { StudentShell } from "@/components/student-shell";
 import { STUDENT_NAV } from "@/lib/student-nav";
 import { MarksheetView, type MarksheetData } from "@/components/marksheet-view";
 import { api, ApiError } from "@/lib/api-client";
@@ -22,7 +22,7 @@ export default function StudentMarksheetPage() {
   }, [examId]);
 
   return (
-    <PortalShell navItems={STUDENT_NAV} loginPath="/student/login" allowedRoles={["STUDENT"]} portalLabel="Student Portal">
+    <StudentShell navItems={STUDENT_NAV} loginPath="/student/login" allowedRoles={["STUDENT"]} portalLabel="Student Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 sm:px-8 print:hidden">
         <Link href="/student/results" className="mb-2 inline-flex items-center gap-1 text-xs font-medium text-academic hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to Results
@@ -39,6 +39,6 @@ export default function StudentMarksheetPage() {
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
         {data && <MarksheetView data={data} />}
       </div>
-    </PortalShell>
+    </StudentShell>
   );
 }

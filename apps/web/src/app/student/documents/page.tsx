@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PortalShell } from "@/components/portal-shell";
+import { StudentShell } from "@/components/student-shell";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api-client";
 import { STUDENT_NAV } from "@/lib/student-nav";
@@ -19,7 +19,7 @@ export default function StudentDocumentsPage() {
   }, [user?.profileId]);
 
   return (
-    <PortalShell navItems={STUDENT_NAV} loginPath="/student/login" allowedRoles={["STUDENT"]} portalLabel="Student Portal">
+    <StudentShell navItems={STUDENT_NAV} loginPath="/student/login" allowedRoles={["STUDENT"]} portalLabel="Student Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 sm:px-8">
         <p className="font-mono text-xs uppercase tracking-widest text-academic">Student Portal</p>
         <h1 className="font-display text-2xl font-bold text-navy">Documents</h1>
@@ -44,6 +44,6 @@ export default function StudentDocumentsPage() {
           ))}
         </div>
       </div>
-    </PortalShell>
+    </StudentShell>
   );
 }
