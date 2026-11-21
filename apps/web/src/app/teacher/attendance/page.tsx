@@ -70,8 +70,8 @@ function AttendanceContent() {
     setMessage(null);
     try {
       const data = await api.get<RosterEntry[]>(`/attendance/class/${asg.classId}/section/${asg.sectionId}?date=${date}`);
-      // One Present/Absent switch per student: anyone not yet marked starts as Present.
-      setRoster(data.map((r) => (r.status === "NOT_MARKED" ? { ...r, status: "PRESENT" as Status } : r)));
+      // One Present/Absent switch per student: anyone not yet marked starts as Absent; the teacher switches present students on.
+      setRoster(data.map((r) => (r.status === "NOT_MARKED" ? { ...r, status: "ABSENT" as Status } : r)));
     } catch (err) {
       setMessage({ type: "error", text: err instanceof ApiError ? err.message : "Roster load nahi ho paya" });
       setRoster([]);
