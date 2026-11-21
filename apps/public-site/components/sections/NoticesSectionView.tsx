@@ -27,12 +27,9 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
-import {
-  noticesHero,
-  noticeCategoryStrip,
-  quickLinks,
-} from "@/lib/content/notices";
+
 import type { Notice } from "@/lib/types";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -121,6 +118,10 @@ function NoticeRow({ notice }: { notice: Notice }) {
 }
 
 export function NoticesSectionView({ notices }: { notices: Notice[] }) {
+  const siteContent = useSiteContent();
+  const noticesHero = siteContent.notices.hero;
+  const noticeCategoryStrip = siteContent.notices.categoryStrip;
+  const quickLinks = siteContent.notices.quickLinks;
   const [visibleCount, setVisibleCount] = useState(5);
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const visibleNotices = notices.slice(0, visibleCount);

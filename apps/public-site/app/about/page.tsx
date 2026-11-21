@@ -6,14 +6,19 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PageHero } from "@/components/hero/PageHero";
 import { FadeUp, StaggerGroup } from "@/components/motion/Reveal";
 import { PrincipalMessageSection } from "@/components/sections/PrincipalMessageSection";
-import { aboutStory, missionValues, milestones } from "@/lib/content/about";
+import { getSiteContent } from "@/lib/services/siteContentService";
+
 
 export const metadata: Metadata = {
   title: "About",
   description: "Learn about Nalanda Academy's story, mission and leadership.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const siteContent = await getSiteContent();
+  const aboutStory = siteContent.about.story;
+  const missionValues = siteContent.about.missionValues;
+  const milestones = siteContent.about.milestones;
   return (
     <>
       <PageHero

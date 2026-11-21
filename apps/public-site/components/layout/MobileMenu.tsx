@@ -6,8 +6,9 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
-import { primaryNav } from "@/lib/content/site";
+
 import { cn } from "@/lib/utils";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 export function MobileMenu({
   open,
@@ -18,6 +19,8 @@ export function MobileMenu({
   onClose: () => void;
   pathname: string;
 }) {
+  const siteContent = useSiteContent();
+  const primaryNav = siteContent.navigation.primaryNav;
   useEffect(() => {
     if (open) {
       const original = document.body.style.overflow;
@@ -80,7 +83,7 @@ export function MobileMenu({
 
           <div className="flex flex-col gap-3 px-6 pb-8 pt-4">
             <Button href="/admission" variant="primary" className="w-full bg-gold-500 text-navy-950 hover:bg-gold-400">
-              Admission
+              {siteContent.site.admissionButtonLabel}
             </Button>
           </div>
         </motion.div>

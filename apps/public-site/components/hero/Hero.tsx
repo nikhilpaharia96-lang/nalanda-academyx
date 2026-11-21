@@ -17,15 +17,7 @@ import {
 import { Container } from "@/components/ui/Container";
 import { FadeUp, StaggerGroup } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
-import {
-  siteConfig,
-  heroCarousel,
-  heroWelcome,
-  heroSubheading,
-  heroClosingQuote,
-  heroAccentLines,
-  heroFeatureStrip,
-} from "@/lib/content/site";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const easing = [0.16, 1, 0.3, 1] as const;
 // Each slide stays fully visible for VISIBLE_MS, then blends into the next
@@ -58,12 +50,14 @@ const featureIconMap: Record<string, LucideIcon> = {
   sprout: Sprout,
 };
 
-// Mobile feature panel: same four facts as the desktop strip, just in the
-// order and iconography requested for the compact mobile card grid — the
-// shared `heroFeatureStrip` data (and the desktop strip below) is untouched.
-const mobileFeatureOrder = ["Quality Education", "Experienced Faculty", "Modern Facilities", "Holistic Development"];
+// Mobile feature panel: same four facts as the desktop strip, in the order
+// requested for the compact mobile card grid (by position, so admins can
+// freely rewrite the titles). The third card gets the "sprout" icon.
+const mobileFeatureOrder = [0, 1, 3, 2];
 
 export function Hero() {
+  const { site: siteConfig, hero } = useSiteContent();
+  const { carousel: heroCarousel, welcome: heroWelcome, subheading: heroSubheading, closingQuote: heroClosingQuote, accentLines: heroAccentLines, featureStrip: heroFeatureStrip } = hero;
   const shouldReduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -107,10 +101,9 @@ export function Hero() {
 
   // Reorder + re-icon just the four items for the mobile card grid (title
   // lookup keeps this resilient to the shared array being edited later).
-  const mobileFeatures = mobileFeatureOrder.map((title) => {
-    const item = heroFeatureStrip.find((f) => f.title === title) ?? heroFeatureStrip[0];
-    return title === "Holistic Development" ? { ...item, icon: "sprout" } : item;
-  });
+  const mobileFeatures = mobileFeatureOrder
+    .filter((i) => heroFeatureStrip[i])
+    .map((i) => (i === 2 ? { ...heroFeatureStrip[i], icon: "sprout" } : heroFeatureStrip[i]));
 
   return (
     <section
@@ -120,7 +113,7 @@ export function Hero() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
-      aria-label="Nalanda Academy campus"
+      aria-label={`${siteConfig.name} campus`}
     >
       {/* Background image carousel — a cinematic crossfade slideshow. Every
           slide stays mounted the whole time (so all 4–6 images are
@@ -307,8 +300,8 @@ export function Hero() {
             transition={{ duration: 0.75, ease: easing, delay: 0.12 }}
             className="font-editorial mt-4 text-[52px] font-bold uppercase leading-[1.02] tracking-tight text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)] sm:text-[64px] sm:drop-shadow-none lg:text-[76px]"
           >
-            <span className="block">Nalanda</span>
-            <span className="block text-gold-400">Academy</span>
+            <span className="block">{siteConfig.name.trim().split(/\s+/).slice(0, -1).join(" ") || siteConfig.name}</span>
+            {siteConfig.name.trim().includes(" ") && <span className="block text-gold-400">{siteConfig.name.trim().split(/\s+/).slice(-1)[0]}</span>}
           </motion.h1>
 
           {/* Supporting subheading — mobile only, sits between the

@@ -3,14 +3,19 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PageHero } from "@/components/hero/PageHero";
 import { FadeUp, StaggerGroup } from "@/components/motion/Reveal";
-import { academicExcellence, academicExperience, programmes } from "@/lib/content/academics";
+import { getSiteContent } from "@/lib/services/siteContentService";
+
 
 export const metadata: Metadata = {
   title: "Academics",
   description: "Explore academic programmes and the learning experience at Nalanda Academy.",
 };
 
-export default function AcademicsPage() {
+export default async function AcademicsPage() {
+  const siteContent = await getSiteContent();
+  const academicExcellence = siteContent.academics.excellence;
+  const academicExperience = siteContent.academics.experience;
+  const programmes = siteContent.academics.programmes;
   return (
     <>
       <PageHero

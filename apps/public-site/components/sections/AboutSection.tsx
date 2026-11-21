@@ -15,7 +15,8 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
-import { aboutPreview, aboutFeatureStrip, aboutVisionMission, aboutGallery } from "@/lib/content/about";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
+
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -29,8 +30,6 @@ const stagger = {
   show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
 };
 
-const headingLines = aboutPreview.heading.split("\n");
-
 const featureIconMap: Record<string, LucideIcon> = {
   "graduation-cap": GraduationCap,
   users: Users,
@@ -39,6 +38,12 @@ const featureIconMap: Record<string, LucideIcon> = {
 };
 
 export function AboutSection() {
+  const siteContent = useSiteContent();
+  const aboutPreview = siteContent.about.preview;
+  const headingLines = aboutPreview.heading.split("\n");
+  const aboutFeatureStrip = siteContent.about.featureStrip;
+  const aboutVisionMission = siteContent.about.visionMission;
+  const aboutGallery = siteContent.about.gallery;
   const [chairpersonOpen, setChairpersonOpen] = useState(false);
 
   return (

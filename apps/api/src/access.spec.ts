@@ -101,6 +101,7 @@ const OPEN_BUT_CHECKED_IN_SERVICE = [
 const PUBLIC_ROUTES = [
   "GET /admissions/classes",
   "GET /health",
+  "GET /site-content",
   "POST /admissions",
   "POST /auth/login",
   "POST /auth/logout",

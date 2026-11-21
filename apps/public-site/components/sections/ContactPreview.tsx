@@ -20,7 +20,8 @@ import { Container } from "@/components/ui/Container";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { ContactForm } from "@/components/sections/ContactForm";
-import { contactInfo, socialLinks, getInTouchHero, getInTouchValueStrip } from "@/lib/content/site";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
+
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -41,13 +42,6 @@ const stagger = {
   show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
 };
 
-const contactRows: { label: string; value: string; Icon: LucideIcon }[] = [
-  { label: "Visit Our Campus", value: contactInfo.address, Icon: MapPin },
-  { label: "Call Us", value: contactInfo.phone, Icon: Phone },
-  { label: "Email Us", value: contactInfo.email, Icon: Mail },
-  { label: "School Hours", value: contactInfo.officeHours, Icon: Clock },
-];
-
 function ColumnHeading({ children }: { children: React.ReactNode }) {
   return (
     <motion.div variants={fadeUp}>
@@ -60,6 +54,17 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function ContactPreview() {
+  const siteContent = useSiteContent();
+  const contactInfo = siteContent.contact;
+  const contactRows: { label: string; value: string; Icon: LucideIcon }[] = [
+    { label: "Visit Our Campus", value: contactInfo.address, Icon: MapPin },
+    { label: "Call Us", value: contactInfo.phone, Icon: Phone },
+    { label: "Email Us", value: contactInfo.email, Icon: Mail },
+    { label: "School Hours", value: contactInfo.officeHours, Icon: Clock },
+  ];
+  const socialLinks = siteContent.social;
+  const getInTouchHero = siteContent.getInTouch.hero;
+  const getInTouchValueStrip = siteContent.getInTouch.valueStrip;
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const socials = (
     [

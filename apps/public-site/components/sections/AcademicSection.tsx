@@ -24,13 +24,8 @@ import {
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
-import {
-  academicsHero,
-  academicPrograms,
-  learningApproach,
-  academicSupport,
-  academicStats,
-} from "@/lib/content/academics";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
+
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -83,6 +78,12 @@ function RuleHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function AcademicSection() {
+  const siteContent = useSiteContent();
+  const academicsHero = siteContent.academics.hero;
+  const academicPrograms = siteContent.academics.programs;
+  const learningApproach = siteContent.academics.learningApproach;
+  const academicSupport = siteContent.academics.support;
+  const academicStats = siteContent.academics.stats;
   const [classroomImageFailed, setClassroomImageFailed] = useState(false);
   const [teacherDiscussionImageFailed, setTeacherDiscussionImageFailed] = useState(false);
 

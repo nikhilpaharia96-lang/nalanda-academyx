@@ -34,17 +34,8 @@ import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { subscribeToNewsletter } from "@/lib/services/newsletterService";
-import {
-  exploreLinks,
-  studentPortalLinks,
-  teacherPortalLinks,
-  footerFeatureStrip,
-  legalLinks,
-  newsletterCopy,
-  footerMission,
-  contactInfo,
-  socialLinks,
-} from "@/lib/content/site";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
+
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -124,6 +115,8 @@ function PortalColumn({
 type SubmitState = "idle" | "loading" | "success" | "error";
 
 function NewsletterForm() {
+  const siteContent = useSiteContent();
+  const newsletterCopy = siteContent.footer.newsletter;
   const inputId = useId();
   const [email, setEmail] = useState("");
   const [state, setState] = useState<SubmitState>("idle");
@@ -211,6 +204,16 @@ function NewsletterForm() {
 }
 
 export function Footer() {
+  const siteContent = useSiteContent();
+  const exploreLinks = siteContent.navigation.exploreLinks;
+  const studentPortalLinks = siteContent.footer.studentPortalLinks;
+  const teacherPortalLinks = siteContent.footer.teacherPortalLinks;
+  const footerFeatureStrip = siteContent.footer.featureStrip;
+  const legalLinks = siteContent.footer.legalLinks;
+  const newsletterCopy = siteContent.footer.newsletter;
+  const footerMission = siteContent.footer.mission;
+  const contactInfo = siteContent.contact;
+  const socialLinks = siteContent.social;
   const year = new Date().getFullYear();
 
   const socials = (

@@ -7,12 +7,15 @@ import { motion } from "framer-motion";
 import { Menu, Search, ArrowRight } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
-import { primaryNav } from "@/lib/content/site";
+
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { TopBar } from "@/components/layout/TopBar";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 export function Navbar() {
+  const siteContent = useSiteContent();
+  const primaryNav = siteContent.navigation.primaryNav;
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState<string | null>(null);
@@ -104,7 +107,7 @@ export function Navbar() {
               variant="primary"
               className="rounded-full bg-gold-500 text-navy-950 shadow-[var(--shadow-sm)] hover:bg-gold-400"
             >
-              Admission
+              {siteContent.site.admissionButtonLabel}
             </Button>
             <button
               type="button"
@@ -125,7 +128,7 @@ export function Navbar() {
               href="/admission"
               className="focus-ring inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 shadow-[var(--shadow-sm)] transition-colors hover:bg-gold-400 active:scale-[0.98] sm:gap-1.5 sm:px-4 sm:py-2 sm:text-[13px]"
             >
-              Admission
+              {siteContent.site.admissionButtonLabel}
               <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
             </a>
             <button

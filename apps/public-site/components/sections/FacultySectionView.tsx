@@ -20,15 +20,9 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { FacultyPhoto } from "@/components/ui/FacultyPhoto";
-import {
-  facultyHero,
-  featuredFaculty,
-  facultyCategories,
-  facultyPhilosophy,
-  facultyValues,
-  facultyCta,
-} from "@/lib/content/faculty";
+
 import type { FacultyMember } from "@/lib/types";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -95,6 +89,13 @@ function FacultyGridCard({ member }: { member: FacultyMember }) {
 }
 
 export function FacultySectionView({ faculty }: { faculty: FacultyMember[] }) {
+  const siteContent = useSiteContent();
+  const facultyHero = siteContent.faculty.hero;
+  const featuredFaculty = siteContent.faculty.featured;
+  const facultyCategories = siteContent.faculty.categories;
+  const facultyPhilosophy = siteContent.faculty.philosophy;
+  const facultyValues = siteContent.faculty.values;
+  const facultyCta = siteContent.faculty.cta;
   return (
     <section className="bg-paper">
       {/* ================= 1. SECTION HEADER + 2. FEATURED FACULTY ================= */}

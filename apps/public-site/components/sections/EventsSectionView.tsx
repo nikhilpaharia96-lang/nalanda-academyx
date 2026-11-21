@@ -22,14 +22,9 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
-import {
-  eventsHero,
-  eventCategoryStrip,
-  eventValueStrip,
-  eventsPlanAhead,
-  eventsImageFeature,
-} from "@/lib/content/events";
+
 import type { SchoolEvent } from "@/lib/types";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -123,6 +118,12 @@ function EventRow({ event }: { event: SchoolEvent }) {
 }
 
 export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
+  const siteContent = useSiteContent();
+  const eventsHero = siteContent.events.hero;
+  const eventCategoryStrip = siteContent.events.categoryStrip;
+  const eventValueStrip = siteContent.events.valueStrip;
+  const eventsPlanAhead = siteContent.events.planAhead;
+  const eventsImageFeature = siteContent.events.imageFeature;
   const featured = events[0];
   const featuredDate = featured ? getDateParts(featured.date) : null;
   const [heroImageFailed, setHeroImageFailed] = useState(false);

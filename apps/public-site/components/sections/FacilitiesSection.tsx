@@ -24,13 +24,8 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
-import {
-  campusHero,
-  campusHighlights,
-  campusFacilityShowcase,
-  additionalFacilities,
-  campusImageFeature,
-} from "@/lib/content/facilities";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
+
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -74,6 +69,12 @@ function RuleHeading({ children }: { children: React.ReactNode }) {
 }
 
 export function FacilitiesSection() {
+  const siteContent = useSiteContent();
+  const campusHero = siteContent.facilities.hero;
+  const campusHighlights = siteContent.facilities.highlights;
+  const campusFacilityShowcase = siteContent.facilities.showcase;
+  const additionalFacilities = siteContent.facilities.additional;
+  const campusImageFeature = siteContent.facilities.imageFeature;
   const [campusImageFailed, setCampusImageFailed] = useState(false);
 
   return (

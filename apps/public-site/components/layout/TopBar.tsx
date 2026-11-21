@@ -1,6 +1,7 @@
 import { MapPin, Phone, Mail } from "lucide-react";
-import { contactInfo, socialLinks } from "@/lib/content/site";
+
 import { SocialIcon } from "@/components/ui/SocialIcon";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const socialKeys = ["instagram", "facebook", "youtube"] as const;
 
@@ -13,6 +14,9 @@ const socialKeys = ["instagram", "facebook", "youtube"] as const;
 // /teacher or /parent routes exist in this project yet, so nothing here
 // links anywhere that isn't real.
 export function TopBar() {
+  const siteContent = useSiteContent();
+  const contactInfo = siteContent.contact;
+  const socialLinks = siteContent.social;
   const socials = socialKeys
     .map((key) => ({ key, href: socialLinks[key] }))
     .filter((s): s is { key: (typeof socialKeys)[number]; href: string } => Boolean(s.href));

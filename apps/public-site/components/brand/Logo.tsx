@@ -1,12 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
-// Official Nalanda Academy seal, supplied by the school. Do not redesign,
-// recolor, or replace this artwork — if a refreshed version of the same
-// mark is ever issued, swap the file at this path (same filename) and
-// nothing else needs to change.
-const LOGO_SRC = "/images/brand/nalanda-academy-logo.webp";
+// The seal and school name come from Admin → Website Content → Site identity & logo.
+// The built-in default is the official Nalanda Academy seal supplied by the school.
 
 export function Logo({
   className,
@@ -17,15 +17,16 @@ export function Logo({
   tone?: "dark" | "light";
   showTagline?: boolean;
 }) {
+  const { site } = useSiteContent();
   return (
     <Link
       href="/"
       className={cn("focus-ring group flex min-w-0 items-center gap-2 rounded-sm sm:gap-2.5", className)}
-      aria-label="Nalanda Academy — Home"
+      aria-label={`${site.name} — Home`}
     >
       <Image
-        src={LOGO_SRC}
-        alt="Nalanda Academy"
+        src={site.logoUrl}
+        alt={site.name}
         width={96}
         height={96}
         priority
@@ -38,7 +39,7 @@ export function Logo({
             tone === "dark" ? "text-navy-950" : "text-white"
           )}
         >
-          Nalanda Academy
+          {site.name}
         </span>
         {showTagline && (
           <span
@@ -47,7 +48,7 @@ export function Logo({
               tone === "dark" ? "text-slate-500" : "text-white/75"
             )}
           >
-            Learn • Grow • Build Tomorrow
+            {site.logoTagline}
           </span>
         )}
       </span>

@@ -38,6 +38,7 @@ import { CertificatesModule } from "./certificates/certificates.module";
 import { ConcessionsModule } from "./concessions/concessions.module";
 import { PayrollModule } from "./payroll/payroll.module";
 import { StaffAccountsModule } from "./staff-accounts/staff-accounts.module";
+import { SiteContentModule } from "./site-content/site-content.module";
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { StaffAccountsModule } from "./staff-accounts/staff-accounts.module";
     ConcessionsModule,
     PayrollModule,
     StaffAccountsModule,
+    SiteContentModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

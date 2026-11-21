@@ -6,15 +6,8 @@ import { Badge } from "@/components/ui/Badge";
 import { FadeUp, StaggerGroup } from "@/components/motion/Reveal";
 import { AdmissionForm } from "@/components/sections/AdmissionForm";
 import { fetchAdmissionClasses } from "@/lib/services/admissionService";
-import {
-  admissionStatus,
-  admissionProcess,
-  availableClasses,
-  eligibility,
-  requiredDocuments,
-  importantDates,
-  admissionFaqs,
-} from "@/lib/content/admission";
+import { getSiteContent } from "@/lib/services/siteContentService";
+
 
 export const metadata: Metadata = {
   title: "Admission",
@@ -22,6 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AdmissionPage() {
+  const siteContent = await getSiteContent();
+  const admissionStatus = siteContent.admission.status;
+  const admissionProcess = siteContent.admission.process;
+  const availableClasses = siteContent.admission.availableClasses;
+  const eligibility = siteContent.admission.eligibility;
+  const requiredDocuments = siteContent.admission.requiredDocuments;
+  const importantDates = siteContent.admission.importantDates;
+  const admissionFaqs = siteContent.admission.faqs;
   const classes = await fetchAdmissionClasses();
 
   return (

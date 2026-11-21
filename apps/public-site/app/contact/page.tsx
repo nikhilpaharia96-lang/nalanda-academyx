@@ -3,21 +3,23 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/hero/PageHero";
 import { ContactForm } from "@/components/sections/ContactForm";
-import { contactInfo } from "@/lib/content/site";
+import { getSiteContent } from "@/lib/services/siteContentService";
+
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Nalanda Academy.",
 };
 
-const rows = [
-  { label: "Address", value: contactInfo.address, Icon: MapPin },
-  { label: "Phone", value: contactInfo.phone, Icon: Phone },
-  { label: "Email", value: contactInfo.email, Icon: Mail },
-  { label: "Office Hours", value: contactInfo.officeHours, Icon: Clock },
-];
-
-export default function ContactPage() {
+export default async function ContactPage() {
+  const siteContent = await getSiteContent();
+  const contactInfo = siteContent.contact;
+  const rows = [
+    { label: "Address", value: contactInfo.address, Icon: MapPin },
+    { label: "Phone", value: contactInfo.phone, Icon: Phone },
+    { label: "Email", value: contactInfo.email, Icon: Mail },
+    { label: "Office Hours", value: contactInfo.officeHours, Icon: Clock },
+  ];
   return (
     <>
       <PageHero

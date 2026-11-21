@@ -16,9 +16,10 @@ export class SettingsService {
 
   async list() {
     const rows = await db.select().from(schema.settings);
-    // Internal counters (receipt numbering etc.) aren't school "settings" —
-    // hide anything prefixed receipt_counter_ from this admin-facing list.
-    return rows.filter((r) => !r.key.startsWith("receipt_counter_"));
+    // Internal counters (receipt numbering etc.) and website-content JSON
+    // (managed under Admin → Website Content) aren't school "settings" —
+    // hide them from this admin-facing list.
+    return rows.filter((r) => !r.key.startsWith("receipt_counter_") && !r.key.startsWith("site_content:"));
   }
 
   async set(key: string, value: string, actorId: string) {

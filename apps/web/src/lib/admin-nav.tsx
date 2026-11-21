@@ -37,6 +37,7 @@ import {
   BadgePercent,
   Banknote,
   KeyRound,
+  Globe,
 } from "lucide-react";
 
 export interface AdminNavLeaf {
@@ -137,6 +138,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   },
   { label: "Documents", icon: FolderKanban, href: "/admin/documents" },
   { label: "Reports", icon: FileBarChart, href: "/admin/reports" },
+  { label: "Website Content", icon: Globe, href: "/admin/website" },
   { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 

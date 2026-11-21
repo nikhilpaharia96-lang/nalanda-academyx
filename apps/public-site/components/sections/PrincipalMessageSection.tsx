@@ -1,10 +1,13 @@
 import { Container } from "@/components/ui/Container";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { FadeUp } from "@/components/motion/Reveal";
-import { principalMessage } from "@/lib/content/about";
-import { Quote } from "lucide-react";
 
-export function PrincipalMessageSection() {
+import { Quote } from "lucide-react";
+import { getSiteContent } from "@/lib/services/siteContentService";
+
+export async function PrincipalMessageSection() {
+  const siteContent = await getSiteContent();
+  const principalMessage = siteContent.about.principalMessage;
   return (
     <section className="bg-navy-950 py-20 sm:py-28">
       <Container className="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">

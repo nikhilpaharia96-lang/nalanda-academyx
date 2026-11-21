@@ -24,8 +24,9 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { DemoImage } from "@/components/ui/DemoImage";
-import { resultsHeroImage } from "@/lib/content/results";
+
 import type { ResultYear } from "@/lib/types";
+import { useSiteContent } from "@/components/providers/SiteContentProvider";
 
 const easing = [0.16, 1, 0.3, 1] as const;
 
@@ -86,6 +87,8 @@ const bottomStats: { icon: LucideIcon; label: string }[] = [
 const rankLabel: Record<number, string> = { 1: "1st", 2: "2nd", 3: "3rd" };
 
 export function ResultsSectionClient({ result }: { result: ResultYear }) {
+  const siteContent = useSiteContent();
+  const resultsHeroImage = siteContent.results.heroImage;
   const highlights = result.performanceHighlights ?? {
     scored90Plus: null,
     scored75Plus: null,
