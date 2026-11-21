@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PortalShell } from "@/components/portal-shell";
+import { TeacherShell } from "@/components/teacher-shell";
 import { api, downloadFile } from "@/lib/api-client";
 import { TEACHER_NAV } from "@/lib/teacher-nav";
 import { Empty, ErrorBox, Spinner, errMsg, ghostBtn } from "@/components/campus-ui";
@@ -26,7 +26,7 @@ export default function TeacherPayslipsPage() {
   }, []);
 
   return (
-    <PortalShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
+    <TeacherShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-6 py-6 sm:px-8">
         <p className="font-mono text-xs uppercase tracking-widest text-academic">Teacher Portal</p>
         <h1 className="font-display text-2xl font-bold text-navy">Payslips</h1>
@@ -56,6 +56,6 @@ export default function TeacherPayslipsPage() {
           )}
         </section>
       </div>
-    </PortalShell>
+    </TeacherShell>
   );
 }

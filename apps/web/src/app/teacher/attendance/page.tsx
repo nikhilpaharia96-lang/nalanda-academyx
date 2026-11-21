@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PortalShell } from "@/components/portal-shell";
+import { TeacherShell } from "@/components/teacher-shell";
 import { TEACHER_NAV } from "@/lib/teacher-nav";
 import { useAuth } from "@/lib/auth-context";
 import { api, ApiError } from "@/lib/api-client";
@@ -120,7 +120,7 @@ function AttendanceContent() {
   const sectionName = (id?: string) => sections.find((s) => s.id === id)?.name ?? "";
 
   return (
-    <PortalShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
+    <TeacherShell navItems={TEACHER_NAV} loginPath="/teacher/login" allowedRoles={["TEACHER"]} portalLabel="Teacher Portal">
       <div className="ledger-bg border-b border-neutral-200 bg-white px-4 py-5 sm:px-8 sm:py-6">
         <p className="font-mono text-xs uppercase tracking-widest text-academic">Teacher Portal</p>
         <h1 className="font-display text-xl font-bold text-navy sm:text-2xl">Mark Attendance</h1>
@@ -228,7 +228,7 @@ function AttendanceContent() {
           </button>
         </div>
       )}
-    </PortalShell>
+    </TeacherShell>
   );
 }
 
