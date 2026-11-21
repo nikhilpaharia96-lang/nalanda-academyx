@@ -13,6 +13,11 @@ module.exports = {
           DEFAULT: "#1E4C8A",
           light: "#2E63AB",
         },
+        portal: {
+          DEFAULT: "#0E6FDC",
+          dark: "#143F86",
+          soft: "#E6EEFA",
+        },
         gold: {
           DEFAULT: "#C9A227",
           light: "#E0BE55",
