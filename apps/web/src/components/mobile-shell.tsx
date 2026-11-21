@@ -33,11 +33,14 @@ export function MobileShell({
   loginPath,
   allowedRoles,
   portalLabel,
+  title,
   bottomNav,
   profileHref,
   profileEndpoint,
   notificationsHref,
 }: {
+  /** Heading shown in the top bar; defaults to portalLabel. */
+  title?: string;
   bottomNav: NavItem[];
   profileHref: string;
   /** API path prefix returning `{ name }` for the signed-in profile, e.g. "/students" */
@@ -149,7 +152,7 @@ export function MobileShell({
           >
             <Menu className="h-6 w-6" />
           </button>
-          <h1 className="flex-1 font-display text-lg font-bold text-portal-dark sm:text-xl">{portalLabel}</h1>
+          <h1 className="flex-1 font-display text-lg font-bold text-portal-dark sm:text-xl">{title ?? portalLabel}</h1>
           {notificationsHref && (
             <Link href={notificationsHref} aria-label="Notifications" className="rounded-full p-2 text-portal-dark hover:bg-slate-100">
               <Bell className="h-5 w-5" />
@@ -171,14 +174,14 @@ export function MobileShell({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium ${active ? "text-white" : ""}`}
+              className={`m-1 flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[11px] font-medium ${active ? "bg-portal-soft text-portal-dark" : ""}`}
             >
               <Icon className="h-5 w-5" />
               {item.label}
             </Link>
           );
         })}
-        <button onClick={() => setDrawerOpen(true)} className="flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium">
+        <button onClick={() => setDrawerOpen(true)} className="m-1 flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[11px] font-medium">
           <Menu className="h-5 w-5" />
           Menu
         </button>
