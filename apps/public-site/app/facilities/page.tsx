@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/ui/Container";
-import { PageHero } from "@/components/hero/PageHero";
-import { FacultyDirectory } from "@/components/sections/FacultyDirectory";
-import { getFaculty } from "@/lib/services/facultyService";
+import { FacilitiesSection } from "@/components/sections/FacilitiesSection";
 
 export const metadata: Metadata = {
-  title: "Faculty",
-  description: "Meet the teachers and staff of Nalanda Academy.",
+  title: "Facilities",
+  description: "Explore the campus and facilities of Nalanda Academy.",
 };
 
-export default async function FacultyPage() {
-  const faculty = await getFaculty();
-
+export default function FacilitiesPage() {
   return (
-    <>
-      <PageHero
-        eyebrow="Our Faculty"
-        title="Teachers dedicated to every student's progress."
-        description="Meet the teachers and staff at Nalanda Academy. Staff photographs will be added once official photography is available."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Faculty" }]}
-      />
-      <section className="bg-white py-16 sm:py-20">
-        <Container>
-          <FacultyDirectory faculty={faculty} />
-        </Container>
-      </section>
-    </>
+    // Leaves room for the fixed navbar (+ desktop info bar).
+    <div className="bg-white pt-[72px] lg:pt-[108px]">
+      <FacilitiesSection />
+    </div>
   );
 }

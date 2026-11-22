@@ -28,7 +28,7 @@ export default async function AboutPage() {
         crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
       />
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-white py-12 sm:py-20 lg:py-28">
         <Container className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <FadeUp>
             <PlaceholderImage label="Campus history photography placeholder" className="aspect-[4/3] w-full rounded-[var(--radius-xl)]" />
@@ -44,7 +44,7 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section className="bg-paper py-20 sm:py-28">
+      <section className="bg-paper py-12 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="Mission & Values" eyebrowIndex="02" heading="What guides us every day." align="center" className="mx-auto" />
           <StaggerGroup className="mt-12 grid gap-5 sm:grid-cols-3">
@@ -61,7 +61,7 @@ export default async function AboutPage() {
 
       <PrincipalMessageSection />
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-white py-12 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="Milestones" eyebrowIndex="03" heading="Our journey so far." />
           <div className="mt-10 divide-y divide-line border-y border-line">

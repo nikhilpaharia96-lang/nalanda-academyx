@@ -21,7 +21,7 @@ export default async function EventsPage() {
         description="Academic, cultural, sports and competition events happening at Nalanda Academy."
         crumbs={[{ label: "Home", href: "/" }, { label: "Events" }]}
       />
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container>
           <EventsBrowser upcoming={upcoming} past={past} categories={eventCategories} />
         </Container>

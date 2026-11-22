@@ -52,7 +52,7 @@ export default async function ResultYearPage({ params }: { params: Promise<Param
         ]}
       />
 
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container>
           <YearSelector years={allYears.map((y) => y.year)} activeYear={result.year} />
 

@@ -21,7 +21,7 @@ export default async function NoticesPage() {
         description="Search and filter official notices covering admissions, examinations, results, holidays and events."
         crumbs={[{ label: "Home", href: "/" }, { label: "Notices" }]}
       />
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container>
           <NoticesBrowser notices={notices} categories={noticeCategories} />
         </Container>

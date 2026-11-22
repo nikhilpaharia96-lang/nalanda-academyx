@@ -207,7 +207,7 @@ export function ContactPreview() {
       </div>
 
       {/* ================= 02–04. CONTACT INFO / FORM / FIND US ================= */}
-      <Container className="py-16 sm:py-20" id="get-in-touch-form">
+      <Container className="py-10 sm:py-16 lg:py-24" id="get-in-touch-form">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr_0.85fr] lg:items-start">
           {/* Contact information */}
           <motion.div

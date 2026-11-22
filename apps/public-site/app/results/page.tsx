@@ -20,7 +20,7 @@ export default async function ResultsPage() {
       </div>
 
       {years.length > 0 && (
-        <section className="bg-paper py-16 sm:py-20">
+        <section className="bg-paper py-10 sm:py-16 lg:py-24">
           <Container>
             <SectionHeading eyebrow="Historical Results" eyebrowIndex="01" heading="Results timeline (2017 – 2026)" />
             <div className="mt-10 divide-y divide-line border-y border-line">

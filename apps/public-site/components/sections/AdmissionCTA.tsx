@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/Button";
 
 export function AdmissionCTA() {
   return (
-    <section className="relative overflow-hidden bg-navy-950 py-20 sm:py-28">
+    <section className="relative overflow-hidden bg-navy-950 py-12 sm:py-20 lg:py-28">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-32 -top-32 h-[420px] w-[420px] rounded-full bg-gold-500/10 blur-[120px]"

@@ -66,7 +66,7 @@ export default async function EventDetailPage({ params }: { params: Promise<Para
         </Container>
       </section>
 
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
           <div>
             <FadeUp>

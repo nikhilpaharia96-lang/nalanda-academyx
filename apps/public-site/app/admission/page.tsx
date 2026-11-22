@@ -43,7 +43,7 @@ export default async function AdmissionPage() {
         </Container>
       </section>
 
-      <section className="bg-paper py-20 sm:py-28">
+      <section className="bg-paper py-12 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="Admission Process" eyebrowIndex="01" heading="A clear, five-step process." />
           <StaggerGroup className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
@@ -58,7 +58,7 @@ export default async function AdmissionPage() {
         </Container>
       </section>
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-white py-12 sm:py-20 lg:py-28">
         <Container className="grid gap-10 lg:grid-cols-3">
           <div>
             <h3 className="font-display text-lg font-semibold text-navy-950">Available Classes</h3>
@@ -79,7 +79,7 @@ export default async function AdmissionPage() {
         </Container>
       </section>
 
-      <section className="bg-paper py-20 sm:py-28">
+      <section className="bg-paper py-12 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="Important Dates" eyebrowIndex="02" heading="Key dates for this admission cycle." />
           <div className="mt-10 divide-y divide-line border-y border-line">
@@ -93,7 +93,7 @@ export default async function AdmissionPage() {
         </Container>
       </section>
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-white py-12 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="FAQ" eyebrowIndex="03" heading="Frequently asked questions." />
           <div className="mt-10 divide-y divide-line border-y border-line">
@@ -110,7 +110,7 @@ export default async function AdmissionPage() {
         </Container>
       </section>
 
-      <section className="bg-paper py-20 sm:py-28" id="apply">
+      <section className="bg-paper py-12 sm:py-20 lg:py-28" id="apply">
         <Container className="max-w-3xl">
           <SectionHeading eyebrow="Apply Now" eyebrowIndex="04" heading="Ready to begin? Submit your enquiry." />
           <div className="mt-10 rounded-[var(--radius-xl)] border border-line bg-white p-6 sm:p-10">
