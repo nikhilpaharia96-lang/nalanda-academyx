@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Injectable, Module, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Injectable, Module, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { eq, and, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@nalanda/database";
@@ -27,7 +27,7 @@ export class FacultyService {
       .orderBy(schema.faculty.displayOrder);
   }
 
-  async create(dto: { name: string; designation: string; subject?: string; department?: string; qualification?: string; bio?: string; photoUrl?: string; featured?: boolean }, actorId: string) {
+  async create(dto: { name: string; designation: string; subject?: string; department?: string; qualification?: string; bio?: string; photoUrl?: string; featured?: boolean; displayOrder?: number; active?: boolean }, actorId: string) {
     const [row] = await db.insert(schema.faculty).values(dto).returning();
     await this.auditService.log({ userId: actorId, action: "FACULTY_CREATE", entity: "Faculty", entityId: row.id });
     return row;
@@ -38,7 +38,19 @@ export class FacultyService {
     await this.auditService.log({ userId: actorId, action: "FACULTY_UPDATE", entity: "Faculty", entityId: id });
     return row;
   }
+
+  async remove(id: string, actorId: string) {
+    await db.delete(schema.faculty).where(eq(schema.faculty.id, id));
+    await this.auditService.log({ userId: actorId, action: "FACULTY_DELETE", entity: "Faculty", entityId: id });
+    return { id, deleted: true };
+  }
 }
+
+// Photo: an https link, an uploaded-image link or a site path like /images/faculty/x.jpg. Never script/data URLs.
+const photoUrl = z
+  .string()
+  .max(2000)
+  .refine((v) => v === "" || /^https?:\/\//i.test(v) || /^\/(?!\/)/.test(v), "Use an https link or a site path");
 
 const createSchema = z.object({
   name: z.string().min(2),
@@ -47,8 +59,10 @@ const createSchema = z.object({
   department: z.string().optional(),
   qualification: z.string().optional(),
   bio: z.string().optional(),
-  photoUrl: z.string().url().optional(),
+  photoUrl: photoUrl.optional(),
   featured: z.boolean().optional(),
+  displayOrder: z.number().int().optional(),
+  active: z.boolean().optional(),
 });
 
 function isAdmin(user?: AuthenticatedUser) {
@@ -79,6 +93,13 @@ export class FacultyController {
   @Roles("SUPER_ADMIN", "ADMIN")
   update(@Param("id") id: string, @Body(new ZodValidationPipe(createSchema.partial())) dto: any, @CurrentUser() user: AuthenticatedUser) {
     return this.facultyService.update(id, dto, user.sub);
+  }
+
+  @Delete(":id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("SUPER_ADMIN", "ADMIN")
+  remove(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.facultyService.remove(id, user.sub);
   }
 }
 

@@ -139,6 +139,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Documents", icon: FolderKanban, href: "/admin/documents" },
   { label: "Reports", icon: FileBarChart, href: "/admin/reports" },
   { label: "Website Content", icon: Globe, href: "/admin/website" },
+  { label: "Faculty (Website)", icon: UsersRound, href: "/admin/faculty" },
   { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 

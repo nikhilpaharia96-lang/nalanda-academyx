@@ -81,14 +81,15 @@ export function FacultySectionView({
   const facultyCategories = siteContent.faculty.categories;
   const facultyPhilosophy = siteContent.faculty.philosophy;
   const facultyValues = siteContent.faculty.values;
+  const page = siteContent.facultyPage;
 
   const featured = faculty.slice(0, 5);
   const heroPortraits = faculty.filter((f) => f.photoUrl).slice(0, 5);
   // Real, derived counts only — nothing here is invented.
   const stats = [
-    { icon: UsersRound, value: faculty.length, label: "Faculty & Staff Members" },
-    { icon: Library, value: new Set(faculty.map((f) => f.department)).size, label: "Departments" },
-    { icon: BookOpen, value: new Set(faculty.map((f) => f.subject)).size, label: "Teaching Levels & Roles" },
+    { icon: UsersRound, value: faculty.length, label: page.statLabels.members },
+    { icon: Library, value: new Set(faculty.map((f) => f.department)).size, label: page.statLabels.departments },
+    { icon: BookOpen, value: new Set(faculty.map((f) => f.subject)).size, label: page.statLabels.roles },
   ].filter((s) => s.value > 0);
 
   return (
@@ -130,7 +131,7 @@ export function FacultySectionView({
               className="focus-ring inline-flex items-center gap-2 rounded-full bg-navy-950 px-6 py-3 text-sm font-semibold uppercase text-white transition-colors hover:bg-navy-800 lg:gap-[0.6vw] lg:px-[1.7vw] lg:py-[0.85vw] lg:text-[min(0.95vw,0.9rem)]"
             >
               <UsersRound className="h-4 w-4 lg:h-[1.2vw] lg:w-[1.2vw]" strokeWidth={1.75} />
-              Meet Our Faculty
+              {page.heroButton}
             </a>
           </motion.div>
         </motion.div>
@@ -186,7 +187,7 @@ export function FacultySectionView({
       <Container id="faculty-grid" className="scroll-mt-28 py-10 lg:max-w-[1536px] lg:px-[2.4%] lg:py-[1.8vw]">
         <div className="grid gap-6 lg:grid-cols-[1fr_24.8%] lg:gap-[2%]">
           <div>
-            <RuleHeading>Meet Our Faculty</RuleHeading>
+            <RuleHeading>{page.gridHeading}</RuleHeading>
             <motion.div
               initial="hidden"
               whileInView="show"
@@ -218,7 +219,7 @@ export function FacultySectionView({
                 href={directoryHref}
                 className="focus-ring inline-flex items-center gap-2 rounded-md bg-navy-950 px-7 py-3 text-sm font-semibold uppercase text-white transition-colors hover:bg-navy-800 lg:px-[2.4vw] lg:py-[0.8vw] lg:text-[min(0.9vw,0.88rem)]"
               >
-                View All Faculty
+                {page.viewAllButton}
                 <ChevronRight className="h-4 w-4" />
               </a>
             </div>
@@ -270,9 +271,9 @@ export function FacultySectionView({
           >
             <Quote className="absolute left-0 top-0 h-6 w-6 text-gold-400" strokeWidth={2} />
             <p className="font-editorial text-lg italic leading-snug text-white lg:text-[min(1.2vw,1.15rem)]">
-              A good teacher can inspire hope, ignite the imagination, and instill a love of learning.
+              {page.quote.text}
             </p>
-            <p className="mt-2 text-right text-sm font-medium text-gold-400 lg:text-[min(0.95vw,0.9rem)]">– Brad Henry</p>
+            <p className="mt-2 text-right text-sm font-medium text-gold-400 lg:text-[min(0.95vw,0.9rem)]">– {page.quote.author}</p>
           </motion.div>
 
           <motion.div

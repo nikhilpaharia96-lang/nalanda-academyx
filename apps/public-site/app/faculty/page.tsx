@@ -4,6 +4,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FacultyDirectory } from "@/components/sections/FacultyDirectory";
 import { FacultySectionView } from "@/components/sections/FacultySectionView";
 import { getFaculty } from "@/lib/services/facultyService";
+import { getSiteContent } from "@/lib/services/siteContentService";
 
 export const metadata: Metadata = {
   title: "Faculty",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function FacultyPage() {
-  const faculty = await getFaculty();
+  const [faculty, siteContent] = await Promise.all([getFaculty(), getSiteContent()]);
+  const page = siteContent.facultyPage;
 
   return (
     <>
@@ -22,7 +24,7 @@ export default async function FacultyPage() {
 
       <section id="directory" className="scroll-mt-24 bg-white py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Faculty Directory" eyebrowIndex="01" heading="All faculty and staff" />
+          <SectionHeading eyebrow={page.directoryEyebrow} eyebrowIndex="01" heading={page.directoryHeading} />
           <div className="mt-10">
             <FacultyDirectory faculty={faculty} />
           </div>
