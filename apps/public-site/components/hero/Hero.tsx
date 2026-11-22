@@ -410,7 +410,7 @@ export function Hero() {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold-400/30 bg-white/5 text-gold-400">
                     <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden />
                   </span>
-                  <h3 className="text-[9.5px] font-semibold leading-[1.15] text-white">{item.title}</h3>
+                  <h3 className="text-[11px] font-semibold leading-[1.15] text-white">{item.title}</h3>
                 </div>
               </FadeUp>
             );

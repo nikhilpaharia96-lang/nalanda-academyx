@@ -156,3 +156,39 @@ h1, h2, h3, h4, .font-display {
   width: 2px;
   background: var(--color-gold-500);
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile usability
+   - 16px form controls stop iOS Safari zooming the page on focus.
+   - Touch devices get ~40px+ tap targets for small footer / breadcrumb links
+     and filter chips.
+   - Stop the browser inflating text after rotation; remove tap flash.
+--------------------------------------------------------------------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 1023px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+@media (pointer: coarse) {
+  footer li > a,
+  footer nav a,
+  nav[aria-label="Breadcrumb"] a,
+  nav[aria-label="Breadcrumbs"] a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  main button[type="button"].rounded-full {
+    min-height: 40px;
+  }
+}

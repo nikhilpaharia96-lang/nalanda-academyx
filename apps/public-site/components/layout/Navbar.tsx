@@ -126,7 +126,7 @@ export function Navbar() {
           <div className="flex shrink-0 items-center gap-1.5 lg:hidden">
             <a
               href="/admission"
-              className="focus-ring inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 shadow-[var(--shadow-sm)] transition-colors hover:bg-gold-400 active:scale-[0.98] sm:gap-1.5 sm:px-4 sm:py-2 sm:text-[13px]"
+              className="focus-ring inline-flex min-h-10 items-center gap-1 whitespace-nowrap rounded-full bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 shadow-[var(--shadow-sm)] transition-colors hover:bg-gold-400 active:scale-[0.98] sm:gap-1.5 sm:px-4 sm:py-2 sm:text-[13px]"
             >
               {siteContent.site.admissionButtonLabel}
               <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />

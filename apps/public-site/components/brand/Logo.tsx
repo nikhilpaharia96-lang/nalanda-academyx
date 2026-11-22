@@ -44,7 +44,7 @@ export function Logo({
         {showTagline && (
           <span
             className={cn(
-              "truncate text-[9px] font-medium leading-tight tracking-wide lg:hidden",
+              "truncate text-[10px] font-medium leading-tight tracking-wide lg:hidden",
               tone === "dark" ? "text-slate-500" : "text-white/75"
             )}
           >
