@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { PageHero } from "@/components/hero/PageHero";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FacultyDirectory } from "@/components/sections/FacultyDirectory";
+import { FacultySectionView } from "@/components/sections/FacultySectionView";
 import { getFaculty } from "@/lib/services/facultyService";
 
 export const metadata: Metadata = {
@@ -14,15 +15,17 @@ export default async function FacultyPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Our Faculty"
-        title="Teachers dedicated to every student's progress."
-        description="Meet the teachers and staff at Nalanda Academy."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Faculty" }]}
-      />
-      <section className="bg-white py-16 sm:py-20">
+      {/* Leaves room for the fixed navbar (+ desktop info bar), like the site's other page headers. */}
+      <div className="bg-[#f1f1f1] pt-[72px] lg:pt-[108px]">
+        <FacultySectionView faculty={faculty} headingLevel="h1" gridHref="#faculty-grid" directoryHref="#directory" />
+      </div>
+
+      <section id="directory" className="scroll-mt-24 bg-white py-16 sm:py-20">
         <Container>
-          <FacultyDirectory faculty={faculty} />
+          <SectionHeading eyebrow="Faculty Directory" eyebrowIndex="01" heading="All faculty and staff" />
+          <div className="mt-10">
+            <FacultyDirectory faculty={faculty} />
+          </div>
         </Container>
       </section>
     </>
