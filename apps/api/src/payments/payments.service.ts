@@ -25,7 +25,7 @@ export class PaymentsService {
     private readonly storeOrdersService: StoreOrdersService,
   ) {}
 
-  private async resolveContext(dto: { studentFeeId?: string; extraFeeId?: string; admissionApplicationId?: string; storeOrderId?: string }) {
+  async resolveContext(dto: { studentFeeId?: string; extraFeeId?: string; admissionApplicationId?: string; storeOrderId?: string }) {
     if (dto.studentFeeId) {
       const [fee] = await db.select().from(schema.studentFees).where(eq(schema.studentFees.id, dto.studentFeeId));
       if (!fee) throw new NotFoundException("Student fee not found");
@@ -263,6 +263,37 @@ export class PaymentsService {
   /** Admin manually records a payment collected outside Razorpay (cash, UPI,
    * bank transfer, cheque). Recorded as PAID immediately — the money has
    * already changed hands by the time an admin is data-entering this. */
+  /** Settles a fee through a verified UPI transfer (UTR + amount matched against the bank statement by the
+   * UPI auto-approval flow). Same bookkeeping as an offline payment: PAID row, fee recomputed, receipt, notification. */
+  async settleUpiPayment(p: { studentId: string; studentFeeId?: string | null; extraFeeId?: string | null; amount: number; utr: string; actorId: string }) {
+    const ctx = await this.resolveContext({ studentFeeId: p.studentFeeId ?? undefined, extraFeeId: p.extraFeeId ?? undefined });
+    if (ctx.remainingAmount !== undefined && p.amount > ctx.remainingAmount + AMOUNT_EPSILON) {
+      throw new BadRequestException(`Amount (₹${p.amount}) is more than the remaining balance (₹${ctx.remainingAmount.toFixed(2)}) for this fee`);
+    }
+    const [payment] = await db
+      .insert(schema.payments)
+      .values({
+        studentId: p.studentId,
+        studentFeeId: p.studentFeeId ?? undefined,
+        extraFeeId: p.extraFeeId ?? undefined,
+        amount: p.amount,
+        paymentType: ctx.paymentType,
+        gateway: "UPI_UTR",
+        status: "PAID",
+        method: "upi",
+        transactionId: p.utr,
+        collectedBy: p.actorId,
+        referenceNote: `UPI UTR ${p.utr} (auto-matched)`,
+        paidAt: new Date().toISOString(),
+      })
+      .returning();
+    await this.allocatePaymentToFee(payment);
+    const receipt = await this.receiptsService.generateForPayment(payment.id);
+    await this.notifyPaymentSuccess(payment);
+    await this.auditService.log({ userId: p.actorId, action: "UPI_PAYMENT_AUTO_APPROVED", entity: "Payment", entityId: payment.id, description: `UTR ${p.utr}, amount ${payment.amount}` });
+    return { payment, receipt };
+  }
+
   async recordOfflinePayment(dto: RecordOfflinePaymentDto, actorId: string) {
     const ctx = await this.resolveContext(dto);
     if (ctx.studentId && ctx.studentId !== dto.studentId) {

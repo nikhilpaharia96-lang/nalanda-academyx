@@ -9,6 +9,7 @@ import { api, downloadFile } from "@/lib/api-client";
 import { payFee } from "@/lib/razorpay";
 import { PARENT_NAV } from "@/lib/parent-nav";
 import { formatCurrency, formatDate, humanize, monthName, statusBadgeClass } from "@/lib/fees";
+import { UpiPaySection } from "@/components/upi-pay-section";
 import { Loader2, Receipt as ReceiptIcon, Download, X } from "lucide-react";
 
 interface StudentFee {
@@ -131,6 +132,10 @@ export default function ParentFeesPage() {
               </div>
             )}
           </section>
+        )}
+
+        {fees && (
+          <UpiPaySection monthlyFees={fees.monthlyFees} extraFees={fees.extraFees} studentId={selectedChildId ?? undefined} onDone={load} />
         )}
 
         <section>

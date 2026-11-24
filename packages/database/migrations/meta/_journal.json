@@ -85,6 +85,13 @@
       "when": 1794709466802,
       "tag": "0011_dry_mandroid",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1795525030328,
+      "tag": "0012_flowery_supernaut",
+      "breakpoints": true
     }
   ]
 }

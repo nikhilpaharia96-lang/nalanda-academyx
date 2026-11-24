@@ -295,6 +295,42 @@ export const paymentReceipts = sqliteTable("payment_receipts", {
 });
 
 // ---------------------------------------------------------------------------
+// UPI / UTR AUTO-APPROVAL
+// A parent/student submits a "claim" (UTR + amount) for a fee. Admin/accounts
+// staff type the UTR + amount they see on the bank statement ("credit"). When
+// a claim and a credit share the same UTR *and* amount, the payment is
+// approved automatically and the fee is marked paid.
+// ---------------------------------------------------------------------------
+
+export const upiClaims = sqliteTable("upi_claims", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  studentFeeId: text("student_fee_id").references(() => studentFees.id),
+  extraFeeId: text("extra_fee_id").references(() => extraFees.id),
+  utr: text("utr").notNull().unique(),
+  amount: real("amount").notNull(),
+  // PENDING -> APPROVED (auto, on matching bank credit) | REJECTED | NEEDS_REVIEW
+  status: text("status").notNull().default("PENDING"),
+  note: text("note"),
+  submittedBy: text("submitted_by").notNull(),
+  paymentId: text("payment_id").references(() => payments.id),
+  matchedAt: text("matched_at"),
+  ...timestamps,
+}, (t) => ({
+  statusIdx: index("upi_claims_status_idx").on(t.status),
+}));
+
+export const upiBankCredits = sqliteTable("upi_bank_credits", {
+  id: id(),
+  utr: text("utr").notNull().unique(),
+  amount: real("amount").notNull(),
+  enteredBy: text("entered_by").notNull(),
+  claimId: text("claim_id").references(() => upiClaims.id),
+  matchedAt: text("matched_at"),
+  ...timestamps,
+});
+
+// ---------------------------------------------------------------------------
 // ATTENDANCE
 // ---------------------------------------------------------------------------
 
