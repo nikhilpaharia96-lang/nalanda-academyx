@@ -1257,3 +1257,130 @@ export const staffAccounts = sqliteTable("staff_accounts", {
   designation: text("designation"),
   ...timestamps,
 });
+
+// ---------------------------------------------------------------------------
+// ATTENDX — session-based, proxy-resistant attendance (additive; the daily
+// `attendance` table above is untouched). See docs/ATTENDX.md.
+//   • Nothing here is client-writable: every row is written by AttendxService.
+//   • attx_session_secrets is never returned by any endpoint.
+// ---------------------------------------------------------------------------
+
+// One active device key per student, registered only via an admin-issued binding code.
+export const attxDevices = sqliteTable("attx_devices", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  publicKey: text("public_key").notNull(), // base64 SPKI DER, ECDSA P-256
+  boundAt: text("bound_at").notNull(),
+  revokedAt: text("revoked_at"),
+  ...timestamps,
+}, (t) => ({
+  keyUnique: uniqueIndex("attx_devices_key_unique").on(t.publicKey), // a key can never serve two accounts
+  studentIdx: index("attx_devices_student_idx").on(t.studentId),
+}));
+
+export const attxBindingCodes = sqliteTable("attx_binding_codes", {
+  id: id(),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  codeHash: text("code_hash").notNull(),
+  expiresAt: text("expires_at").notNull(),
+  usedAt: text("used_at"),
+  createdBy: text("created_by").notNull(),
+  ...timestamps,
+}, (t) => ({
+  hashUnique: uniqueIndex("attx_binding_codes_hash_unique").on(t.codeHash),
+}));
+
+export const attxSessions = sqliteTable("attx_sessions", {
+  id: id(),
+  teacherId: text("teacher_id").notNull().references(() => teachers.id),
+  classId: text("class_id").notNull().references(() => classes.id),
+  sectionId: text("section_id").notNull().references(() => sections.id),
+  academicYearId: text("academic_year_id").notNull().references(() => academicYears.id),
+  subjectId: text("subject_id").references(() => subjects.id),
+  startedAt: text("started_at").notNull(),
+  endedAt: text("ended_at"),
+  status: text("status").notNull(), // OPEN | CLOSED
+  qrIntervalSec: integer("qr_interval_sec").notNull(),
+  minScore: real("min_score").notNull(),
+  ...timestamps,
+}, (t) => ({
+  openIdx: index("attx_sessions_open_idx").on(t.classId, t.sectionId, t.status),
+}));
+
+export const attxSessionSecrets = sqliteTable("attx_session_secrets", {
+  sessionId: text("session_id").primaryKey().references(() => attxSessions.id, { onDelete: "cascade" }),
+  qrSecret: text("qr_secret").notNull(),
+});
+
+export const attxChecks = sqliteTable("attx_checks", {
+  id: id(),
+  sessionId: text("session_id").notNull().references(() => attxSessions.id, { onDelete: "cascade" }),
+  kind: text("kind").notNull(), // INITIAL | CODE | PING
+  weight: integer("weight").notNull(),
+  codeDigest: text("code_digest"), // keyed digest of the room code; the code itself is shown once to the teacher
+  opensAt: text("opens_at").notNull(),
+  closesAt: text("closes_at").notNull(),
+  ...timestamps,
+}, (t) => ({
+  sessionIdx: index("attx_checks_session_idx").on(t.sessionId),
+}));
+
+// One row per nonce issued. The number of rows per (check, student) is the attempt cap.
+export const attxNonces = sqliteTable("attx_nonces", {
+  id: id(),
+  nonce: text("nonce").notNull(),
+  checkId: text("check_id").notNull().references(() => attxChecks.id, { onDelete: "cascade" }),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  expiresAt: text("expires_at").notNull(),
+  usedAt: text("used_at"),
+  result: text("result"), // OK | WRONG_CODE | BAD_QR | BAD_SIGNATURE (null until used)
+  ...timestamps,
+}, (t) => ({
+  nonceUnique: uniqueIndex("attx_nonces_nonce_unique").on(t.nonce),
+  attemptIdx: index("attx_nonces_attempt_idx").on(t.checkId, t.studentId),
+}));
+
+// A QR slot can be used once per student per session.
+export const attxSlotUses = sqliteTable("attx_slot_uses", {
+  id: id(),
+  sessionId: text("session_id").notNull().references(() => attxSessions.id, { onDelete: "cascade" }),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  slot: integer("slot").notNull(),
+  ...timestamps,
+}, (t) => ({
+  unique: uniqueIndex("attx_slot_uses_unique").on(t.sessionId, t.studentId, t.slot),
+}));
+
+// Successful check responses only (PASS | LATE_OK). Server-computed; clients never supply these values.
+export const attxResponses = sqliteTable("attx_responses", {
+  id: id(),
+  sessionId: text("session_id").notNull().references(() => attxSessions.id, { onDelete: "cascade" }),
+  checkId: text("check_id").notNull().references(() => attxChecks.id, { onDelete: "cascade" }),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  deviceId: text("device_id").notNull().references(() => attxDevices.id),
+  outcome: text("outcome").notNull(),
+  flags: text("flags").notNull(), // JSON array of soft flags
+  latencyMs: integer("latency_ms"),
+  submittedAt: text("submitted_at").notNull(),
+  ...timestamps,
+}, (t) => ({
+  unique: uniqueIndex("attx_responses_unique").on(t.checkId, t.studentId),
+  sessionIdx: index("attx_responses_session_idx").on(t.sessionId),
+}));
+
+// Proposed status comes from the algorithm; the teacher's decision (finalStatus) is the authority.
+export const attxResults = sqliteTable("attx_results", {
+  id: id(),
+  sessionId: text("session_id").notNull().references(() => attxSessions.id, { onDelete: "cascade" }),
+  studentId: text("student_id").notNull().references(() => students.id, { onDelete: "cascade" }),
+  proposedStatus: text("proposed_status").notNull(), // PRESENT | ABSENT | REVIEW
+  score: real("score").notNull(),
+  flags: text("flags").notNull(), // JSON array
+  finalStatus: text("final_status"), // PRESENT | ABSENT | LATE | LEAVE, set only by a teacher/admin decision
+  finalReason: text("final_reason"),
+  finalBy: text("final_by"),
+  finalAt: text("final_at"),
+  ...timestamps,
+}, (t) => ({
+  unique: uniqueIndex("attx_results_unique").on(t.sessionId, t.studentId),
+}));

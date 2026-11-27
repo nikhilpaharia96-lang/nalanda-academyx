@@ -11,6 +11,7 @@ import { AcademicsModule } from "./academics/academics.module";
 import { TeachersModule } from "./teachers/teachers.module";
 import { ParentsModule } from "./parents/parents.module";
 import { AttendanceModule } from "./attendance/attendance.module";
+import { AttendxModule } from "./attendance/attendx/attendx.module";
 import { AdmissionsModule } from "./admissions/admissions.module";
 import { FeesModule } from "./fees/fees.module";
 import { NotificationsModule } from "./notifications/notifications.module";
@@ -53,6 +54,7 @@ import { MediaModule } from "./media/media.module";
     TeachersModule,
     ParentsModule,
     AttendanceModule,
+    AttendxModule,
     AdmissionsModule,
     FeesModule,
     NotificationsModule,

@@ -7,3 +7,4 @@ export * from "./schemas/payments";
 export * from "./schemas/exams";
 export * from "./schemas/store";
 export * from "./schemas/campus";
+export * from "./schemas/attendx";
