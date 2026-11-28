@@ -160,6 +160,26 @@ export function buildLocalSiteContent() {
       formTitle: "Send us a message",
       mapNote: "Map will appear here once the Google Maps URL is configured",
     },
+    eventsPage: {
+      eyebrow: "Events @ Nalanda Academy",
+      heading: ["Celebrating Moments.", "Creating Memories."],
+      headingAccent: "Creating Memories.",
+      description:
+        "Events at Nalanda Academy are more than celebrations \u2014 they are opportunities to learn, express, grow and build lasting memories together.",
+      image: { src: "/images/events/events-hero.webp", alt: "Nalanda Academy campus events" },
+      highlights: [
+        { icon: "users-round", title: "Holistic Development" },
+        { icon: "drama", title: "Talent Showcase" },
+        { icon: "handshake", title: "Community Engagement" },
+        { icon: "sparkles", title: "Memorable Experiences" },
+      ],
+      upcomingHeading: "Upcoming Events",
+      viewAllButton: "View All Events",
+      recentNote: "No upcoming events are scheduled right now \u2014 here are our most recent events.",
+      emptyUpcoming: "[New events will be announced here soon]",
+      quote: { text: "Events bring us together, memories keep us connected.", author: "Together We Thrive" },
+      statLabels: { upcoming: "Upcoming Events", past: "Events Held", categories: "Event Categories" },
+    },
     facultyPage: {
       heroButton: "Meet Our Faculty",
       gridHeading: "Meet Our Faculty",

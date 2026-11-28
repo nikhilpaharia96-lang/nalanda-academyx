@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { PageHero } from "@/components/hero/PageHero";
+import { EventsPageSection } from "@/components/sections/EventsPageSection";
 import { EventsBrowser } from "@/components/sections/EventsBrowser";
 import { getUpcomingEvents, getPastEvents } from "@/lib/services/eventService";
 import { eventCategories } from "@/lib/content/events";
@@ -15,13 +15,8 @@ export default async function EventsPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Events"
-        title="Life on campus, beyond the classroom."
-        description="Academic, cultural, sports and competition events happening at Nalanda Academy."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Events" }]}
-      />
-      <section className="bg-white py-16 sm:py-20">
+      <EventsPageSection upcoming={upcoming} past={past} categoryCount={eventCategories.length} />
+      <section id="all-events" className="scroll-mt-28 bg-white py-16 sm:py-20">
         <Container>
           <EventsBrowser upcoming={upcoming} past={past} categories={eventCategories} />
         </Container>
