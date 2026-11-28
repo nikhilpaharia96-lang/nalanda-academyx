@@ -68,6 +68,16 @@ export function AboutPageSection({ headingLevel = "h1" }: { headingLevel?: "h1" 
           <motion.p variants={fadeUp} className="mt-4 max-w-xl text-base leading-relaxed text-slate-700 lg:mt-[1.2vw] lg:max-w-[88%] lg:text-[min(1.1vw,1.05rem)] lg:leading-[1.6]">
             {page.intro}
           </motion.p>
+          <motion.div variants={fadeUp} className="mt-6 lg:mt-[1.4vw]">
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="focus-ring inline-flex items-center gap-2 rounded-md bg-navy-950 px-6 py-3 text-sm font-semibold uppercase text-gold-400 transition-colors hover:bg-navy-900 hover:text-gold-300 lg:gap-[0.6vw] lg:px-[1.8vw] lg:py-[0.85vw] lg:text-[min(0.9vw,0.88rem)]"
+            >
+              <Quote className="h-4 w-4 lg:h-[1.1vw] lg:w-[1.1vw]" strokeWidth={2} />
+              {preview.chairpersonCta.label}
+            </button>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -184,19 +194,6 @@ export function AboutPageSection({ headingLevel = "h1" }: { headingLevel?: "h1" 
         </div>
       </div>
 
-      {/* ================= CHAIRPERSON MESSAGE ================= */}
-      <div id="chairperson" className="scroll-mt-28 bg-[#f3f3f1] px-4 py-12 sm:py-16 lg:py-[4vw]">
-        <h2 className="sr-only">{page.chairperson.heading}</h2>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label={`${page.chairperson.heading} — ${page.chairperson.hint}`}
-          className="focus-ring group relative mx-auto block w-full max-w-[640px] overflow-hidden rounded-lg border border-line bg-white shadow-[var(--shadow-md)]"
-        >
-          <Image src={page.chairperson.imageSrc} alt={page.chairperson.imageAlt} width={1024} height={1536} sizes="(min-width: 640px) 640px, 100vw" className="h-auto w-full" />
-          <span className="absolute bottom-3 right-3 rounded-full bg-navy-950/85 px-3 py-1 text-xs font-medium text-white opacity-90 group-hover:opacity-100">{page.chairperson.hint}</span>
-        </button>
-      </div>
       <ImageLightbox open={open} onClose={() => setOpen(false)} src={page.chairperson.imageSrc} alt={page.chairperson.imageAlt} />
     </section>
   );
