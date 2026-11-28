@@ -80,7 +80,7 @@ function EventRow({ event }: { event: SchoolEvent }) {
         <span className="mt-1 font-data text-[11px] font-semibold uppercase tracking-wider text-gold-400">
           {month}
         </span>
-        <span className="font-data text-[10px] text-white/50">{year}</span>
+        <span className="font-data text-[11px] text-white/50">{year}</span>
       </div>
 
       {/* Middle */}

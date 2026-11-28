@@ -34,7 +34,7 @@ export function DemoImage({
       />
       {isDemo && (
         <span
-          className="absolute left-3 top-3 z-10 rounded-full bg-navy-950/85 px-3 py-1 font-data text-[10px] font-semibold uppercase tracking-wider text-gold-400 shadow-[var(--shadow-sm)] backdrop-blur-sm"
+          className="absolute left-3 top-3 z-10 rounded-full bg-navy-950/85 px-3 py-1 font-data text-[11px] font-semibold uppercase tracking-wider text-gold-400 shadow-[var(--shadow-sm)] backdrop-blur-sm"
           role="note"
         >
           Demo Photo — Not Official Imagery

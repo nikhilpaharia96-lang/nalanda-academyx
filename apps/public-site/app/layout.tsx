@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { siteConfig as envConfig } from "@/lib/content/site";
 import { getSiteContent } from "@/lib/services/siteContentService";
 import { SiteContentProvider } from "@/components/providers/SiteContentProvider";
@@ -77,7 +78,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteContentProvider value={content}>
           <Navbar />
           <main id="main-content">{children}</main>
-          <Footer />
+          <div className="pb-[calc(56px+env(safe-area-inset-bottom))] lg:pb-0 bg-navy-950">
+            <Footer />
+          </div>
+          <MobileActionBar />
         </SiteContentProvider>
       </body>
     </html>

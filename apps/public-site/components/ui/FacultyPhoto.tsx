@@ -53,7 +53,7 @@ export function FacultyPhoto({
       {isDemo && (
         <span
           className={cn(
-            "absolute right-2 top-2 z-10 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider shadow-sm backdrop-blur-sm",
+            "absolute right-2 top-2 z-10 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider shadow-sm backdrop-blur-sm",
             tone === "navy"
               ? "bg-white/90 text-navy-950"
               : "bg-navy-950/85 text-white"

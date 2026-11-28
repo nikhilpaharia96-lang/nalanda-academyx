@@ -427,7 +427,7 @@ export function Hero() {
         </p>
         <div className="mt-2 flex items-center justify-center gap-2">
           <span aria-hidden className="h-px w-6 bg-gold-400/70" />
-          <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold-400">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-400">
             {heroClosingQuote.attribution}
           </span>
           <span aria-hidden className="h-px w-6 bg-gold-400/70" />

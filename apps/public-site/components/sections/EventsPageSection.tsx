@@ -163,8 +163,8 @@ export function EventsPageSection({
                         <Icon className="h-12 w-12 text-gold-400/40" strokeWidth={1.2} />
                         <div className="absolute left-4 top-4 rounded-md bg-navy-950 px-3 py-2 text-center leading-none text-white shadow-lg">
                           <span className="block font-display text-2xl font-bold">{d.day}</span>
-                          <span className="mt-1 block font-data text-[10px] tracking-widest text-gold-400">{d.month}</span>
-                          <span className="block font-data text-[10px] text-white/70">{d.year}</span>
+                          <span className="mt-1 block font-data text-[11px] tracking-widest text-gold-400">{d.month}</span>
+                          <span className="block font-data text-[11px] text-white/70">{d.year}</span>
                         </div>
                       </div>
                       <div className="p-5">
@@ -205,7 +205,7 @@ export function EventsPageSection({
               <li key={s.label} className="border-l border-white/15 px-2">
                 <s.icon className="mx-auto h-5 w-5 text-gold-400" />
                 <span className="mt-2 block font-display text-3xl font-bold">{s.value}</span>
-                <span className="block font-data text-[10px] uppercase tracking-wider text-white/70">{s.label}</span>
+                <span className="block font-data text-[11px] uppercase tracking-wider text-white/70">{s.label}</span>
               </li>
             ))}
           </ul>

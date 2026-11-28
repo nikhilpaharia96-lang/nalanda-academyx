@@ -84,7 +84,7 @@ function NoticeRow({ notice }: { notice: Notice }) {
         <span className="mt-1 font-data text-[11px] font-semibold uppercase tracking-wider text-gold-400">
           {month}
         </span>
-        <span className="font-data text-[10px] text-white/50">{year}</span>
+        <span className="font-data text-[11px] text-white/50">{year}</span>
       </div>
 
       {/* Middle */}
@@ -104,7 +104,7 @@ function NoticeRow({ notice }: { notice: Notice }) {
         {hasAttachments ? (
           <span className="flex flex-col items-center gap-1 text-navy-950/70">
             <Paperclip className="h-5 w-5" strokeWidth={1.5} />
-            <span className="font-data text-[10px] font-semibold uppercase tracking-wider">PDF</span>
+            <span className="font-data text-[11px] font-semibold uppercase tracking-wider">PDF</span>
           </span>
         ) : (
           <span className="flex items-center gap-1 font-data text-xs font-semibold uppercase tracking-wider text-navy-950 transition-all duration-300 ease-out group-hover:gap-1.5 group-hover:text-gold-500">
