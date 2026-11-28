@@ -399,6 +399,28 @@ export const SITE_CONTENT_DEFAULTS: Record<string, any> = {
       }
     ]
   },
+  "aboutPage": {
+    "title": "About Us",
+    "intro": "Nalanda Academy is dedicated to nurturing young minds with knowledge, values, and vision. We provide a nurturing environment where students learn, grow, and become responsible global citizens.",
+    "quote": {
+      "text": "The root of education is bitter, but the fruit is sweet.",
+      "author": "Aristotle"
+    },
+    "banner": {
+      "heading": "Learn. Lead. Inspire.",
+      "sub": "Together, we build tomorrow.",
+      "cta": {
+        "label": "Discover More",
+        "href": "/academics"
+      }
+    },
+    "chairperson": {
+      "heading": "Message from the Chairperson",
+      "imageSrc": "/images/about/MESSAGE FROM THE CHAIRPERSON.jpeg",
+      "imageAlt": "Message from the Chairperson of Nalanda Academy School",
+      "hint": "Tap to enlarge"
+    }
+  },
   "contactPage": {
     "eyebrow": "Contact Us",
     "heading": [
@@ -486,16 +508,16 @@ export const SITE_CONTENT_DEFAULTS: Record<string, any> = {
     "visionMission": {
       "vision": {
         "title": "Our Vision",
-        "body": "to create an inspiring learning environment where every student can discover their strengths, develop their character, and become a responsible contributor to society."
+        "body": "To create an inspiring learning environment where every student can discover their strengths, develop their character, and become a responsible contributor to society."
       },
       "mission": {
         "title": "Our Mission",
         "points": [
-          " deliver quality and concept-driven education.",
-          "encourage critical thinking, creativity, and innovation.",
-          "build confidence, discipline, leadership, and responsibility.",
-          "provide a safe, supportive, and inspiring learning environment.",
-          "prepare students for higher education, careers, and a changing world."
+          "Deliver quality and concept-driven education.",
+          "Encourage critical thinking, creativity, and innovation.",
+          "Build confidence, discipline, leadership, and responsibility.",
+          "Provide a safe, supportive, and inspiring learning environment.",
+          "Prepare students for higher education, careers, and a changing world."
         ]
       }
     },

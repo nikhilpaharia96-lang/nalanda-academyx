@@ -41,6 +41,7 @@ import {
   aboutVisionMission,
   aboutGallery,
   aboutStory,
+  aboutPage,
   missionValues,
   principalMessage,
   milestones,
@@ -148,6 +149,7 @@ export function buildLocalSiteContent() {
       teacherPortalLinks,
     },
     getInTouch: { hero: getInTouchHero, valueStrip: getInTouchValueStrip },
+    aboutPage,
     contactPage: {
       eyebrow: "Contact Us",
       heading: ["We\u2019re here to", "Help you."],

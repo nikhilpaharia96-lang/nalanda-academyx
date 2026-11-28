@@ -24,6 +24,7 @@ export const SECTION_META: SectionMeta[] = [
   { key: "notices", label: "Notices page copy", description: "Headings and quick links on the Notices page (individual notices are managed under Notices)." },
   { key: "results", label: "Results page", description: "Banner image for the Results page (yearly results are managed under Results)." },
   { key: "admission", label: "Admission page", description: "Admission status, process, eligibility, documents, dates and FAQs." },
+  { key: "aboutPage", label: "About page", description: "About page title, intro, closing quote and banner, and the Chairperson message image. (Vision, mission, feature strip and gallery are under About Nalanda.)" },
   { key: "contactPage", label: "Contact page", description: "Contact page headline, description, hero photo, card labels and form title (address, phone and email are under Contact details)." },
   { key: "facultyPage", label: "Faculty page labels & quote", description: "Faculty page button labels, directory heading, quote and statistic labels." },
   { key: "getInTouch", label: "Get in touch section", description: "Homepage contact section headline, card and value strip." },
