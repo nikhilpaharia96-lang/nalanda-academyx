@@ -39,6 +39,7 @@ import { ConcessionsModule } from "./concessions/concessions.module";
 import { PayrollModule } from "./payroll/payroll.module";
 import { StaffAccountsModule } from "./staff-accounts/staff-accounts.module";
 import { SiteContentModule } from "./site-content/site-content.module";
+import { MediaModule } from "./media/media.module";
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { SiteContentModule } from "./site-content/site-content.module";
     PayrollModule,
     StaffAccountsModule,
     SiteContentModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

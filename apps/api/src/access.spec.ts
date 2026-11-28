@@ -101,6 +101,8 @@ const OPEN_BUT_CHECKED_IN_SERVICE = [
 const PUBLIC_ROUTES = [
   "GET /admissions/classes",
   "GET /health",
+  // Uploaded website images: unguessable UUID ids, raster-only (magic-byte checked), served sandboxed.
+  "GET /media/:id",
   "GET /site-content",
   "POST /admissions",
   "POST /auth/login",

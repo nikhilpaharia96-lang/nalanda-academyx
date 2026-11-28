@@ -6,6 +6,7 @@ import {
   GraduationCap,
   UserCog,
   Wallet,
+  Smartphone,
   CreditCard,
   AlertCircle,
   Receipt,
@@ -86,6 +87,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { href: "/admin/fees", label: "Fee Structure", icon: FileBarChart },
       { href: "/admin/payments", label: "Payments", icon: CreditCard },
       { href: "/admin/payments/receive", label: "Receive Payment", icon: Wallet },
+      { href: "/admin/payments/upi", label: "UPI Auto-Approval", icon: Smartphone },
       { href: "/admin/fees/pending", label: "Pending Fees", icon: AlertCircle },
       { href: "/admin/payments/receipts", label: "Receipts", icon: Receipt },
       { href: "/admin/fees/concessions", label: "Concessions", icon: BadgePercent },
@@ -139,16 +141,23 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   { label: "Documents", icon: FolderKanban, href: "/admin/documents" },
   { label: "Reports", icon: FileBarChart, href: "/admin/reports" },
   { label: "Website Content", icon: Globe, href: "/admin/website" },
+  { label: "Faculty (Website)", icon: UsersRound, href: "/admin/faculty" },
   { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
 /** Accountants only get the money screens. The API enforces this too; this keeps the menu and URLs tidy. */
+const ADMIN_ONLY_UPI = "/admin/payments/upi";
 export const ACCOUNTANT_ALLOWED_PREFIXES = ["/admin/fees", "/admin/payments", "/admin/payroll"];
 
 export function navForRole(role: string | undefined): AdminNavGroup[] {
   if (role !== "ACCOUNTANT") return ADMIN_NAV;
-  return ADMIN_NAV.filter((g) => g.label === "Fees & Payments" || g.label === "Payroll");
+  // UPI auto-approval decides what counts as paid, so it stays admin-only (the API enforces it as well).
+  return ADMIN_NAV.filter((g) => g.label === "Fees & Payments" || g.label === "Payroll").map((g) => ({
+    ...g,
+    children: g.children?.filter((c) => c.href !== ADMIN_ONLY_UPI),
+  }));
 }
 
 export const isAccountantPathAllowed = (pathname: string) =>
+  pathname !== ADMIN_ONLY_UPI &&
   ACCOUNTANT_ALLOWED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));

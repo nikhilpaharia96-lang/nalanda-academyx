@@ -399,6 +399,45 @@ export const SITE_CONTENT_DEFAULTS: Record<string, any> = {
       }
     ]
   },
+  "contactPage": {
+    "eyebrow": "Contact Us",
+    "heading": [
+      "We’re here to",
+      "Help you."
+    ],
+    "headingAccent": "Help",
+    "description": "Have questions or need more information? We’d love to hear from you. Reach out to us and our team will get back to you at the earliest.",
+    "image": {
+      "src": "/images/contact/get-in-touch.webp",
+      "alt": "Nalanda Academy campus"
+    },
+    "labels": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "hours": "Office Hours",
+      "follow": "Follow Us"
+    },
+    "socialEmpty": "[Social links to be added]",
+    "formTitle": "Send us a message",
+    "mapNote": "Map will appear here once the Google Maps URL is configured"
+  },
+  "facultyPage": {
+    "heroButton": "Meet Our Faculty",
+    "gridHeading": "Meet Our Faculty",
+    "viewAllButton": "View All Faculty",
+    "directoryEyebrow": "Faculty Directory",
+    "directoryHeading": "All faculty and staff",
+    "quote": {
+      "text": "A good teacher can inspire hope, ignite the imagination, and instill a love of learning.",
+      "author": "Brad Henry"
+    },
+    "statLabels": {
+      "members": "Faculty & Staff Members",
+      "departments": "Departments",
+      "roles": "Teaching Levels & Roles"
+    }
+  },
   "about": {
     "preview": {
       "eyebrow": "About",

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { ghostBtn, inputClass } from "@/components/campus-ui";
+import { ImageUploadButton } from "@/components/image-upload";
 
 type Json = any;
 
@@ -80,7 +81,12 @@ function Leaf({ def, value, onChange, name, icons, colour }: NodeProps) {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={str} alt="" className="mt-2 h-16 rounded border border-neutral-200 object-cover" />
       )}
-      {image && <p className="mt-1 text-xs text-neutral-500">Paste an image link (https://…) or a site path like /images/hero/photo.webp.</p>}
+      {image && (
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <ImageUploadButton onUploaded={onChange} />
+          <p className="text-xs text-neutral-500">or paste an image link (https://…) / a site path like /images/hero/photo.webp.</p>
+        </div>
+      )}
     </Row>
   );
 }

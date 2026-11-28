@@ -19,7 +19,7 @@ export class SettingsService {
     // Internal counters (receipt numbering etc.) and website-content JSON
     // (managed under Admin → Website Content) aren't school "settings" —
     // hide them from this admin-facing list.
-    return rows.filter((r) => !r.key.startsWith("receipt_counter_") && !r.key.startsWith("site_content:"));
+    return rows.filter((r) => !r.key.startsWith("receipt_counter_") && !r.key.startsWith("site_content:") && !r.key.startsWith("media:"));
   }
 
   async set(key: string, value: string, actorId: string) {

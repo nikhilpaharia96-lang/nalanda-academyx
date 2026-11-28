@@ -40,6 +40,9 @@ async function bootstrap() {
   // its HMAC signature over the exact bytes Razorpay signed — verifying a
   // re-serialized JSON object would silently break on any whitespace/key-
   // order difference.
+  // Image uploads arrive as base64 JSON; give just that route a larger body limit
+  // (must be registered before the global parser, which skips already-parsed bodies).
+  app.use("/api/media", express.json({ limit: "4mb" }));
   app.use(
     express.json({
       verify: (req: any, _res, buf) => {
