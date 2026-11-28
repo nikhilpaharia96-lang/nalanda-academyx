@@ -41,6 +41,7 @@ import {
   aboutVisionMission,
   aboutGallery,
   aboutStory,
+  aboutPage,
   missionValues,
   principalMessage,
   milestones,
@@ -149,6 +150,7 @@ export function buildLocalSiteContent() {
     },
     getInTouch: { hero: getInTouchHero, valueStrip: getInTouchValueStrip },
     facilitiesPage,
+    aboutPage,
     contactPage: {
       eyebrow: "Contact Us",
       heading: ["We\u2019re here to", "Help you."],
