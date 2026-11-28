@@ -205,7 +205,7 @@ export function Hero() {
           the sky, palm trees and right-hand building bright and visible. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(112deg,rgba(10,26,51,0.74)_0%,rgba(10,26,51,0.66)_24%,rgba(10,26,51,0.48)_44%,rgba(10,26,51,0.26)_64%,rgba(10,26,51,0.08)_82%,rgba(10,26,51,0)_96%)] sm:hidden"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(10,26,51,0.82)_0%,rgba(10,26,51,0.7)_45%,rgba(10,26,51,0.8)_100%)] sm:hidden"
       />
       {/* Very subtle bottom vignette for blending — not a full dark layer. */}
       <div

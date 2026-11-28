@@ -22,7 +22,7 @@ export default async function FacultyPage() {
         <FacultySectionView faculty={faculty} headingLevel="h1" gridHref="#faculty-grid" directoryHref="#directory" />
       </div>
 
-      <section id="directory" className="scroll-mt-24 bg-white py-16 sm:py-20">
+      <section id="directory" className="scroll-mt-24 bg-white py-10 sm:py-16 lg:py-24">
         <Container>
           <SectionHeading eyebrow={page.directoryEyebrow} eyebrowIndex="01" heading={page.directoryHeading} />
           <div className="mt-10">

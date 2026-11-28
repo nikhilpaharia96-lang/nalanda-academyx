@@ -54,7 +54,7 @@ export default async function NoticeDetailPage({ params }: { params: Promise<Par
         </Container>
       </section>
 
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
           <div className="max-w-2xl text-base leading-relaxed text-slate-600">
             <p>{notice.content}</p>

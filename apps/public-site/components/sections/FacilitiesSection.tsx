@@ -238,7 +238,7 @@ export function FacilitiesSection() {
       </div>
 
       {/* ================= 3 & 4. OUR CAMPUS FACILITIES ================= */}
-      <Container className="py-16 sm:py-20">
+      <Container className="py-10 sm:py-16 lg:py-24">
         <RuleHeading>Our Campus Facilities</RuleHeading>
 
         <motion.div

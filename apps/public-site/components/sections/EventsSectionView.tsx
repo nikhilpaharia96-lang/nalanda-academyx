@@ -326,7 +326,7 @@ export function EventsSectionView({ events }: { events: SchoolEvent[] }) {
       </div>
 
       {/* ================= 03 & 04. EVENTS LIST + IMAGE ================= */}
-      <Container className="py-16 sm:py-20">
+      <Container className="py-10 sm:py-16 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           {/* List */}
           <div>

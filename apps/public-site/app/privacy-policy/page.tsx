@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
         crumbs={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]}
       />
 
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container className="max-w-2xl">
           <p className="text-sm leading-relaxed text-slate-600">
             [Official privacy policy content to be added]

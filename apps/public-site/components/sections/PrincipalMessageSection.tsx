@@ -9,7 +9,7 @@ export async function PrincipalMessageSection() {
   const siteContent = await getSiteContent();
   const principalMessage = siteContent.about.principalMessage;
   return (
-    <section className="bg-navy-950 py-20 sm:py-28">
+    <section className="bg-navy-950 py-12 sm:py-20 lg:py-28">
       <Container className="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <FadeUp>
           <PlaceholderImage

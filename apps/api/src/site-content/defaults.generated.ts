@@ -399,6 +399,27 @@ export const SITE_CONTENT_DEFAULTS: Record<string, any> = {
       }
     ]
   },
+  "facilitiesPage": {
+    "eyebrow": "Facilities",
+    "heading": [
+      "Spaces That",
+      "Inspire Excellence"
+    ],
+    "description": "At Nalanda Academy, we believe that a world-class education needs a world-class environment. Our modern facilities are designed to nurture curiosity, creativity, and confidence.",
+    "gridHeading": "Facilities That Support Every Journey",
+    "moreHeading": "More Facilities",
+    "cta": {
+      "lead": "Come. Explore. Experience the Nalanda difference.",
+      "label": "Schedule a Campus Visit",
+      "href": "/contact"
+    },
+    "statLabels": {
+      "facilities": "Facilities",
+      "facilitiesNote": "For Holistic Growth",
+      "people": "Faculty & Staff",
+      "peopleNote": "Experienced Educators"
+    }
+  },
   "contactPage": {
     "eyebrow": "Contact Us",
     "heading": [

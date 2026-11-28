@@ -258,7 +258,7 @@ export function NoticesSectionView({ notices }: { notices: Notice[] }) {
       </div>
 
       {/* ================= 02 & 03. ALL NOTICES + LIST / 04–06. SIDEBAR ================= */}
-      <Container className="py-16 sm:py-20">
+      <Container className="py-10 sm:py-16 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
           {/* All notices card */}
           <motion.div

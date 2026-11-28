@@ -17,7 +17,7 @@ export default function TermsOfUsePage() {
         crumbs={[{ label: "Home", href: "/" }, { label: "Terms of Use" }]}
       />
 
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-16 lg:py-24">
         <Container className="max-w-2xl">
           <p className="text-sm leading-relaxed text-slate-600">
             [Official terms of use content to be added]

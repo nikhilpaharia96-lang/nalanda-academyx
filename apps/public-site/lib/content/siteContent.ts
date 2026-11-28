@@ -66,7 +66,7 @@ import {
 } from "@/lib/content/admission";
 import { eventsHero, eventCategoryStrip, eventValueStrip, eventsPlanAhead, eventsImageFeature } from "@/lib/content/events";
 import { noticesHero, noticeCategoryStrip, quickLinks } from "@/lib/content/notices";
-import { campusHero, campusHighlights, campusFacilityShowcase, additionalFacilities, campusImageFeature } from "@/lib/content/facilities";
+import { facilitiesPage, campusHero, campusHighlights, campusFacilityShowcase, additionalFacilities, campusImageFeature } from "@/lib/content/facilities";
 import { facultyHero, featuredFaculty, facultyCategories, facultyPhilosophy, facultyValues, facultyCta } from "@/lib/content/faculty";
 import { resultsHeroImage } from "@/lib/content/results";
 
@@ -148,6 +148,7 @@ export function buildLocalSiteContent() {
       teacherPortalLinks,
     },
     getInTouch: { hero: getInTouchHero, valueStrip: getInTouchValueStrip },
+    facilitiesPage,
     contactPage: {
       eyebrow: "Contact Us",
       heading: ["We\u2019re here to", "Help you."],
