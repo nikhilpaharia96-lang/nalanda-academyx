@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { FacilitiesSection } from "@/components/sections/FacilitiesSection";
+import { FacilitiesPageSection } from "@/components/sections/FacilitiesPageSection";
+import { getFaculty } from "@/lib/services/facultyService";
 
 export const metadata: Metadata = {
   title: "Facilities",
   description: "Explore the campus and facilities of Nalanda Academy.",
 };
 
-export default function FacilitiesPage() {
+export default async function FacilitiesPage() {
+  const faculty = await getFaculty();
   return (
-    // Leaves room for the fixed navbar (+ desktop info bar).
-    <div className="bg-white pt-[72px] lg:pt-[108px]">
-      <FacilitiesSection />
+    // Leaves room for the fixed navbar (+ desktop info bar), like the site's other pages.
+    <div className="bg-[#f1f1f1] pt-[72px] lg:pt-[108px]">
+      <FacilitiesPageSection peopleCount={faculty.length} headingLevel="h1" />
     </div>
   );
 }
